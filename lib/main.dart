@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/custom_app_bar.dart';
 import 'package:univ_go/bottom_navbar.dart';
-import 'package:univ_go/presentation/univ_go_icon_icons.dart';
+import 'package:univ_go/home.dart';
+import 'package:univ_go/profile.dart';
 import 'search_page.dart';
 
 const blueTheme = 0xff0059ff;
@@ -87,8 +88,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: CustomAppBar(
         selectedIndex: _selectedIndex,
-        backgroundColor:
-            const Color(blueTheme), // Replace with your blueTheme color
+        backgroundColor: const Color(blueTheme),
         searchController: _searchController,
         focusNode: _focusNode,
         isSearchMode: _isSearchMode,
@@ -101,16 +101,12 @@ class _MainPageState extends State<MainPage> {
                   selectedIndex: _selectedIndex, onItemTapped: _onItemTapped),
             ),
       body: _selectedIndex == 0
-          ? const Center(
-              child: Text('Beranda'),
-            )
+          ? Home()
           : _selectedIndex == 1
               ? const Center(
                   child: Text('Cari'),
                 )
-              : const Center(
-                  child: Text('Profile'),
-                ),
+              : Profile(),
     );
   }
 }

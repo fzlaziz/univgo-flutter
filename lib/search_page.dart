@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
+import 'search_result_page.dart';
 
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
@@ -48,6 +49,17 @@ class SearchPage extends StatelessWidget {
                           color: Colors.black,
                         ),
                         autofocus: true,
+                        onSubmitted: (value) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SearchResultPage(
+                                  query: value,
+                                  searchController: searchController,
+                                  focusNode: focusNode),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],
