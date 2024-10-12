@@ -36,9 +36,9 @@ class SearchPage extends StatelessWidget {
                     const Icon(UnivGoIcon.search, color: Colors.black),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: TextField(
+                      child: TextFormField(
                         controller: searchController,
-                        focusNode: focusNode,
+                        // focusNode: focusNode,
                         decoration: const InputDecoration(
                           hintText: "",
                           hintStyle: TextStyle(color: Colors.black),
@@ -49,8 +49,8 @@ class SearchPage extends StatelessWidget {
                           color: Colors.black,
                         ),
                         autofocus: true,
-                        onSubmitted: (value) {
-                          Navigator.push(
+                        onFieldSubmitted: (value) {
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) => SearchResultPage(

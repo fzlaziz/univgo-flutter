@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:univ_go/app/login.dart';
 import 'package:univ_go/custom_app_bar.dart';
 import 'package:univ_go/bottom_navbar.dart';
 import 'package:univ_go/home.dart';
-import 'package:univ_go/profile.dart';
+import 'package:univ_go/profile.dart'; // Import the login page
 import 'search_page.dart';
 
 const blueTheme = 0xff0059ff;
@@ -18,7 +19,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Univ Go',
-      home: MainPage(),
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => LoginScreen(),
+        '/home': (context) => MainPage(),
+      },
     );
   }
 }

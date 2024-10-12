@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:univ_go/presentation/univ_go_icon_icons.dart';
 
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
@@ -19,15 +20,22 @@ class BottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Beranda',
-        ),
+            icon: Icon(UnivGoIcon.homeoutline),
+            label: 'Beranda',
+            activeIcon: Icon(UnivGoIcon.home)),
         BottomNavigationBarItem(
-          icon: Icon(Icons.search),
+          icon: Icon(UnivGoIcon.search),
           label: 'Cari',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
+        BottomNavigationBarItem(  
+          icon: Icon(
+            Icons.person_outline,
+            size: 30,
+          ),
+          activeIcon: Icon(
+            Icons.person,
+            size: 30,
+          ),
           label: 'Profile',
         ),
       ],

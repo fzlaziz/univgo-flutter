@@ -52,7 +52,7 @@ class SearchResultPage extends StatelessWidget {
                     Expanded(
                       child: TextField(
                         controller: searchController,
-                        focusNode: focusNode,
+                        // focusNode: focusNode,
                         decoration: const InputDecoration(
                           hintText: "",
                           hintStyle: TextStyle(color: Colors.black),

@@ -22,3 +22,8 @@ flutter:
    - family:  UnivGoIcon
      fonts:
       - asset: fonts/UnivGoIcon.ttf
+  assets:
+    - assets/images/iisma.png
+    - assets/images/iisma_detail.png
+    - assets/images/polines.jpg
+    - assets/images/logo.png
