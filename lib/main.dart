@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Univ Go',
-      initialRoute: '/login',
+      initialRoute: '/home',
       routes: {
         '/login': (context) => LoginScreen(),
         '/home': (context) => MainPage(),

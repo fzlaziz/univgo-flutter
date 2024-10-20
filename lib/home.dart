@@ -33,6 +33,22 @@ class Home extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               children: List.generate(4, (index) {
+                // List of different image URLs
+                final imageUrls = [
+                  'assets/images/logo_polines.png',
+                  'assets/images/logo_undip.png',
+                  'assets/images/logo_polkesmar.png',
+                  'assets/images/logo_unnes.png',
+                ];
+
+                // List of different campus names
+                final campusNames = [
+                  'Politeknik Negeri Semarang',
+                  'Universitas Diponegoro',
+                  'Politeknik Kesehatan Semarang',
+                  'Universitas Negeri Semarang',
+                ];
+
                 return Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
@@ -42,9 +58,15 @@ class Home extends StatelessWidget {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
-                        child: Image.network(
-                          'https://dummyimage.com/400x600/000/fff',
-                          fit: BoxFit.cover,
+                        child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(
+                            Colors.black.withOpacity(0.5),
+                            BlendMode.darken,
+                          ),
+                          child: Image.asset(
+                            imageUrls[index % imageUrls.length],
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       Positioned(
@@ -54,10 +76,10 @@ class Home extends StatelessWidget {
                         child: Container(
                           height: 40, // Set a fixed height for the container
                           child: Text(
-                            'Campus Name $index',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
+                            campusNames[index % campusNames.length],
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                             overflow: TextOverflow.visible, // Allow overflow
@@ -75,7 +97,7 @@ class Home extends StatelessWidget {
                                   builder: (context) => ProfileCampus()),
                             );
                           },
-                          child: Text('Visit'),
+                          child: Text('More'),
                         ),
                       ),
                     ],

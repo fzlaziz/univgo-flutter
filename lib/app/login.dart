@@ -180,7 +180,6 @@ class _LoginScreenState extends State<LoginScreen> {
         //   _showPasswordStrengthDialog(false);
         // }
         Navigator.pushReplacementNamed(context, '/home');
-        ;
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Color(blueTheme),
