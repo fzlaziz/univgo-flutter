@@ -50,15 +50,7 @@ class SearchPage extends StatelessWidget {
                         ),
                         autofocus: true,
                         onFieldSubmitted: (value) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SearchResultPage(
-                                  query: value,
-                                  searchController: searchController,
-                                  focusNode: focusNode),
-                            ),
-                          );
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SearchResultPage(value: value,)));
                         },
                       ),
                     ),

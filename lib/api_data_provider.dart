@@ -2,8 +2,8 @@ import 'package:http/http.dart';
 import 'dart:convert';
 
 class ApiDataProvider {
-  Future<List<CampusResponse>> getCampus() async {
-    await Future.delayed(const Duration(seconds: 2), () {});
+  Future<List<CampusResponse>> getCampus(String query) async {
+    await Future.delayed(const Duration(seconds: 0), () {});
 
     var headers = <String, String>{};
     Client client = Client();
@@ -16,7 +16,15 @@ class ApiDataProvider {
 
     if (response.statusCode == 200) {
       var jsonList = jsonDecode(response.body) as List;
-      var campuses = jsonList.map((json) => CampusResponse.fromJson(json)).toList();
+      var campuses =
+          jsonList.map((json) => CampusResponse.fromJson(json)).toList();
+
+      if (query.isNotEmpty) {
+        campuses = campuses
+            .where((campus) =>
+                campus.name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
 
       return campuses;
     } else {
@@ -25,48 +33,51 @@ class ApiDataProvider {
   }
 }
 
-List<CampusResponse> campusResponseFromJson(String str) => List<CampusResponse>.from(json.decode(str).map((x) => CampusResponse.fromJson(x)));
+List<CampusResponse> campusResponseFromJson(String str) =>
+    List<CampusResponse>.from(
+        json.decode(str).map((x) => CampusResponse.fromJson(x)));
 
-String campusResponseToJson(List<CampusResponse> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String campusResponseToJson(List<CampusResponse> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class CampusResponse {
-    final int id;
-    final String name;
-    final String description;
-    final DateTime date;
-    final double addressLatitude;
-    final double addressLongitude;
-    final String webAddress;
-    final String phoneNumber;
-    final int rankScore;
-    final int numberOfGraduates;
-    final int numberOfRegistrants;
-    final int accreditationId;
-    final dynamic villageId;
-    final DateTime createdAt;
-    final DateTime updatedAt;
-    final Accreditation accreditation;
+  final int id;
+  final String name;
+  final String description;
+  final DateTime date;
+  final double addressLatitude;
+  final double addressLongitude;
+  final String webAddress;
+  final String phoneNumber;
+  final int rankScore;
+  final int numberOfGraduates;
+  final int numberOfRegistrants;
+  final int accreditationId;
+  final dynamic villageId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final Accreditation accreditation;
 
-    CampusResponse({
-        required this.id,
-        required this.name,
-        required this.description,
-        required this.date,
-        required this.addressLatitude,
-        required this.addressLongitude,
-        required this.webAddress,
-        required this.phoneNumber,
-        required this.rankScore,
-        required this.numberOfGraduates,
-        required this.numberOfRegistrants,
-        required this.accreditationId,
-        required this.villageId,
-        required this.createdAt,
-        required this.updatedAt,
-        required this.accreditation,
-    });
+  CampusResponse({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.date,
+    required this.addressLatitude,
+    required this.addressLongitude,
+    required this.webAddress,
+    required this.phoneNumber,
+    required this.rankScore,
+    required this.numberOfGraduates,
+    required this.numberOfRegistrants,
+    required this.accreditationId,
+    required this.villageId,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.accreditation,
+  });
 
-    factory CampusResponse.fromJson(Map<String, dynamic> json) => CampusResponse(
+  factory CampusResponse.fromJson(Map<String, dynamic> json) => CampusResponse(
         id: json["id"],
         name: json["name"],
         description: json["description"],
@@ -83,13 +94,14 @@ class CampusResponse {
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
         accreditation: Accreditation.fromJson(json["accreditation"]),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "description": description,
-        "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+        "date":
+            "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
         "address_latitude": addressLatitude,
         "address_longitude": addressLongitude,
         "web_address": webAddress,
@@ -102,34 +114,33 @@ class CampusResponse {
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
         "accreditation": accreditation.toJson(),
-    };
+      };
 }
 
 class Accreditation {
-    final int id;
-    final String name;
-    final DateTime createdAt;
-    final DateTime updatedAt;
+  final int id;
+  final String name;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
-    Accreditation({
-        required this.id,
-        required this.name,
-        required this.createdAt,
-        required this.updatedAt,
-    });
+  Accreditation({
+    required this.id,
+    required this.name,
+    required this.createdAt,
+    required this.updatedAt,
+  });
 
-    factory Accreditation.fromJson(Map<String, dynamic> json) => Accreditation(
+  factory Accreditation.fromJson(Map<String, dynamic> json) => Accreditation(
         id: json["id"],
         name: json["name"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
-    };
+      };
 }
-

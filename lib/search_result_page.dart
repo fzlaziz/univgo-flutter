@@ -1,20 +1,94 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
+import 'package:univ_go/api_data_provider.dart';
 
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
 
-class SearchResultPage extends StatelessWidget {
-  final String query;
-  final TextEditingController searchController;
-  final FocusNode focusNode;
+class SearchResultPage extends StatefulWidget {
+  @override
+  SearchResultPageState createState() => SearchResultPageState();
+  final String value;
 
-  SearchResultPage(
-      {required this.query,
-      required this.searchController,
-      required this.focusNode}) {
-    searchController.text = query;
+  SearchResultPage({required this.value});
+}
+
+class SearchResultPageState extends State<SearchResultPage> {
+  final ApiDataProvider apiDataProvider = ApiDataProvider();
+  late Future<List<CampusResponse>> response;
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.value);
+    response = apiDataProvider.getCampus(widget.value);
+  }
+
+  @override
+  void dispose() {
+    // Jangan lupa untuk dispose controller untuk menghindari memory leak
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Widget _buildCampusList() {
+    return FutureBuilder<List<CampusResponse>>(
+      future: response,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No campuses found'));
+        } else {
+          return Expanded(
+            child: ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var campus = snapshot.data![index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ListTile(
+                      leading: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('${index + 1}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: Colors.black,
+                              )),
+                          const SizedBox(width: 20),
+                          Icon(Icons.school, color: Colors.black),
+                          const SizedBox(width: 10),
+                        ],
+                      ),
+                      title: Text(campus.name,
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Colors.black,
+                          )),
+                      subtitle: Text(campus.description,
+                          style: GoogleFonts.poppins(
+                            fontSize: 11,
+                            color: Colors.black,
+                          )),
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -51,8 +125,6 @@ class SearchResultPage extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextField(
-                        controller: searchController,
-                        // focusNode: focusNode,
                         decoration: const InputDecoration(
                           hintText: "",
                           hintStyle: TextStyle(color: Colors.black),
@@ -63,16 +135,12 @@ class SearchResultPage extends StatelessWidget {
                           color: Colors.black,
                         ),
                         autofocus: true,
+                        controller: _controller,
                         onSubmitted: (value) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SearchResultPage(
-                                  query: value,
-                                  searchController: searchController,
-                                  focusNode: focusNode),
-                            ),
-                          );
+                          setState(() {
+                            _controller.text = value;
+                            response = apiDataProvider.getCampus(value);
+                          });
                         },
                       ),
                     ),
@@ -101,48 +169,7 @@ class SearchResultPage extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 10, // Replace with actual number of campuses
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.black),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ListTile(
-                        leading: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('${index + 1}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 13,
-                                  color: Colors.black,
-                                )),
-                            const SizedBox(width: 20),
-                            Icon(Icons.school, color: Colors.black),
-                            const SizedBox(width: 10),
-                            // Example logo
-                          ],
-                        ),
-                        title: Text('Nama Kampus $index',
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color: Colors.black,
-                            )),
-                        subtitle: Text('Lokasi Kampus $index',
-                            style: GoogleFonts.poppins(
-                              fontSize: 11,
-                              color: Colors.black,
-                            )),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            _buildCampusList(),
             SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.all(8.0),
