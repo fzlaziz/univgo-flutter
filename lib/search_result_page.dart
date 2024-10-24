@@ -15,8 +15,10 @@ class SearchResultPage extends StatefulWidget {
 }
 
 class SearchResultPageState extends State<SearchResultPage> {
-  final ApiDataProvider apiDataProvider = ApiDataProvider();
+  final ApiDataProvider apiDataProvider = ApiDataProvider();  
   late Future<List<CampusResponse>> response;
+  late Future<List<StudyProgramResponse>> responseStudyProgram;
+
   late TextEditingController _controller;
 
   @override
@@ -24,11 +26,11 @@ class SearchResultPageState extends State<SearchResultPage> {
     super.initState();
     _controller = TextEditingController(text: widget.value);
     response = apiDataProvider.getCampus(widget.value);
+    responseStudyProgram = apiDataProvider.getStudyProgram(widget.value);
   }
 
   @override
   void dispose() {
-    // Jangan lupa untuk dispose controller untuk menghindari memory leak
     _controller.dispose();
     super.dispose();
   }
@@ -42,7 +44,7 @@ class SearchResultPageState extends State<SearchResultPage> {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No campuses found'));
+          return Center(child: Text('Tidak ada kampus yang ditemukan'));
         } else {
           return Expanded(
             child: ListView.builder(
@@ -63,6 +65,7 @@ class SearchResultPageState extends State<SearchResultPage> {
                           Text('${index + 1}',
                               style: GoogleFonts.poppins(
                                 fontSize: 13,
+                                fontWeight: FontWeight.w600,
                                 color: Colors.black,
                               )),
                           const SizedBox(width: 20),
@@ -73,6 +76,7 @@ class SearchResultPageState extends State<SearchResultPage> {
                       title: Text(campus.name,
                           style: GoogleFonts.poppins(
                             fontSize: 14,
+                            fontWeight: FontWeight.w600,
                             color: Colors.black,
                           )),
                       subtitle: Text(campus.description,
@@ -80,6 +84,75 @@ class SearchResultPageState extends State<SearchResultPage> {
                             fontSize: 11,
                             color: Colors.black,
                           )),
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildStudyProgramList() {
+    return FutureBuilder<List<StudyProgramResponse>>(
+      future: responseStudyProgram,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Column(
+            children: [
+              SizedBox(
+                height: 25,
+              ),
+              Center(child: Text('Tidak ada program studi yang ditemukan')),
+              SizedBox(
+                height: 25,
+              )
+            ],
+          );
+        } else {
+          return Expanded(
+            child: ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var studyProgram = snapshot.data![index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ListTile(
+                      leading: Text('${index + 1}',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                            color: Colors.black,
+                          )),
+                      title: Text(studyProgram.name,
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          )),
+                      subtitle: Text(studyProgram.campus,
+                          style: GoogleFonts.poppins(
+                            fontSize: 11,
+                            color: Colors.black,
+                          )),
+                      trailing: Text(
+                        studyProgram.degreeLevel,
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                            fontSize: 14),
+                      ),
                     ),
                   ),
                 );
@@ -140,6 +213,8 @@ class SearchResultPageState extends State<SearchResultPage> {
                           setState(() {
                             _controller.text = value;
                             response = apiDataProvider.getCampus(value);
+                            responseStudyProgram =
+                                apiDataProvider.getStudyProgram(value);
                           });
                         },
                       ),
@@ -170,7 +245,14 @@ class SearchResultPageState extends State<SearchResultPage> {
               ),
             ),
             _buildCampusList(),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
+            const Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Divider(
+                color: Colors.black,
+                thickness: 1,
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
@@ -182,44 +264,7 @@ class SearchResultPageState extends State<SearchResultPage> {
                 ),
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 10, // Replace with actual number of programs
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.black),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ListTile(
-                        leading: Text('${index + 1}',
-                            style: GoogleFonts.poppins(
-                              fontSize: 13,
-                              color: Colors.black,
-                            )),
-                        title: Text('Nama Prodi $index',
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color: Colors.black,
-                            )),
-                        subtitle: Text('Nama Kampus $index',
-                            style: GoogleFonts.poppins(
-                              fontSize: 11,
-                              color: Colors.black,
-                            )),
-                        trailing: Text(
-                          'S${index % 3 + 1}', // Example degree (S1, S2, S3)
-                          style: GoogleFonts.poppins(
-                              color: Colors.black, fontSize: 14),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            _buildStudyProgramList(),
           ],
         ),
       ),

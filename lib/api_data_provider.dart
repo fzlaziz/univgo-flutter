@@ -11,7 +11,7 @@ class ApiDataProvider {
     headers["Content-Type"] = 'application/json; charset=UTF-8';
 
     final response = await client.get(
-        Uri.parse("http://192.168.1.5:8000/api/campuses"),
+        Uri.parse("http://192.168.153.45:8000/api/campuses"),
         headers: headers);
 
     if (response.statusCode == 200) {
@@ -27,6 +27,38 @@ class ApiDataProvider {
       }
 
       return campuses;
+    } else {
+      throw Exception("Oops! Something went wrong");
+    }
+  }
+
+  Future<List<StudyProgramResponse>> getStudyProgram(String query) async {
+    await Future.delayed(const Duration(seconds: 0), () {});
+
+    var headers = <String, String>{};
+    Client client = Client();
+
+    headers["Content-Type"] = 'application/json; charset=UTF-8';
+
+    final response = await client.get(
+        Uri.parse("http://192.168.153.45:8000/api/study_programs"),
+        headers: headers);
+
+    if (response.statusCode == 200) {
+      var jsonList = jsonDecode(response.body) as List;
+      var studyPrograms =
+          jsonList.map((json) => StudyProgramResponse.fromJson(json)).toList();
+
+      if (query.isNotEmpty) {
+        studyPrograms = studyPrograms
+            .where((studyProgram) =>
+                studyProgram.name.toLowerCase().contains(query.toLowerCase()) ||
+                studyProgram.campus.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+
+      studyPrograms.sort((a, b) => a.name.compareTo(b.name));
+      return studyPrograms;
     } else {
       throw Exception("Oops! Something went wrong");
     }
@@ -142,5 +174,41 @@ class Accreditation {
         "name": name,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
+      };
+}
+
+List<StudyProgramResponse> studyProgramResponseFromJson(String str) =>
+    List<StudyProgramResponse>.from(
+        json.decode(str).map((x) => StudyProgramResponse.fromJson(x)));
+
+String studyProgramResponseToJson(List<StudyProgramResponse> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class StudyProgramResponse {
+  final int id;
+  final String name;
+  final String campus;
+  final String degreeLevel;
+
+  StudyProgramResponse({
+    required this.id,
+    required this.name,
+    required this.campus,
+    required this.degreeLevel,
+  });
+
+  factory StudyProgramResponse.fromJson(Map<String, dynamic> json) =>
+      StudyProgramResponse(
+        id: json["id"],
+        name: json["name"],
+        campus: json["campus"],
+        degreeLevel: json["degree_level"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "campus": campus,
+        "degree_level": degreeLevel,
       };
 }
