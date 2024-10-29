@@ -16,13 +16,17 @@ class SearchResultPage extends StatefulWidget {
   SearchResultPage({required this.value});
 }
 
-class SearchResultPageState extends State<SearchResultPage> {
+class SearchResultPageState extends State<SearchResultPage>
+    with SingleTickerProviderStateMixin {
   final ApiDataProvider apiDataProvider = ApiDataProvider();
   late Future<List<CampusResponse>> response;
   late Future<List<StudyProgramResponse>> responseStudyProgram;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late TextEditingController _controller;
+  List<String> selectedSorts = [];
   double? userLatitude;
   double? userLongitude;
+  late AnimationController _animationController;
 
   void _openEndDrawer() {
     _scaffoldKey.currentState!.openEndDrawer();
@@ -32,16 +36,12 @@ class SearchResultPageState extends State<SearchResultPage> {
     Navigator.of(context).pop();
   }
 
-  List<String> selectedSorts = [];
-
-  late TextEditingController _controller;
-
   void _applyFilter(String sort, bool isSelected) {
     setState(() {
       if (isSelected) {
-        selectedSorts.add(sort); // Add selected sort
+        selectedSorts.add(sort);
       } else {
-        selectedSorts.remove(sort); // Remove unselected sort
+        selectedSorts.remove(sort);
       }
       response =
           apiDataProvider.getCampus(_controller.text, sortBy: selectedSorts);
@@ -55,12 +55,59 @@ class SearchResultPageState extends State<SearchResultPage> {
     response = apiDataProvider.getCampus(widget.value);
     responseStudyProgram = apiDataProvider.getStudyProgram(widget.value);
     _loadUserLocation();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat(reverse: true);
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+    _animationController.dispose();
+  }
+
+  Widget _buildPlaceholderCard() {
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (context, child) {
+        Color color = ColorTween(
+          begin: Colors.grey[300],
+          end: Colors.grey[400],
+        ).evaluate(_animationController)!;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: const Color.fromARGB(255, 198, 197, 197)),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: ListTile(
+              leading: Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              title: Container(
+                width: double.infinity,
+                height: 16,
+                color: color,
+              ),
+              subtitle: Container(
+                width: double.infinity,
+                height: 12,
+                color: color,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _loadUserLocation() async {
@@ -69,8 +116,6 @@ class SearchResultPageState extends State<SearchResultPage> {
       userLatitude = prefs.getDouble('userLatitude');
       userLongitude = prefs.getDouble('userLongitude');
     });
-
-    // Jika userLatitude atau userLongitude belum ada, panggil _getCurrentPosition
     if (userLatitude == null || userLongitude == null) {
       await _getCurrentPosition();
       setState(() {
@@ -91,7 +136,6 @@ class SearchResultPageState extends State<SearchResultPage> {
         userLongitude = position.longitude;
       });
 
-      // Simpan latitude dan longitude ke SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setDouble('userLatitude', position.latitude);
       await prefs.setDouble('userLongitude', position.longitude);
@@ -108,8 +152,7 @@ class SearchResultPageState extends State<SearchResultPage> {
 
     if (!serviceEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Izin Lokasi dimatikan, mohon aktifkan izin lokasi.')));
+          content: Text('Izin Lokasi dimatikan, mohon aktifkan izin lokasi.')));
       return false;
     }
     permission = await Geolocator.checkPermission();
@@ -135,7 +178,12 @@ class SearchResultPageState extends State<SearchResultPage> {
       future: response,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Expanded(
+            child: ListView.builder(
+              itemCount: 10,
+              itemBuilder: (context, index) => _buildPlaceholderCard(),
+            ),
+          );
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -150,7 +198,8 @@ class SearchResultPageState extends State<SearchResultPage> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.black),
+                      side: BorderSide(
+                          color: const Color.fromARGB(255, 198, 197, 197)),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: ListTile(
@@ -195,7 +244,12 @@ class SearchResultPageState extends State<SearchResultPage> {
       future: responseStudyProgram,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Expanded(
+            child: ListView.builder(
+              itemCount: 10,
+              itemBuilder: (context, index) => _buildPlaceholderCard(),
+            ),
+          );
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -220,7 +274,8 @@ class SearchResultPageState extends State<SearchResultPage> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.black),
+                      side: BorderSide(
+                          color: const Color.fromARGB(255, 198, 197, 197)),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: ListTile(
@@ -509,6 +564,7 @@ class SearchResultPageState extends State<SearchResultPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 10),
             IntrinsicHeight(
               child: Row(
                 children: [
