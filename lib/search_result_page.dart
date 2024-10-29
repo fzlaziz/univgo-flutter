@@ -15,11 +15,34 @@ class SearchResultPage extends StatefulWidget {
 }
 
 class SearchResultPageState extends State<SearchResultPage> {
-  final ApiDataProvider apiDataProvider = ApiDataProvider();  
+  final ApiDataProvider apiDataProvider = ApiDataProvider();
   late Future<List<CampusResponse>> response;
   late Future<List<StudyProgramResponse>> responseStudyProgram;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _openEndDrawer() {
+    _scaffoldKey.currentState!.openEndDrawer();
+  }
+
+  void _closeEndDrawer() {
+    Navigator.of(context).pop();
+  }
+
+  List<String> selectedSorts = [];
 
   late TextEditingController _controller;
+
+  void _applyFilter(String sort, bool isSelected) {
+    setState(() {
+      if (isSelected) {
+        selectedSorts.add(sort); // Add selected sort
+      } else {
+        selectedSorts.remove(sort); // Remove unselected sort
+      }
+      response =
+          apiDataProvider.getCampus(_controller.text, sortBy: selectedSorts);
+    });
+  }
 
   @override
   void initState() {
@@ -167,9 +190,11 @@ class SearchResultPageState extends State<SearchResultPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70.0),
         child: AppBar(
+          actions: <Widget>[Container()],
           automaticallyImplyLeading: false,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -227,11 +252,264 @@ class SearchResultPageState extends State<SearchResultPage> {
           elevation: 0,
         ),
       ),
+      endDrawer: Drawer(
+        width: 300,
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.fromLTRB(
+                  16.0,
+                  MediaQuery.of(context).padding.top + 16.0, // Padding atas
+                  16.0,
+                  16.0),
+              color: const Color(0xFF0059FF),
+              child: const Text(
+                'Filter',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ListView(
+                  padding: const EdgeInsets.all(0),
+                  children: [
+                    const Text(
+                      'Lokasi',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    const Wrap(
+                      spacing: 10.0,
+                      runSpacing: 10.0,
+                      children: const [
+                        FilterChipWidget(label: 'Jawa Tengah'),
+                        FilterChipWidget(label: 'Jawa Timur'),
+                        FilterChipWidget(label: 'Semarang'),
+                        FilterChipWidget(label: 'DIY'),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Level Studi',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    const Wrap(
+                      spacing: 10.0,
+                      runSpacing: 10.0,
+                      children: const [
+                        FilterChipWidget(label: 'S1'),
+                        FilterChipWidget(label: 'S2'),
+                        FilterChipWidget(label: 'S3'),
+                        FilterChipWidget(label: 'S4'),
+                        FilterChipWidget(label: 'D1'),
+                        FilterChipWidget(label: 'D2'),
+                        FilterChipWidget(label: 'D3'),
+                        FilterChipWidget(label: 'D4'),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Range UKT',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    const Row(
+                      children: const [
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'MIN',
+                              hintStyle: TextStyle(
+                                color: Color(0xFF2196F3), // Warna teks MIN
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0xFF2196F3), // Warna border MIN
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(
+                                      0xFF2196F3), // Warna border MIN saat tidak fokus
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(
+                                      0xFF928989), // Warna border MIN saat fokus
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'MAX',
+                              hintStyle: TextStyle(
+                                color: Color(0xFF2196F3), // Warna teks MAX
+                              ),
+                              border: OutlineInputBorder(),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(
+                                      0xFF2196F3), // Warna border MAX saat tidak fokus
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(
+                                      0xFF928989), // Warna border MAX saat fokus
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Jalur Masuk',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    const Wrap(
+                      spacing: 10.0,
+                      runSpacing: 10.0,
+                      children: const [
+                        FilterChipWidget(label: 'MANDIRI'),
+                        FilterChipWidget(label: 'SNBP'),
+                        FilterChipWidget(label: 'BEASISWA'),
+                        FilterChipWidget(label: 'UTBK'),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Akreditasi',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    const Wrap(
+                      spacing: 10.0,
+                      runSpacing: 10.0,
+                      children: const [
+                        FilterChipWidget(label: 'UNGGUL'),
+                        FilterChipWidget(label: 'BAIK SEKALI'),
+                        FilterChipWidget(label: 'BAIK'),
+                        FilterChipWidget(label: 'TIDAK TERAKREDITASI'),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Jenis PTN',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    const Wrap(
+                      spacing: 10.0,
+                      runSpacing: 10.0,
+                      children: const [
+                        FilterChipWidget(label: 'PTN'),
+                        FilterChipWidget(label: 'SWASTA'),
+                        FilterChipWidget(label: 'POLITEKNIK'),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    // Tombol Terapkan
+                    StatefulButton(),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            IntrinsicHeight(
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Color(0xFF0059FF),
+                    radius: 20.0,
+                    child: Builder(builder: (context) {
+                      return IconButton(
+                        icon: Icon(Icons.menu, color: Colors.white),
+                        onPressed: () {
+                          _openEndDrawer();
+                        },
+                        iconSize: 20.0, // Ukuran ikon di dalam tombol
+                      );
+                    }),
+                  ),
+                  Container(
+                    height: 30, // Mengatur tinggi dari vertical divider
+                    child: VerticalDivider(
+                      color: Color(0xFF0059FF), // Warna garis divider
+                      thickness: 2, // Ketebalan garis
+                      width: 20, // Lebar garis
+                    ),
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      height: 50, // Set the height for the list
+                      child: ListView(
+                        scrollDirection:
+                            Axis.horizontal, // Horizontal scrolling
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: FilterChipWidget(
+                              label: 'Terdekat',
+                              value: "closer",
+                              onSelected: (isSelected) {
+                                _applyFilter('nearest', isSelected);
+                              },
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: FilterChipWidget(
+                                label: 'Ranking Terbaik', value: "rank"),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: FilterChipWidget(
+                              label: 'UKT Terendah',
+                              value: 'min_single_tuition',
+                              onSelected: (isSelected) {
+                                _applyFilter('min_single_tuition', isSelected);
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: FilterChipWidget(
+                                label: 'UKT Tertinggi',
+                                value: 'max_single_tuition',
+                                onSelected: (isSelected) {
+                                  _applyFilter(
+                                      'max_single_tuition', isSelected);
+                                }),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -267,6 +545,94 @@ class SearchResultPageState extends State<SearchResultPage> {
             _buildStudyProgramList(),
           ],
         ),
+      ),
+      endDrawerEnableOpenDragGesture: false,
+    );
+  }
+}
+
+class StatefulButton extends StatefulWidget {
+  @override
+  _StatefulButtonState createState() => _StatefulButtonState();
+}
+
+class _StatefulButtonState extends State<StatefulButton> {
+  bool isApplied = false;
+
+  void toggleButton() {
+    setState(() {
+      isApplied = !isApplied; // Toggle state
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: () {
+        toggleButton(); // Call toggle function on press
+      },
+      child: Text(isApplied ? 'Terapkan' : 'Diterapkan'),
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        textStyle: const TextStyle(fontSize: 16),
+        backgroundColor: isApplied
+            ? const Color(0xFF0059FF) // Warna latar belakang saat diterapkan
+            : const Color(0xFFFFFFFF), // Warna latar belakang default
+        foregroundColor: isApplied
+            ? Colors.white // Warna teks saat diterapkan
+            : const Color(0xFF0059FF), // Warna teks default
+        side: const BorderSide(
+          color: Color(0xFF0059FF), // Warna border
+        ),
+      ),
+    );
+  }
+}
+
+class FilterChipWidget extends StatefulWidget {
+  final String label;
+  final String? value;
+  final ValueChanged<bool>? onSelected;
+
+  const FilterChipWidget({
+    super.key,
+    required this.label,
+    this.value,
+    this.onSelected,
+  });
+
+  @override
+  _FilterChipWidgetState createState() => _FilterChipWidgetState();
+}
+
+class _FilterChipWidgetState extends State<FilterChipWidget> {
+  bool isSelected = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilterChip(
+      label: Text(
+        widget.label,
+        style: TextStyle(
+          color: isSelected ? Colors.white : const Color(0xFF0059FF),
+        ),
+      ),
+      selected: isSelected,
+      showCheckmark: false,
+      backgroundColor: const Color(0xFFFFFFFF),
+      selectedColor: const Color(0xFF0059FF),
+      onSelected: (selected) {
+        setState(() {
+          isSelected = selected;
+          // Check if onSelected is not null before calling it
+          if (widget.onSelected != null) {
+            widget.onSelected!(selected);
+          }
+        });
+      },
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: const BorderSide(color: Color.fromARGB(255, 33, 149, 243)),
       ),
     );
   }

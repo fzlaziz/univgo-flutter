@@ -4,7 +4,7 @@ import 'package:univ_go/app/login.dart';
 import 'package:univ_go/custom_app_bar.dart';
 import 'package:univ_go/bottom_navbar.dart';
 import 'package:univ_go/home.dart';
-import 'package:univ_go/profile.dart'; // Import the login page
+import 'package:univ_go/profile.dart';
 import 'search_page.dart';
 
 const blueTheme = 0xff0059ff;
