@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
 import 'package:univ_go/api_data_provider.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
@@ -19,6 +21,8 @@ class SearchResultPageState extends State<SearchResultPage> {
   late Future<List<CampusResponse>> response;
   late Future<List<StudyProgramResponse>> responseStudyProgram;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  double? userLatitude;
+  double? userLongitude;
 
   void _openEndDrawer() {
     _scaffoldKey.currentState!.openEndDrawer();
@@ -50,12 +54,80 @@ class SearchResultPageState extends State<SearchResultPage> {
     _controller = TextEditingController(text: widget.value);
     response = apiDataProvider.getCampus(widget.value);
     responseStudyProgram = apiDataProvider.getStudyProgram(widget.value);
+    _loadUserLocation();
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadUserLocation() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userLatitude = prefs.getDouble('userLatitude');
+      userLongitude = prefs.getDouble('userLongitude');
+    });
+
+    // Jika userLatitude atau userLongitude belum ada, panggil _getCurrentPosition
+    if (userLatitude == null || userLongitude == null) {
+      await _getCurrentPosition();
+      setState(() {
+        userLatitude = prefs.getDouble('userLatitude');
+        userLongitude = prefs.getDouble('userLongitude');
+      });
+    }
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    if (!hasPermission) return;
+
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) async {
+      setState(() {
+        userLatitude = position.latitude;
+        userLongitude = position.longitude;
+      });
+
+      // Simpan latitude dan longitude ke SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setDouble('userLatitude', position.latitude);
+      await prefs.setDouble('userLongitude', position.longitude);
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Izin Lokasi dimatikan, mohon aktifkan izin lokasi.')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Izin Lokasi ditolak.')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Izin Lokasi ditolak secara permanen, buka pengaturan untuk mengaktifkan izin lokasi.')));
+      return false;
+    }
+    return true;
   }
 
   Widget _buildCampusList() {

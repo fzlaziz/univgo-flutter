@@ -1,5 +1,7 @@
 import 'package:http/http.dart';
 import 'dart:convert';
+import 'dart:math';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiDataProvider {
   Future<List<CampusResponse>> getCampus(String query,
@@ -12,7 +14,7 @@ class ApiDataProvider {
     headers["Content-Type"] = 'application/json; charset=UTF-8';
 
     final response = await client.get(
-        Uri.parse("http://172.16.163.31:8000/api/campuses"),
+        Uri.parse("http://192.168.1.5:8000/api/campuses"),
         headers: headers);
 
     if (response.statusCode == 200) {
@@ -28,6 +30,12 @@ class ApiDataProvider {
             .toList();
       }
 
+      // Ambil data latitude dan longitude dari SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      double? userLatitude = prefs.getDouble('userLatitude');
+      double? userLongitude = prefs.getDouble('userLongitude');
+
+      // Sort based on the `sortBy` parameter
       for (String sort in sortBy ?? []) {
         if (sort == 'min_single_tuition') {
           campuses
@@ -35,6 +43,16 @@ class ApiDataProvider {
         } else if (sort == 'max_single_tuition') {
           campuses
               .sort((a, b) => b.maxSingleTuition.compareTo(a.maxSingleTuition));
+        } else if (sort == 'nearest') {
+          if (userLatitude != null && userLongitude != null) {
+            campuses.sort((a, b) {
+              double distanceA = calculateDistance(userLatitude, userLongitude,
+                  a.addressLatitude, a.addressLongitude);
+              double distanceB = calculateDistance(userLatitude, userLongitude,
+                  b.addressLatitude, b.addressLongitude);
+              return distanceA.compareTo(distanceB);
+            });
+          }
         }
       }
 
@@ -53,7 +71,7 @@ class ApiDataProvider {
     headers["Content-Type"] = 'application/json; charset=UTF-8';
 
     final response = await client.get(
-        Uri.parse("http://172.16.163.31:8000/api/study_programs"),
+        Uri.parse("http://192.168.1.5:8000/api/study_programs"),
         headers: headers);
 
     if (response.statusCode == 200) {
@@ -75,6 +93,23 @@ class ApiDataProvider {
       throw Exception("Oops! Something went wrong");
     }
   }
+}
+
+double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  const radius = 6371;
+  double dLat = _toRadians(lat2 - lat1);
+  double dLon = _toRadians(lon2 - lon1);
+  double a = sin(dLat / 2) * sin(dLat / 2) +
+      cos(_toRadians(lat1)) *
+          cos(_toRadians(lat2)) *
+          sin(dLon / 2) *
+          sin(dLon / 2);
+  double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+  return radius * c;
+}
+
+double _toRadians(double degrees) {
+  return degrees * pi / 180;
 }
 
 List<CampusResponse> campusResponseFromJson(String str) =>
