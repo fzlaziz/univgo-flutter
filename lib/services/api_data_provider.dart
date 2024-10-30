@@ -75,6 +75,14 @@ class ApiDataProvider {
             .where((campus) => campusTypeIds.contains(campus.campusTypeId))
             .toList();
       }
+      if (selectedFilters != null && selectedFilters['accreditation'] != null) {
+        List<int> accreditationIds = selectedFilters['accreditation']!;
+
+        campuses = campuses
+            .where(
+                (campus) => accreditationIds.contains(campus.accreditation.id))
+            .toList();
+      }
 
       return campuses;
     } else {
