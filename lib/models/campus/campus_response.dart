@@ -1,4 +1,5 @@
 import 'package:univ_go/models/accreditation/accreditation.dart';
+import 'package:univ_go/models/degree_level/degree_level.dart';
 
 class CampusResponse {
   final int id;
@@ -27,6 +28,7 @@ class CampusResponse {
   final DateTime createdAt;
   final DateTime updatedAt;
   final Accreditation accreditation;
+  final List<DegreeLevel> degreeLevels;
 
   CampusResponse({
     required this.id,
@@ -55,6 +57,7 @@ class CampusResponse {
     required this.cityId,
     required this.districtId,
     required this.campusTypeId,
+    required this.degreeLevels,
   });
 
   factory CampusResponse.fromJson(Map<String, dynamic> json) => CampusResponse(
@@ -83,6 +86,8 @@ class CampusResponse {
         villageId: json["village_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
+        degreeLevels: List<DegreeLevel>.from(
+            json["degree_levels"].map((x) => DegreeLevel.fromJson(x))),
         accreditation: Accreditation.fromJson(json["accreditation"]),
       );
 
@@ -114,5 +119,7 @@ class CampusResponse {
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
         "accreditation": accreditation.toJson(),
+        "degree_levels":
+            List<dynamic>.from(degreeLevels.map((x) => x.toJson())),
       };
 }

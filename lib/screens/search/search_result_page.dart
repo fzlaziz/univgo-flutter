@@ -53,7 +53,7 @@ class SearchResultPageState extends State<SearchResultPage>
     switch (group) {
       case 'location':
         return 95.0;
-      case 'study_level':
+      case 'degree_level':
         return 25.0;
       case 'entry_path':
         return 90.0;

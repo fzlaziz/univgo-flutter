@@ -75,12 +75,22 @@ class ApiDataProvider {
             .where((campus) => campusTypeIds.contains(campus.campusTypeId))
             .toList();
       }
+
       if (selectedFilters != null && selectedFilters['accreditation'] != null) {
         List<int> accreditationIds = selectedFilters['accreditation']!;
 
         campuses = campuses
             .where(
                 (campus) => accreditationIds.contains(campus.accreditation.id))
+            .toList();
+      }
+
+      if (selectedFilters != null && selectedFilters['degree_level'] != null) {
+        List<int> degreeLevelIds = selectedFilters['degree_level']!;
+
+        campuses = campuses
+            .where((campus) => campus.degreeLevels
+                .any((degreeLevel) => degreeLevelIds.contains(degreeLevel.id)))
             .toList();
       }
 
