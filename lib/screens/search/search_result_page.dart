@@ -49,6 +49,23 @@ class SearchResultPageState extends State<SearchResultPage>
     Navigator.of(context).pop();
   }
 
+  double _getWidthForGroup(String group) {
+    switch (group) {
+      case 'location':
+        return 95.0;
+      case 'study_level':
+        return 25.0;
+      case 'entry_path':
+        return 90.0;
+      case 'accreditation':
+        return 90.0;
+      case 'campus_type':
+        return 90.0;
+      default:
+        return 100.0;
+    }
+  }
+
   void toggleFilter(String group, int id) {
     setState(() {
       if (selectedFilters.containsKey(group)) {
@@ -500,6 +517,7 @@ class SearchResultPageState extends State<SearchResultPage>
                               isSelected: selectedFilters[filter.group]
                                       ?.contains(filter.id) ??
                                   false,
+                              width: _getWidthForGroup(filter.group),
                             );
                           }).toList(),
                         ),

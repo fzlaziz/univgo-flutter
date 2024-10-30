@@ -13,6 +13,7 @@ dependencies:
   geolocator: ^13.0.1
   google_fonts: ^6.2.1
   http: ^1.2.2
+  marquee: ^2.3.0
   shared_preferences: ^2.3.2
   smooth_page_indicator: ^1.2.0+3
 
