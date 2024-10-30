@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SortButtonWidget extends StatelessWidget {
   final String label;
@@ -17,7 +18,7 @@ class SortButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 125,
+      width: 130,
       child: ElevatedButton(
         onPressed: () {
           if (onSelected != null) {
@@ -25,8 +26,8 @@ class SortButtonWidget extends StatelessWidget {
           }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? Color(0xFF0059FF) : Colors.white,
-          foregroundColor: isSelected ? Colors.white : Color(0xFF0059FF),
+          backgroundColor: isSelected ? const Color(0xFF0059FF) : Colors.white,
+          foregroundColor: isSelected ? Colors.white : const Color(0xFF0059FF),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
             side: const BorderSide(color: Color.fromARGB(255, 33, 149, 243)),
@@ -35,7 +36,9 @@ class SortButtonWidget extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TextStyle(
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
             color: isSelected ? Colors.white : const Color(0xFF0059FF),
           ),
         ),

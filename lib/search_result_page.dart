@@ -32,6 +32,12 @@ class SearchResultPageState extends State<SearchResultPage>
   List<String> selectedSorts = [];
   String? selectedSort;
   Map<String, List<int>> selectedFilters = {};
+  bool showCampus = true;
+  void _toggleView() {
+    setState(() {
+      showCampus = !showCampus;
+    });
+  }
 
   void _openEndDrawer() {
     _scaffoldKey.currentState!.openEndDrawer();
@@ -109,163 +115,266 @@ class SearchResultPageState extends State<SearchResultPage>
   }
 
   Widget _buildCampusList() {
-    return FutureBuilder<List<CampusResponse>>(
-      future: response,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Expanded(
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) =>
-                  PlaceholderCard(animationController: _animationController),
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('Tidak ada kampus yang ditemukan'));
-        } else {
-          return Expanded(
-            child: ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                var campus = snapshot.data![index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                          color: const Color.fromARGB(255, 198, 197, 197)),
-                      borderRadius: BorderRadius.circular(10),
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: FutureBuilder<List<CampusResponse>>(
+        future: response,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Expanded(
+              child: ListView.builder(
+                itemCount: 10,
+                itemBuilder: (context, index) =>
+                    PlaceholderCard(animationController: _animationController),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Tidak ada kampus yang ditemukan',
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
                     ),
-                    child: ListTile(
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 20,
-                            alignment: Alignment.center,
-                            child: Text(
-                              '${index + 1}',
-                              style: GoogleFonts.poppins(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          showCampus = false;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        foregroundColor: Colors.white,
+                        backgroundColor: const Color(0xFF0059FF),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 24),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(10), // Sudut melengkung
+                          side: BorderSide(
+                            color: Color(blueTheme), // Warna border
+                            width: 0.5, // Ketebalan border
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Tampilkan Program Studi',
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return Expanded(
+              child: ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  var campus = snapshot.data![index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 198, 197, 197)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ListTile(
+                        leading: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 20,
+                              alignment: Alignment.center,
+                              child: Text(
+                                '${index + 1}',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 15),
-                          campus.logoPath != null
-                              ? Image.network(
-                                  campus.logoPath,
-                                  width: 30,
-                                  height: 40,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Icon(Icons.image_not_supported,
-                                        color: Colors.black);
-                                  },
-                                )
-                              : Icon(Icons.image_not_supported,
-                                  color: Colors.black),
-                          const SizedBox(width: 5),
-                        ],
+                            const SizedBox(width: 15),
+                            campus.logoPath != null
+                                ? Image.network(
+                                    campus.logoPath,
+                                    width: 30,
+                                    height: 40,
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return const Icon(
+                                          Icons.image_not_supported,
+                                          color: Colors.black);
+                                    },
+                                  )
+                                : const Icon(Icons.image_not_supported,
+                                    color: Colors.black),
+                            const SizedBox(width: 5),
+                          ],
+                        ),
+                        title: Text(campus.name,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            )),
+                        subtitle: Text(campus.description,
+                            style: GoogleFonts.poppins(
+                              fontSize: 11,
+                              color: Colors.black,
+                            )),
                       ),
-                      title: Text(campus.name,
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          )),
-                      subtitle: Text(campus.description,
-                          style: GoogleFonts.poppins(
-                            fontSize: 11,
-                            color: Colors.black,
-                          )),
                     ),
-                  ),
-                );
-              },
-            ),
-          );
-        }
-      },
+                  );
+                },
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 
   Widget _buildStudyProgramList() {
-    return FutureBuilder<List<StudyProgramResponse>>(
-      future: responseStudyProgram,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Expanded(
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) =>
-                  PlaceholderCard(animationController: _animationController),
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Column(
-            children: [
-              SizedBox(
-                height: 25,
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: FutureBuilder<List<StudyProgramResponse>>(
+        future: responseStudyProgram,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Expanded(
+              child: ListView.builder(
+                itemCount: 10,
+                itemBuilder: (context, index) =>
+                    PlaceholderCard(animationController: _animationController),
               ),
-              Center(child: Text('Tidak ada program studi yang ditemukan')),
-              SizedBox(
-                height: 25,
-              )
-            ],
-          );
-        } else {
-          return Expanded(
-            child: ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                var studyProgram = snapshot.data![index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                          color: const Color.fromARGB(255, 198, 197, 197)),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: ListTile(
-                      leading: Text('${index + 1}',
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                            color: Colors.black,
-                          )),
-                      title: Text(studyProgram.name,
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          )),
-                      subtitle: Text(studyProgram.campus,
-                          style: GoogleFonts.poppins(
-                            fontSize: 11,
-                            color: Colors.black,
-                          )),
-                      trailing: Text(
-                        studyProgram.degreeLevel,
-                        style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                            fontSize: 14),
+            );
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Tidak ada program studi yang ditemukan',
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-          );
-        }
-      },
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          showCampus = true;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        foregroundColor: Colors.white,
+                        backgroundColor: const Color(0xFF0059FF),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 24),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(10), // Sudut melengkung
+                          side: BorderSide(
+                            color: Color(blueTheme), // Warna border
+                            width: 0.5, // Ketebalan border
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Tampilkan Kampus',
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return Expanded(
+              child: ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  var studyProgram = snapshot.data![index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        side: const BorderSide(
+                            color: const Color.fromARGB(255, 198, 197, 197)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ListTile(
+                        leading: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 20,
+                              alignment: Alignment.center,
+                              child: Text(
+                                '${index + 1}',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                          ],
+                        ),
+                        title: Text(studyProgram.name,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            )),
+                        subtitle: Text(studyProgram.campus,
+                            style: GoogleFonts.poppins(
+                              fontSize: 11,
+                              color: Colors.black,
+                            )),
+                        trailing: Text(
+                          studyProgram.degreeLevel,
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                              fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 
@@ -305,8 +414,9 @@ class SearchResultPageState extends State<SearchResultPage>
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextField(
-                        decoration: const InputDecoration(
-                          hintText: "Cari Kampus",
+                        decoration: InputDecoration(
+                          hintText:
+                              showCampus ? 'Cari Kampus' : 'Cari Program Studi',
                           hintStyle: TextStyle(color: Colors.black),
                           border: InputBorder.none,
                         ),
@@ -443,45 +553,116 @@ class SearchResultPageState extends State<SearchResultPage>
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10),
-            IntrinsicHeight(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            color: const Color(0xFF0059FF),
+            padding: const EdgeInsets.only(top: 13, right: 20.0, left: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        showCampus = true;
+                      });
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.only(bottom: 7.0),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color:
+                                showCampus ? Colors.white : Colors.transparent,
+                            width: 5.0,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Kampus',
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        showCampus = false;
+                      });
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.only(bottom: 7.0),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color:
+                                !showCampus ? Colors.white : Colors.transparent,
+                            width: 5.0,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Program Studi',
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 13.0, right: 13.0, bottom: 5, top: 0),
+            child: IntrinsicHeight(
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   CircleAvatar(
-                    backgroundColor: Color(0xFF0059FF),
+                    backgroundColor: Color(blueTheme),
                     radius: 20.0,
                     child: Builder(builder: (context) {
                       return IconButton(
-                        icon: Icon(Icons.menu, color: Colors.white),
+                        icon: const Icon(Icons.menu, color: Colors.white),
                         onPressed: () {
                           _openEndDrawer();
                         },
-                        iconSize: 20.0, // Ukuran ikon di dalam tombol
+                        iconSize: 20.0,
                       );
                     }),
                   ),
-                  Container(
-                    height: 30, // Mengatur tinggi dari vertical divider
+                  const SizedBox(
+                    height: 35,
                     child: VerticalDivider(
-                      color: Color(0xFF0059FF), // Warna garis divider
-                      thickness: 2, // Ketebalan garis
-                      width: 20, // Lebar garis
+                      color: Color(blueTheme),
+                      thickness: 2,
+                      width: 20,
                     ),
                   ),
                   Expanded(
                     child: SizedBox(
-                      height: 35, // Set the height for the list
+                      height: 42,
                       child: ListView(
-                        scrollDirection:
-                            Axis.horizontal, // Horizontal scrolling
+                        scrollDirection: Axis.horizontal,
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: SortButtonWidget(
                               label: 'Terdekat',
                               value: "closer",
@@ -492,7 +673,8 @@ class SearchResultPageState extends State<SearchResultPage>
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: SortButtonWidget(
                               label: 'Terbaik',
                               value: "rank_score",
@@ -503,7 +685,8 @@ class SearchResultPageState extends State<SearchResultPage>
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: SortButtonWidget(
                               label: 'UKT Terendah',
                               value: 'min_single_tuition',
@@ -520,41 +703,11 @@ class SearchResultPageState extends State<SearchResultPage>
                 ],
               ),
             ),
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Kampus',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            _buildCampusList(),
-            const SizedBox(height: 10),
-            const Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Divider(
-                color: Colors.black,
-                thickness: 1,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Program Studi',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            _buildStudyProgramList(),
-          ],
-        ),
+          ),
+          Expanded(
+            child: showCampus ? _buildCampusList() : _buildStudyProgramList(),
+          ),
+        ],
       ),
       endDrawerEnableOpenDragGesture: false,
     );
