@@ -68,6 +68,13 @@ class ApiDataProvider {
             .where((campus) => selectedLocationIds.contains(campus.districtId))
             .toList();
       }
+      if (selectedFilters != null && selectedFilters['campus_type'] != null) {
+        List<int> campusTypeIds = selectedFilters['campus_type']!;
+
+        campuses = campuses
+            .where((campus) => campusTypeIds.contains(campus.campusTypeId))
+            .toList();
+      }
 
       return campuses;
     } else {

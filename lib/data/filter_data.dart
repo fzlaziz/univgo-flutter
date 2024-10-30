@@ -25,11 +25,13 @@ Map<String, List<Filter>> filters = {
     Filter(label: 'Unggul', id: 1, group: 'accreditation'),
     Filter(label: 'Baik Sekali', id: 2, group: 'accreditation'),
     Filter(label: 'Baik', id: 3, group: 'accreditation'),
-    Filter(label: 'Tidak Terakreditasi', id: 4, group: 'accreditation'),
+    Filter(label: 'A', id: 4, group: 'accreditation'),
+    Filter(label: 'B', id: 5, group: 'accreditation'),
+    Filter(label: 'C', id: 6, group: 'accreditation'),
   ],
   'Jenis PTN': [
-    Filter(label: 'PTN', id: 1, group: 'type'),
-    Filter(label: 'Swasta', id: 2, group: 'type'),
-    Filter(label: 'Politeknik', id: 3, group: 'type'),
+    Filter(label: 'PTN', id: 1, group: 'campus_type'),
+    Filter(label: 'Politeknik', id: 2, group: 'campus_type'),
+    Filter(label: 'Swasta', id: 3, group: 'campus_type'),
   ],
 };

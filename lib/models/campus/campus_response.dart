@@ -22,6 +22,7 @@ class CampusResponse {
   final int provinceId;
   final int cityId;
   final int districtId;
+  final int campusTypeId;
   final dynamic villageId;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -53,6 +54,7 @@ class CampusResponse {
     required this.provinceId,
     required this.cityId,
     required this.districtId,
+    required this.campusTypeId,
   });
 
   factory CampusResponse.fromJson(Map<String, dynamic> json) => CampusResponse(
@@ -77,6 +79,7 @@ class CampusResponse {
         provinceId: json["province_id"],
         cityId: json["city_id"],
         districtId: json["district_id"],
+        campusTypeId: json["campus_type_id"],
         villageId: json["village_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
@@ -106,6 +109,7 @@ class CampusResponse {
         "province_id": provinceId,
         "city_id": cityId,
         "district_id": districtId,
+        "campus_type_id": campusTypeId,
         "village_id": villageId,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
