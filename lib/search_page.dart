@@ -68,7 +68,7 @@ class SearchPage extends StatelessWidget {
         ),
       ),
       body: const Center(
-        child: Text('History'),
+        child: Text(''),
       ),
     );
   }

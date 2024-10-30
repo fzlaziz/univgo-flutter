@@ -3,6 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
 import 'package:univ_go/api_data_provider.dart';
 import 'package:univ_go/location_service.dart';
+import 'package:univ_go/data/filter_data.dart';
+import 'package:univ_go/model/filter_model.dart';
+import 'package:univ_go/components/sort_button_widget.dart';
+import 'package:univ_go/components/filter_button_widget.dart';
 
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
@@ -18,14 +22,15 @@ class SearchResultPage extends StatefulWidget {
 class SearchResultPageState extends State<SearchResultPage>
     with SingleTickerProviderStateMixin {
   final ApiDataProvider apiDataProvider = ApiDataProvider();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late Future<List<CampusResponse>> response;
   late Future<List<StudyProgramResponse>> responseStudyProgram;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late TextEditingController _controller;
   late LocationService locationService;
+  late AnimationController _animationController;
   List<String> selectedSorts = [];
   String? selectedSort;
-  late AnimationController _animationController;
+  Map<String, List<int>> selectedFilters = {};
 
   void _openEndDrawer() {
     _scaffoldKey.currentState!.openEndDrawer();
@@ -35,7 +40,43 @@ class SearchResultPageState extends State<SearchResultPage>
     Navigator.of(context).pop();
   }
 
-  void _applyFilter(String sort, bool isSelected) {
+  void toggleFilter(String group, int id) {
+    setState(() {
+      if (selectedFilters.containsKey(group)) {
+        if (selectedFilters[group]!.contains(id)) {
+          selectedFilters[group]!.remove(id);
+          if (selectedFilters[group]!.isEmpty) {
+            selectedFilters.remove(group);
+          }
+        } else {
+          selectedFilters[group]!.add(id);
+        }
+      } else {
+        selectedFilters[group] = [id];
+      }
+    });
+  }
+
+  void resetFilters() {
+    setState(() {
+      selectedFilters.clear();
+    });
+    response = apiDataProvider.getCampus(_controller.text,
+        selectedFilters: selectedFilters);
+    Navigator.pop(context);
+    print("Filters diterapkan: $selectedFilters");
+  }
+
+  void applyFilters() {
+    setState(() {
+      response = apiDataProvider.getCampus(_controller.text,
+          selectedFilters: selectedFilters);
+    });
+    print("Filters diterapkan: $selectedFilters");
+    Navigator.pop(context);
+  }
+
+  void _applySort(String sort, bool isSelected) {
     setState(() {
       if (isSelected) {
         selectedSort = sort;
@@ -319,7 +360,8 @@ class SearchResultPageState extends State<SearchResultPage>
                         onSubmitted: (value) {
                           setState(() {
                             _controller.text = value;
-                            response = apiDataProvider.getCampus(value);
+                            response = apiDataProvider.getCampus(value,
+                                sortBy: selectedSort);
                             responseStudyProgram =
                                 apiDataProvider.getStudyProgram(value);
                           });
@@ -360,92 +402,82 @@ class SearchResultPageState extends State<SearchResultPage>
                 padding: const EdgeInsets.all(16.0),
                 child: ListView(
                   padding: const EdgeInsets.all(0),
-                  children: [
-                    const Text(
-                      'Lokasi',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    const Wrap(
-                      spacing: 10.0,
-                      runSpacing: 10.0,
-                      children: const [
-                        FilterChipWidget(label: 'Jawa Tengah'),
-                        FilterChipWidget(label: 'Jawa Timur'),
-                        FilterChipWidget(label: 'Semarang'),
-                        FilterChipWidget(label: 'DIY'),
+                  children: filters.entries.map((entry) {
+                    String groupDisplayName = entry.key;
+                    List<Filter> filterList = entry.value;
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          groupDisplayName,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 10.0,
+                          runSpacing: 10.0,
+                          children: filterList.map((filter) {
+                            return FilterButtonWidget(
+                              label: filter.label,
+                              id: filter.id,
+                              group: filter.group,
+                              onSelected: (isSelected) {
+                                toggleFilter(filter.group, filter.id);
+                              },
+                              isSelected: selectedFilters[filter.group]
+                                      ?.contains(filter.id) ??
+                                  false,
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 20),
                       ],
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Level Studi',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    const Wrap(
-                      spacing: 10.0,
-                      runSpacing: 10.0,
-                      children: const [
-                        FilterChipWidget(label: 'S1'),
-                        FilterChipWidget(label: 'S2'),
-                        FilterChipWidget(label: 'S3'),
-                        FilterChipWidget(label: 'D2'),
-                        FilterChipWidget(label: 'D3'),
-                        FilterChipWidget(label: 'D4'),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Jalur Masuk',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    const Wrap(
-                      spacing: 10.0,
-                      runSpacing: 10.0,
-                      children: const [
-                        FilterChipWidget(label: 'Mandiri'),
-                        FilterChipWidget(label: 'SNBP'),
-                        FilterChipWidget(label: 'Beasiswa'),
-                        FilterChipWidget(label: 'UTBK'),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Akreditasi',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    const Wrap(
-                      spacing: 10.0,
-                      runSpacing: 10.0,
-                      children: const [
-                        FilterChipWidget(label: 'Unggul'),
-                        FilterChipWidget(label: 'Baik Sekali'),
-                        FilterChipWidget(label: 'Baik'),
-                        FilterChipWidget(label: 'Tidak Terakreditasi'),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Jenis PTN',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    const Wrap(
-                      spacing: 10.0,
-                      runSpacing: 10.0,
-                      children: const [
-                        FilterChipWidget(label: 'PTN'),
-                        FilterChipWidget(label: 'Swasta'),
-                        FilterChipWidget(label: 'Politeknik'),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    // Tombol Terapkan
-                    StatefulButton(),
-                  ],
+                    );
+                  }).toList(),
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: resetFilters,
+                    child: const Text(
+                      'Reset Filter',
+                      style: TextStyle(
+                        color: Color(0xFF0059FF),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 33, 149, 243)),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: applyFilters,
+                    child: const Text(
+                      'Terapkan Filter',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF0059FF),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 33, 149, 243)),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -495,7 +527,7 @@ class SearchResultPageState extends State<SearchResultPage>
                               value: "closer",
                               isSelected: selectedSort == 'nearest',
                               onSelected: (isSelected) {
-                                _applyFilter('nearest', isSelected);
+                                _applySort('nearest', isSelected);
                               },
                             ),
                           ),
@@ -506,7 +538,7 @@ class SearchResultPageState extends State<SearchResultPage>
                               value: "rank_score",
                               isSelected: selectedSort == 'rank_score',
                               onSelected: (isSelected) {
-                                _applyFilter('rank_score', isSelected);
+                                _applySort('rank_score', isSelected);
                               },
                             ),
                           ),
@@ -517,7 +549,7 @@ class SearchResultPageState extends State<SearchResultPage>
                               value: 'min_single_tuition',
                               isSelected: selectedSort == 'min_single_tuition',
                               onSelected: (isSelected) {
-                                _applyFilter('min_single_tuition', isSelected);
+                                _applySort('min_single_tuition', isSelected);
                               },
                             ),
                           ),
@@ -565,137 +597,6 @@ class SearchResultPageState extends State<SearchResultPage>
         ),
       ),
       endDrawerEnableOpenDragGesture: false,
-    );
-  }
-}
-
-class StatefulButton extends StatefulWidget {
-  @override
-  _StatefulButtonState createState() => _StatefulButtonState();
-}
-
-class _StatefulButtonState extends State<StatefulButton> {
-  bool isApplied = false;
-
-  void toggleButton() {
-    setState(() {
-      isApplied = !isApplied; // Toggle state
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: () {
-        toggleButton(); // Call toggle function on press
-      },
-      child: Text(isApplied ? 'Terapkan' : 'Diterapkan'),
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        textStyle: const TextStyle(fontSize: 16),
-        backgroundColor: isApplied
-            ? const Color(0xFF0059FF) // Warna latar belakang saat diterapkan
-            : const Color(0xFFFFFFFF), // Warna latar belakang default
-        foregroundColor: isApplied
-            ? Colors.white // Warna teks saat diterapkan
-            : const Color(0xFF0059FF), // Warna teks default
-        side: const BorderSide(
-          color: Color(0xFF0059FF), // Warna border
-        ),
-      ),
-    );
-  }
-}
-
-class SortButtonWidget extends StatelessWidget {
-  final String label;
-  final String? value;
-  final ValueChanged<bool>? onSelected;
-  final bool isSelected;
-
-  const SortButtonWidget({
-    super.key,
-    required this.label,
-    this.value,
-    this.onSelected,
-    required this.isSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 125,
-      child: ElevatedButton(
-        onPressed: () {
-          if (onSelected != null) {
-            onSelected!(!isSelected);
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? Color(0xFF0059FF) : Colors.white,
-          foregroundColor: isSelected ? Colors.white : Color(0xFF0059FF),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: BorderSide(color: Color.fromARGB(255, 33, 149, 243)),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 12),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : const Color(0xFF0059FF),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class FilterChipWidget extends StatefulWidget {
-  final String label;
-  final String? value;
-  final ValueChanged<bool>? onSelected;
-
-  const FilterChipWidget({
-    super.key,
-    required this.label,
-    this.value,
-    this.onSelected,
-  });
-
-  @override
-  _FilterChipWidgetState createState() => _FilterChipWidgetState();
-}
-
-class _FilterChipWidgetState extends State<FilterChipWidget> {
-  bool isSelected = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return FilterChip(
-      label: Text(
-        widget.label,
-        style: TextStyle(
-          color: isSelected ? Colors.white : const Color(0xFF0059FF),
-        ),
-      ),
-      selected: isSelected,
-      showCheckmark: false,
-      backgroundColor: const Color(0xFFFFFFFF),
-      selectedColor: const Color(0xFF0059FF),
-      onSelected: (selected) {
-        setState(() {
-          isSelected = selected;
-          // Check if onSelected is not null before calling it
-          if (widget.onSelected != null) {
-            widget.onSelected!(selected);
-          }
-        });
-      },
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: const BorderSide(color: Color.fromARGB(255, 33, 149, 243)),
-      ),
     );
   }
 }

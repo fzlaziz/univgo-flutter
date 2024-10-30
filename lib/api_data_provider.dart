@@ -4,14 +4,14 @@ import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiDataProvider {
-  Future<List<CampusResponse>> getCampus(String query, {String? sortBy}) async {
+  Future<List<CampusResponse>> getCampus(String query,
+      {String? sortBy, Map<String, List<int>>? selectedFilters}) async {
     await Future.delayed(const Duration(seconds: 0), () {});
 
     var headers = <String, String>{};
     Client client = Client();
 
     headers["Content-Type"] = 'application/json; charset=UTF-8';
-
     final response = await client.get(
         Uri.parse("http://192.168.1.5:8000/api/campuses"),
         headers: headers);
@@ -57,6 +57,14 @@ class ApiDataProvider {
             return distanceA.compareTo(distanceB);
           });
         }
+      }
+
+      if (selectedFilters != null && selectedFilters['location'] != null) {
+        List<int> selectedLocationIds = selectedFilters['location']!;
+
+        campuses = campuses
+            .where((campus) => selectedLocationIds.contains(campus.districtId))
+            .toList();
       }
 
       return campuses;
@@ -132,12 +140,18 @@ class CampusResponse {
   final double addressLongitude;
   final String webAddress;
   final String phoneNumber;
+  final String province;
+  final String city;
+  final String district;
   final int rankScore;
   final int numberOfGraduates;
   final int numberOfRegistrants;
   final int accreditationId;
   final int minSingleTuition;
   final int maxSingleTuition;
+  final int provinceId;
+  final int cityId;
+  final int districtId;
   final dynamic villageId;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -163,6 +177,12 @@ class CampusResponse {
     required this.createdAt,
     required this.updatedAt,
     required this.accreditation,
+    required this.province,
+    required this.city,
+    required this.district,
+    required this.provinceId,
+    required this.cityId,
+    required this.districtId,
   });
 
   factory CampusResponse.fromJson(Map<String, dynamic> json) => CampusResponse(
@@ -181,6 +201,12 @@ class CampusResponse {
         accreditationId: json["accreditation_id"],
         minSingleTuition: json["min_single_tuition"],
         maxSingleTuition: json["max_single_tuition"],
+        province: json["province"],
+        city: json["city"],
+        district: json["district"],
+        provinceId: json["province_id"],
+        cityId: json["city_id"],
+        districtId: json["district_id"],
         villageId: json["village_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
@@ -204,6 +230,12 @@ class CampusResponse {
         "accreditation_id": accreditationId,
         "min_single_tuition": minSingleTuition,
         "max_single_tuition": maxSingleTuition,
+        "province": province,
+        "city": city,
+        "district": district,
+        "province_id": provinceId,
+        "city_id": cityId,
+        "district_id": districtId,
         "village_id": villageId,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
