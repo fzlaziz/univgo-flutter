@@ -5,8 +5,9 @@ import 'package:univ_go/api_data_provider.dart';
 import 'package:univ_go/location_service.dart';
 import 'package:univ_go/data/filter_data.dart';
 import 'package:univ_go/model/filter_model.dart';
-import 'package:univ_go/components/sort_button_widget.dart';
-import 'package:univ_go/components/filter_button_widget.dart';
+import 'package:univ_go/components/button/sort_button_widget.dart';
+import 'package:univ_go/components/button/filter_button_widget.dart';
+import 'package:univ_go/components/card/placeholder_card.dart';
 
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
@@ -62,17 +63,15 @@ class SearchResultPageState extends State<SearchResultPage>
       selectedFilters.clear();
     });
     response = apiDataProvider.getCampus(_controller.text,
-        selectedFilters: selectedFilters);
+        sortBy: selectedSort, selectedFilters: selectedFilters);
     Navigator.pop(context);
-    print("Filters diterapkan: $selectedFilters");
   }
 
   void applyFilters() {
     setState(() {
       response = apiDataProvider.getCampus(_controller.text,
-          selectedFilters: selectedFilters);
+          sortBy: selectedSort, selectedFilters: selectedFilters);
     });
-    print("Filters diterapkan: $selectedFilters");
     Navigator.pop(context);
   }
 
@@ -83,8 +82,8 @@ class SearchResultPageState extends State<SearchResultPage>
       } else {
         selectedSort = null;
       }
-      response =
-          apiDataProvider.getCampus(_controller.text, sortBy: selectedSort);
+      response = apiDataProvider.getCampus(_controller.text,
+          sortBy: selectedSort, selectedFilters: selectedFilters);
     });
   }
 
@@ -109,48 +108,6 @@ class SearchResultPageState extends State<SearchResultPage>
     _animationController.dispose();
   }
 
-  Widget _buildPlaceholderCard() {
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (context, child) {
-        Color color = ColorTween(
-          begin: Colors.grey[300],
-          end: Colors.grey[400],
-        ).evaluate(_animationController)!;
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Card(
-            shape: RoundedRectangleBorder(
-              side: BorderSide(color: const Color.fromARGB(255, 198, 197, 197)),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: ListTile(
-              leading: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: color,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              title: Container(
-                width: double.infinity,
-                height: 16,
-                color: color,
-              ),
-              subtitle: Container(
-                width: double.infinity,
-                height: 12,
-                color: color,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   Widget _buildCampusList() {
     return FutureBuilder<List<CampusResponse>>(
       future: response,
@@ -159,7 +116,8 @@ class SearchResultPageState extends State<SearchResultPage>
           return Expanded(
             child: ListView.builder(
               itemCount: 10,
-              itemBuilder: (context, index) => _buildPlaceholderCard(),
+              itemBuilder: (context, index) =>
+                  PlaceholderCard(animationController: _animationController),
             ),
           );
         } else if (snapshot.hasError) {
@@ -243,7 +201,8 @@ class SearchResultPageState extends State<SearchResultPage>
           return Expanded(
             child: ListView.builder(
               itemCount: 10,
-              itemBuilder: (context, index) => _buildPlaceholderCard(),
+              itemBuilder: (context, index) =>
+                  PlaceholderCard(animationController: _animationController),
             ),
           );
         } else if (snapshot.hasError) {
@@ -361,7 +320,8 @@ class SearchResultPageState extends State<SearchResultPage>
                           setState(() {
                             _controller.text = value;
                             response = apiDataProvider.getCampus(value,
-                                sortBy: selectedSort);
+                                sortBy: selectedSort,
+                                selectedFilters: selectedFilters);
                             responseStudyProgram =
                                 apiDataProvider.getStudyProgram(value);
                           });
