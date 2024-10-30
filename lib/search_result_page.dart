@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
 import 'package:univ_go/api_data_provider.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:univ_go/location_service.dart';
 
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
@@ -23,9 +22,8 @@ class SearchResultPageState extends State<SearchResultPage>
   late Future<List<StudyProgramResponse>> responseStudyProgram;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late TextEditingController _controller;
+  late LocationService locationService;
   List<String> selectedSorts = [];
-  double? userLatitude;
-  double? userLongitude;
   String? selectedSort;
   late AnimationController _animationController;
 
@@ -55,7 +53,8 @@ class SearchResultPageState extends State<SearchResultPage>
     _controller = TextEditingController(text: widget.value);
     response = apiDataProvider.getCampus(widget.value);
     responseStudyProgram = apiDataProvider.getStudyProgram(widget.value);
-    _loadUserLocation();
+    locationService = LocationService(context);
+    locationService.loadUserLocation();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
@@ -111,69 +110,6 @@ class SearchResultPageState extends State<SearchResultPage>
     );
   }
 
-  Future<void> _loadUserLocation() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userLatitude = prefs.getDouble('userLatitude');
-      userLongitude = prefs.getDouble('userLongitude');
-    });
-    if (userLatitude == null || userLongitude == null) {
-      await _getCurrentPosition();
-      setState(() {
-        userLatitude = prefs.getDouble('userLatitude');
-        userLongitude = prefs.getDouble('userLongitude');
-      });
-    }
-  }
-
-  Future<void> _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
-    if (!hasPermission) return;
-
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) async {
-      setState(() {
-        userLatitude = position.latitude;
-        userLongitude = position.longitude;
-      });
-
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setDouble('userLatitude', position.latitude);
-      await prefs.setDouble('userLongitude', position.longitude);
-    }).catchError((e) {
-      debugPrint(e);
-    });
-  }
-
-  Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Izin Lokasi dimatikan, mohon aktifkan izin lokasi.')));
-      return false;
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Izin Lokasi ditolak.')));
-        return false;
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Izin Lokasi ditolak secara permanen, buka pengaturan untuk mengaktifkan izin lokasi.')));
-      return false;
-    }
-    return true;
-  }
-
   Widget _buildCampusList() {
     return FutureBuilder<List<CampusResponse>>(
       future: response,
@@ -196,7 +132,7 @@ class SearchResultPageState extends State<SearchResultPage>
               itemBuilder: (context, index) {
                 var campus = snapshot.data![index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Card(
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
@@ -290,7 +226,7 @@ class SearchResultPageState extends State<SearchResultPage>
               itemBuilder: (context, index) {
                 var studyProgram = snapshot.data![index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Card(
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
@@ -370,7 +306,7 @@ class SearchResultPageState extends State<SearchResultPage>
                     Expanded(
                       child: TextField(
                         decoration: const InputDecoration(
-                          hintText: "",
+                          hintText: "Cari Kampus",
                           hintStyle: TextStyle(color: Colors.black),
                           border: InputBorder.none,
                         ),
@@ -453,72 +389,9 @@ class SearchResultPageState extends State<SearchResultPage>
                         FilterChipWidget(label: 'S1'),
                         FilterChipWidget(label: 'S2'),
                         FilterChipWidget(label: 'S3'),
-                        FilterChipWidget(label: 'S4'),
-                        FilterChipWidget(label: 'D1'),
                         FilterChipWidget(label: 'D2'),
                         FilterChipWidget(label: 'D3'),
                         FilterChipWidget(label: 'D4'),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Range UKT',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    const Row(
-                      children: const [
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'MIN',
-                              hintStyle: TextStyle(
-                                color: Color(0xFF2196F3), // Warna teks MIN
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0xFF2196F3), // Warna border MIN
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(
-                                      0xFF2196F3), // Warna border MIN saat tidak fokus
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(
-                                      0xFF928989), // Warna border MIN saat fokus
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'MAX',
-                              hintStyle: TextStyle(
-                                color: Color(0xFF2196F3), // Warna teks MAX
-                              ),
-                              border: OutlineInputBorder(),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(
-                                      0xFF2196F3), // Warna border MAX saat tidak fokus
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(
-                                      0xFF928989), // Warna border MAX saat fokus
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -531,9 +404,9 @@ class SearchResultPageState extends State<SearchResultPage>
                       spacing: 10.0,
                       runSpacing: 10.0,
                       children: const [
-                        FilterChipWidget(label: 'MANDIRI'),
+                        FilterChipWidget(label: 'Mandiri'),
                         FilterChipWidget(label: 'SNBP'),
-                        FilterChipWidget(label: 'BEASISWA'),
+                        FilterChipWidget(label: 'Beasiswa'),
                         FilterChipWidget(label: 'UTBK'),
                       ],
                     ),
@@ -547,10 +420,10 @@ class SearchResultPageState extends State<SearchResultPage>
                       spacing: 10.0,
                       runSpacing: 10.0,
                       children: const [
-                        FilterChipWidget(label: 'UNGGUL'),
-                        FilterChipWidget(label: 'BAIK SEKALI'),
-                        FilterChipWidget(label: 'BAIK'),
-                        FilterChipWidget(label: 'TIDAK TERAKREDITASI'),
+                        FilterChipWidget(label: 'Unggul'),
+                        FilterChipWidget(label: 'Baik Sekali'),
+                        FilterChipWidget(label: 'Baik'),
+                        FilterChipWidget(label: 'Tidak Terakreditasi'),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -564,8 +437,8 @@ class SearchResultPageState extends State<SearchResultPage>
                       runSpacing: 10.0,
                       children: const [
                         FilterChipWidget(label: 'PTN'),
-                        FilterChipWidget(label: 'SWASTA'),
-                        FilterChipWidget(label: 'POLITEKNIK'),
+                        FilterChipWidget(label: 'Swasta'),
+                        FilterChipWidget(label: 'Politeknik'),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -610,14 +483,14 @@ class SearchResultPageState extends State<SearchResultPage>
                   ),
                   Expanded(
                     child: SizedBox(
-                      height: 50, // Set the height for the list
+                      height: 35, // Set the height for the list
                       child: ListView(
                         scrollDirection:
                             Axis.horizontal, // Horizontal scrolling
                         children: [
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: SortChipWidget(
+                            child: SortButtonWidget(
                               label: 'Terdekat',
                               value: "closer",
                               isSelected: selectedSort == 'nearest',
@@ -628,7 +501,7 @@ class SearchResultPageState extends State<SearchResultPage>
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: SortChipWidget(
+                            child: SortButtonWidget(
                               label: 'Terbaik',
                               value: "rank_score",
                               isSelected: selectedSort == 'rank_score',
@@ -639,7 +512,7 @@ class SearchResultPageState extends State<SearchResultPage>
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: SortChipWidget(
+                            child: SortButtonWidget(
                               label: 'UKT Terendah',
                               value: 'min_single_tuition',
                               isSelected: selectedSort == 'min_single_tuition',
@@ -647,18 +520,6 @@ class SearchResultPageState extends State<SearchResultPage>
                                 _applyFilter('min_single_tuition', isSelected);
                               },
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: SortChipWidget(
-                                label: 'UKT Tertinggi',
-                                value: 'max_single_tuition',
-                                isSelected:
-                                    selectedSort == "max_single_tuition",
-                                onSelected: (isSelected) {
-                                  _applyFilter(
-                                      'max_single_tuition', isSelected);
-                                }),
                           ),
                         ],
                       ),
@@ -746,13 +607,13 @@ class _StatefulButtonState extends State<StatefulButton> {
   }
 }
 
-class SortChipWidget extends StatelessWidget {
+class SortButtonWidget extends StatelessWidget {
   final String label;
   final String? value;
   final ValueChanged<bool>? onSelected;
   final bool isSelected;
 
-  const SortChipWidget({
+  const SortButtonWidget({
     super.key,
     required this.label,
     this.value,
@@ -762,25 +623,29 @@ class SortChipWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilterChip(
-      label: Text(
-        label,
-        style: TextStyle(
-          color: isSelected ? Colors.white : const Color(0xFF0059FF),
+    return SizedBox(
+      width: 125,
+      child: ElevatedButton(
+        onPressed: () {
+          if (onSelected != null) {
+            onSelected!(!isSelected);
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected ? Color(0xFF0059FF) : Colors.white,
+          foregroundColor: isSelected ? Colors.white : Color(0xFF0059FF),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(color: Color.fromARGB(255, 33, 149, 243)),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 12),
         ),
-      ),
-      selected: isSelected,
-      showCheckmark: false,
-      backgroundColor: const Color(0xFFFFFFFF),
-      selectedColor: const Color(0xFF0059FF),
-      onSelected: (selected) {
-        if (onSelected != null) {
-          onSelected!(selected);
-        }
-      },
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: const BorderSide(color: Color.fromARGB(255, 33, 149, 243)),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : const Color(0xFF0059FF),
+          ),
+        ),
       ),
     );
   }
