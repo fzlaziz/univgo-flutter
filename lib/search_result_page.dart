@@ -206,15 +206,33 @@ class SearchResultPageState extends State<SearchResultPage>
                       leading: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('${index + 1}',
+                          Container(
+                            width: 20,
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${index + 1}',
                               style: GoogleFonts.poppins(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black,
-                              )),
-                          const SizedBox(width: 20),
-                          Icon(Icons.school, color: Colors.black),
-                          const SizedBox(width: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          campus.logoPath != null
+                              ? Image.network(
+                                  campus.logoPath,
+                                  width: 30,
+                                  height: 40,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Icon(Icons.image_not_supported,
+                                        color: Colors.black);
+                                  },
+                                )
+                              : Icon(Icons.image_not_supported,
+                                  color: Colors.black),
+                          const SizedBox(width: 5),
                         ],
                       ),
                       title: Text(campus.name,

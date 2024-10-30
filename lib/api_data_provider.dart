@@ -22,6 +22,12 @@ class ApiDataProvider {
       var campuses =
           jsonList.map((json) => CampusResponse.fromJson(json)).toList();
 
+      final String baseUrl = "http://192.168.1.5:8000";
+      for (var campus in campuses) {
+        if (campus.logoPath != null && campus.logoPath!.startsWith('/')) {
+          campus.logoPath = baseUrl + campus.logoPath!;
+        }
+      }
       // Filter by query
       if (query.isNotEmpty) {
         campuses = campuses
@@ -124,6 +130,7 @@ class CampusResponse {
   final String name;
   final String description;
   final DateTime date;
+  String logoPath;
   final double addressLatitude;
   final double addressLongitude;
   final String webAddress;
@@ -143,6 +150,7 @@ class CampusResponse {
     required this.id,
     required this.name,
     required this.description,
+    required this.logoPath,
     required this.date,
     required this.addressLatitude,
     required this.addressLongitude,
@@ -165,6 +173,7 @@ class CampusResponse {
         name: json["name"],
         description: json["description"],
         date: DateTime.parse(json["date"]),
+        logoPath: json["logo_path"],
         addressLatitude: json["address_latitude"]?.toDouble(),
         addressLongitude: json["address_longitude"]?.toDouble(),
         webAddress: json["web_address"],
@@ -187,6 +196,7 @@ class CampusResponse {
         "description": description,
         "date":
             "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+        "logo_path": logoPath,
         "address_latitude": addressLatitude,
         "address_longitude": addressLongitude,
         "web_address": webAddress,
