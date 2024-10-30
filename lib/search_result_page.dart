@@ -26,6 +26,7 @@ class SearchResultPageState extends State<SearchResultPage>
   List<String> selectedSorts = [];
   double? userLatitude;
   double? userLongitude;
+  String? selectedSort;
   late AnimationController _animationController;
 
   void _openEndDrawer() {
@@ -39,12 +40,12 @@ class SearchResultPageState extends State<SearchResultPage>
   void _applyFilter(String sort, bool isSelected) {
     setState(() {
       if (isSelected) {
-        selectedSorts.add(sort);
+        selectedSort = sort;
       } else {
-        selectedSorts.remove(sort);
+        selectedSort = null;
       }
       response =
-          apiDataProvider.getCampus(_controller.text, sortBy: selectedSorts);
+          apiDataProvider.getCampus(_controller.text, sortBy: selectedSort);
     });
   }
 
@@ -616,24 +617,32 @@ class SearchResultPageState extends State<SearchResultPage>
                         children: [
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: FilterChipWidget(
+                            child: SortChipWidget(
                               label: 'Terdekat',
                               value: "closer",
+                              isSelected: selectedSort == 'nearest',
                               onSelected: (isSelected) {
                                 _applyFilter('nearest', isSelected);
                               },
                             ),
                           ),
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: FilterChipWidget(
-                                label: 'Ranking Terbaik', value: "rank"),
+                            child: SortChipWidget(
+                              label: 'Terbaik',
+                              value: "rank_score",
+                              isSelected: selectedSort == 'rank_score',
+                              onSelected: (isSelected) {
+                                _applyFilter('rank_score', isSelected);
+                              },
+                            ),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: FilterChipWidget(
+                            child: SortChipWidget(
                               label: 'UKT Terendah',
                               value: 'min_single_tuition',
+                              isSelected: selectedSort == 'min_single_tuition',
                               onSelected: (isSelected) {
                                 _applyFilter('min_single_tuition', isSelected);
                               },
@@ -641,9 +650,11 @@ class SearchResultPageState extends State<SearchResultPage>
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: FilterChipWidget(
+                            child: SortChipWidget(
                                 label: 'UKT Tertinggi',
                                 value: 'max_single_tuition',
+                                isSelected:
+                                    selectedSort == "max_single_tuition",
                                 onSelected: (isSelected) {
                                   _applyFilter(
                                       'max_single_tuition', isSelected);
@@ -730,6 +741,46 @@ class _StatefulButtonState extends State<StatefulButton> {
         side: const BorderSide(
           color: Color(0xFF0059FF), // Warna border
         ),
+      ),
+    );
+  }
+}
+
+class SortChipWidget extends StatelessWidget {
+  final String label;
+  final String? value;
+  final ValueChanged<bool>? onSelected;
+  final bool isSelected;
+
+  const SortChipWidget({
+    super.key,
+    required this.label,
+    this.value,
+    this.onSelected,
+    required this.isSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FilterChip(
+      label: Text(
+        label,
+        style: TextStyle(
+          color: isSelected ? Colors.white : const Color(0xFF0059FF),
+        ),
+      ),
+      selected: isSelected,
+      showCheckmark: false,
+      backgroundColor: const Color(0xFFFFFFFF),
+      selectedColor: const Color(0xFF0059FF),
+      onSelected: (selected) {
+        if (onSelected != null) {
+          onSelected!(selected);
+        }
+      },
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: const BorderSide(color: Color.fromARGB(255, 33, 149, 243)),
       ),
     );
   }

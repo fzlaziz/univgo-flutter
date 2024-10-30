@@ -4,8 +4,7 @@ import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiDataProvider {
-  Future<List<CampusResponse>> getCampus(String query,
-      {List<String>? sortBy}) async {
+  Future<List<CampusResponse>> getCampus(String query, {String? sortBy}) async {
     await Future.delayed(const Duration(seconds: 0), () {});
 
     var headers = <String, String>{};
@@ -36,29 +35,27 @@ class ApiDataProvider {
             .toList();
       }
 
-      // Ambil data latitude dan longitude dari SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       double? userLatitude = prefs.getDouble('userLatitude');
       double? userLongitude = prefs.getDouble('userLongitude');
 
-      // Sort based on the `sortBy` parameter
-      for (String sort in sortBy ?? []) {
-        if (sort == 'min_single_tuition') {
-          campuses
-              .sort((a, b) => a.minSingleTuition.compareTo(b.minSingleTuition));
-        } else if (sort == 'max_single_tuition') {
-          campuses
-              .sort((a, b) => b.maxSingleTuition.compareTo(a.maxSingleTuition));
-        } else if (sort == 'nearest') {
-          if (userLatitude != null && userLongitude != null) {
-            campuses.sort((a, b) {
-              double distanceA = calculateDistance(userLatitude, userLongitude,
-                  a.addressLatitude, a.addressLongitude);
-              double distanceB = calculateDistance(userLatitude, userLongitude,
-                  b.addressLatitude, b.addressLongitude);
-              return distanceA.compareTo(distanceB);
-            });
-          }
+      if (sortBy == 'min_single_tuition') {
+        campuses
+            .sort((a, b) => a.minSingleTuition.compareTo(b.minSingleTuition));
+      } else if (sortBy == 'max_single_tuition') {
+        campuses
+            .sort((a, b) => b.maxSingleTuition.compareTo(a.maxSingleTuition));
+      } else if (sortBy == 'rank_score') {
+        campuses.sort((a, b) => a.rankScore.compareTo(b.rankScore));
+      } else if (sortBy == 'nearest') {
+        if (userLatitude != null && userLongitude != null) {
+          campuses.sort((a, b) {
+            double distanceA = calculateDistance(userLatitude, userLongitude,
+                a.addressLatitude, a.addressLongitude);
+            double distanceB = calculateDistance(userLatitude, userLongitude,
+                b.addressLatitude, b.addressLongitude);
+            return distanceA.compareTo(distanceB);
+          });
         }
       }
 
