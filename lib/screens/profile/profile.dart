@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:univ_go/app/change_password.dart';
+import 'package:univ_go/screens/auth/change_password.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});

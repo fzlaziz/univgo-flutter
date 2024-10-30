@@ -1,4 +1,4 @@
-import 'package:univ_go/api_data_provider.dart';
+import 'package:univ_go/services/api_data_provider.dart';
 import 'package:test/test.dart';
 
 void main() {

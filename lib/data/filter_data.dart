@@ -1,4 +1,4 @@
-import 'package:univ_go/model/filter_model.dart';
+import 'package:univ_go/models/filter/filter_model.dart';
 
 Map<String, List<Filter>> filters = {
   'Lokasi': [

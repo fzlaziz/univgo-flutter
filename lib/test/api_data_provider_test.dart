@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:univ_go/api_data_provider.dart';
+import 'package:univ_go/services/api_data_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

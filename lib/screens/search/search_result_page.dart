@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
-import 'package:univ_go/api_data_provider.dart';
-import 'package:univ_go/location_service.dart';
+import 'package:univ_go/services/api_data_provider.dart';
+import 'package:univ_go/services/location_service.dart';
 import 'package:univ_go/data/filter_data.dart';
-import 'package:univ_go/model/filter_model.dart';
+import 'package:univ_go/models/filter/filter_model.dart';
 import 'package:univ_go/components/button/sort_button_widget.dart';
 import 'package:univ_go/components/button/filter_button_widget.dart';
 import 'package:univ_go/components/card/placeholder_card.dart';
+import 'package:univ_go/models/campus/campus_response.dart';
+import 'package:univ_go/models/study_program/study_programs_response.dart';
 
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
