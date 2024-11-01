@@ -5,7 +5,7 @@ class CampusResponse {
   final int id;
   final String name;
   final String description;
-  final DateTime date;
+  final DateTime dateOfEstablishment;
   String logoPath;
   final double addressLatitude;
   final double addressLongitude;
@@ -25,8 +25,6 @@ class CampusResponse {
   final int districtId;
   final int campusTypeId;
   final dynamic villageId;
-  final DateTime createdAt;
-  final DateTime updatedAt;
   final Accreditation accreditation;
   final List<DegreeLevel> degreeLevels;
 
@@ -35,7 +33,7 @@ class CampusResponse {
     required this.name,
     required this.description,
     required this.logoPath,
-    required this.date,
+    required this.dateOfEstablishment,
     required this.addressLatitude,
     required this.addressLongitude,
     required this.webAddress,
@@ -47,8 +45,6 @@ class CampusResponse {
     required this.minSingleTuition,
     required this.maxSingleTuition,
     required this.villageId,
-    required this.createdAt,
-    required this.updatedAt,
     required this.accreditation,
     required this.province,
     required this.city,
@@ -64,7 +60,7 @@ class CampusResponse {
         id: json["id"],
         name: json["name"],
         description: json["description"],
-        date: DateTime.parse(json["date"]),
+        dateOfEstablishment: DateTime.parse(json["date_of_establishment"]),
         logoPath: json["logo_path"],
         addressLatitude: json["address_latitude"]?.toDouble(),
         addressLongitude: json["address_longitude"]?.toDouble(),
@@ -84,8 +80,6 @@ class CampusResponse {
         districtId: json["district_id"],
         campusTypeId: json["campus_type_id"],
         villageId: json["village_id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
         degreeLevels: List<DegreeLevel>.from(
             json["degree_levels"].map((x) => DegreeLevel.fromJson(x))),
         accreditation: Accreditation.fromJson(json["accreditation"]),
@@ -95,8 +89,8 @@ class CampusResponse {
         "id": id,
         "name": name,
         "description": description,
-        "date":
-            "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+        "date_of_establishment":
+            "${dateOfEstablishment.year.toString().padLeft(4, '0')}-${dateOfEstablishment.month.toString().padLeft(2, '0')}-${dateOfEstablishment.day.toString().padLeft(2, '0')}",
         "logo_path": logoPath,
         "address_latitude": addressLatitude,
         "address_longitude": addressLongitude,
@@ -116,8 +110,6 @@ class CampusResponse {
         "district_id": districtId,
         "campus_type_id": campusTypeId,
         "village_id": villageId,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
         "accreditation": accreditation.toJson(),
         "degree_levels":
             List<dynamic>.from(degreeLevels.map((x) => x.toJson())),

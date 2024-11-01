@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:univ_go/screens/auth/login.dart';
 import 'package:univ_go/components/appbar/custom_app_bar.dart';
 import 'package:univ_go/components/navbar/bottom_navbar.dart';
@@ -9,7 +10,8 @@ import 'screens/search/search_page.dart';
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
 
-void main() {
+Future main() async {
+  await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 

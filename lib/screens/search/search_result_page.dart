@@ -38,6 +38,15 @@ class SearchResultPageState extends State<SearchResultPage>
   void _toggleView() {
     setState(() {
       showCampus = !showCampus;
+      if (showCampus) {
+        response = apiDataProvider.getCampus(_controller.text,
+            sortBy: selectedSort, selectedFilters: selectedFilters);
+        debugPrint('selectedFilters: $selectedFilters');
+      } else {
+        responseStudyProgram = apiDataProvider.getStudyProgram(_controller.text,
+            sortBy: selectedSort, selectedFilters: selectedFilters);
+        debugPrint('selectedFilters: $selectedFilters');
+      }
     });
   }
 
@@ -86,16 +95,28 @@ class SearchResultPageState extends State<SearchResultPage>
   void resetFilters() {
     setState(() {
       selectedFilters.clear();
+      if (showCampus) {
+        response = apiDataProvider.getCampus(_controller.text,
+            sortBy: selectedSort, selectedFilters: selectedFilters);
+      } else {
+        responseStudyProgram = apiDataProvider.getStudyProgram(_controller.text,
+            sortBy: selectedSort, selectedFilters: selectedFilters);
+      }
     });
-    response = apiDataProvider.getCampus(_controller.text,
-        sortBy: selectedSort, selectedFilters: selectedFilters);
     Navigator.pop(context);
   }
 
   void applyFilters() {
     setState(() {
-      response = apiDataProvider.getCampus(_controller.text,
-          sortBy: selectedSort, selectedFilters: selectedFilters);
+      if (showCampus) {
+        response = apiDataProvider.getCampus(_controller.text,
+            sortBy: selectedSort, selectedFilters: selectedFilters);
+        debugPrint('selectedFilters: $selectedFilters');
+      } else {
+        responseStudyProgram = apiDataProvider.getStudyProgram(_controller.text,
+            sortBy: selectedSort, selectedFilters: selectedFilters);
+        debugPrint('selectedFilters: $selectedFilters');
+      }
     });
     Navigator.pop(context);
   }
@@ -107,8 +128,15 @@ class SearchResultPageState extends State<SearchResultPage>
       } else {
         selectedSort = null;
       }
-      response = apiDataProvider.getCampus(_controller.text,
-          sortBy: selectedSort, selectedFilters: selectedFilters);
+      if (showCampus) {
+        response = apiDataProvider.getCampus(_controller.text,
+            sortBy: selectedSort, selectedFilters: selectedFilters);
+        debugPrint('selectedFilters: $selectedFilters');
+      } else {
+        responseStudyProgram = apiDataProvider.getStudyProgram(_controller.text,
+            sortBy: selectedSort, selectedFilters: selectedFilters);
+        debugPrint('selectedFilters: $selectedFilters');
+      }
     });
   }
 
@@ -448,11 +476,16 @@ class SearchResultPageState extends State<SearchResultPage>
                         onSubmitted: (value) {
                           setState(() {
                             _controller.text = value;
-                            response = apiDataProvider.getCampus(value,
-                                sortBy: selectedSort,
-                                selectedFilters: selectedFilters);
-                            responseStudyProgram =
-                                apiDataProvider.getStudyProgram(value);
+                            if (showCampus) {
+                              response = apiDataProvider.getCampus(value,
+                                  sortBy: selectedSort,
+                                  selectedFilters: selectedFilters);
+                            } else {
+                              responseStudyProgram =
+                                  apiDataProvider.getStudyProgram(value,
+                                      sortBy: selectedSort,
+                                      selectedFilters: selectedFilters);
+                            }
                           });
                         },
                       ),
@@ -585,9 +618,7 @@ class SearchResultPageState extends State<SearchResultPage>
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      setState(() {
-                        showCampus = true;
-                      });
+                      _toggleView();
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -615,9 +646,7 @@ class SearchResultPageState extends State<SearchResultPage>
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      setState(() {
-                        showCampus = false;
-                      });
+                      _toggleView();
                     },
                     child: Container(
                       alignment: Alignment.center,
