@@ -66,7 +66,7 @@ class CampusResponse {
         addressLongitude: json["address_longitude"]?.toDouble(),
         webAddress: json["web_address"],
         phoneNumber: json["phone_number"],
-        rankScore: json["rank_score"],
+        rankScore: json["rank_score"] ?? 100,
         numberOfGraduates: json["number_of_graduates"],
         numberOfRegistrants: json["number_of_registrants"],
         accreditationId: json["accreditation_id"],

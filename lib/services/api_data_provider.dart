@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiDataProvider {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
+  String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
   Future<List<CampusResponse>> getCampus(String query,
       {String? sortBy, Map<String, List<int>>? selectedFilters}) async {
     await Future.delayed(const Duration(seconds: 0), () {});
@@ -25,8 +26,8 @@ class ApiDataProvider {
           jsonList.map((json) => CampusResponse.fromJson(json)).toList();
 
       for (var campus in campuses) {
-        if (campus.logoPath != null && campus.logoPath!.startsWith('/')) {
-          campus.logoPath = baseUrl + campus.logoPath!;
+        if (campus.logoPath != null && campus.logoPath!.isNotEmpty) {
+          campus.logoPath = awsUrl + '/' + campus.logoPath!;
         }
       }
       // Filter by query
