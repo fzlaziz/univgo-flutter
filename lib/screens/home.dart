@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:univ_go/app/news_list.dart';
-import 'package:univ_go/app/profile_campus.dart';
+import 'package:univ_go/screens/news/news_list.dart';
+import 'package:univ_go/screens/campus/profile_campus.dart';
 
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
@@ -16,12 +16,12 @@ class Home extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
-              child: const Text(
+              child: Text(
                 'Rekomendasi untuk Anda',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -108,12 +108,12 @@ class Home extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'Top 10 PTN',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -170,12 +170,12 @@ class Home extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'Top 10 Politeknik',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -233,12 +233,12 @@ class Home extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Berita Terkini',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
+                    style: GoogleFonts.poppins(
+                      color: Colors.black,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),

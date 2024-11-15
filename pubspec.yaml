@@ -7,13 +7,19 @@ environment:
   sdk: ^3.5.3
 
 dependencies:
+  flutter_dotenv: ^5.2.1
   flutter:
     sdk: flutter
-  http: ^1.2.2
+  geocoding: ^3.0.0
+  geolocator: ^13.0.1
   google_fonts: ^6.2.1
+  http: ^1.2.2
+  marquee: ^2.3.0
+  shared_preferences: ^2.3.2
   smooth_page_indicator: ^1.2.0+3
 
 dev_dependencies:
+  test: ^1.25.7
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
@@ -36,3 +42,4 @@ flutter:
     - assets/images/logo_undip.png
     - assets/images/logo_polkesmar.png
     - assets/images/logo_unnes.png
+    - .env

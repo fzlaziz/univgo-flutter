@@ -51,14 +51,11 @@ class SearchPage extends StatelessWidget {
                         autofocus: true,
                         onFieldSubmitted: (value) {
                           Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SearchResultPage(
-                                  query: value,
-                                  searchController: searchController,
-                                  focusNode: focusNode),
-                            ),
-                          );
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SearchResultPage(
+                                        value: value,
+                                      )));
                         },
                       ),
                     ),
@@ -71,7 +68,7 @@ class SearchPage extends StatelessWidget {
         ),
       ),
       body: const Center(
-        child: Text('Search Results Page Content'),
+        child: Text(''),
       ),
     );
   }
