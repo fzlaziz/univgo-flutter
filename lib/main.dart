@@ -6,6 +6,7 @@ import 'package:univ_go/components/navbar/bottom_navbar.dart';
 import 'package:univ_go/screens/home.dart';
 import 'package:univ_go/screens/profile/profile.dart';
 import 'screens/search/search_page.dart';
+import 'package:univ_go/services/api_data_provider.dart';
 
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
@@ -39,6 +40,7 @@ class _MainPageState extends State<MainPage> {
   final TextEditingController _searchController = TextEditingController();
   int _selectedIndex = 0;
   bool _isSearchMode = false;
+  ApiDataProvider apiDataProvider = ApiDataProvider();
 
   void _onItemTapped(int index) {
     setState(() {
@@ -72,6 +74,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    apiDataProvider.fetchAndStoreFilters();
 
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {

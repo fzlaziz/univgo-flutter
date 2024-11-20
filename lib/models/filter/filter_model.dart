@@ -1,7 +1,7 @@
 class Filter {
-  final String label;
+  final String name;
   final int id;
   final String group;
 
-  Filter({required this.label, required this.id, required this.group});
+  Filter({required this.name, required this.id, required this.group});
 }

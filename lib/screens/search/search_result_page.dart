@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
 import 'package:univ_go/services/api_data_provider.dart';
 import 'package:univ_go/services/location_service.dart';
-import 'package:univ_go/data/filter_data.dart';
 import 'package:univ_go/models/filter/filter_model.dart';
 import 'package:univ_go/components/button/sort_button_widget.dart';
 import 'package:univ_go/components/button/filter_button_widget.dart';
@@ -35,6 +34,7 @@ class SearchResultPageState extends State<SearchResultPage>
   String? selectedSort;
   Map<String, List<int>> selectedFilters = {};
   bool showCampus = true;
+  late Map<String, List<Filter>> filters;
   void _toggleView() {
     setState(() {
       showCampus = !showCampus;
@@ -47,6 +47,14 @@ class SearchResultPageState extends State<SearchResultPage>
             sortBy: selectedSort, selectedFilters: selectedFilters);
         debugPrint('selectedFilters: $selectedFilters');
       }
+    });
+  }
+
+  // Fungsi untuk memuat filters secara asinkron
+  Future<void> _loadFilters() async {
+    final loadedFilters = await apiDataProvider.loadFiltersFromStorage();
+    setState(() {
+      filters = loadedFilters; // Menyimpan data yang sudah dimuat
     });
   }
 
@@ -143,6 +151,7 @@ class SearchResultPageState extends State<SearchResultPage>
   @override
   void initState() {
     super.initState();
+    _loadFilters();
     _controller = TextEditingController(text: widget.value);
     response = apiDataProvider.getCampus(widget.value);
     responseStudyProgram = apiDataProvider.getStudyProgram(widget.value);
@@ -541,7 +550,7 @@ class SearchResultPageState extends State<SearchResultPage>
                           runSpacing: 10.0,
                           children: filterList.map((filter) {
                             return FilterButtonWidget(
-                              label: filter.label,
+                              label: filter.name,
                               id: filter.id,
                               group: filter.group,
                               onSelected: (isSelected) {

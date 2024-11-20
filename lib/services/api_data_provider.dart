@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:univ_go/models/study_program/study_programs_response.dart';
 import 'package:univ_go/models/campus/campus_response.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:univ_go/models/filter/filter_model.dart';
 
 class ApiDataProvider {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
@@ -167,5 +168,75 @@ class ApiDataProvider {
     } else {
       throw Exception("Oops! Something went wrong");
     }
+  }
+
+  Future<void> fetchAndStoreFilters() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Fungsi untuk mengambil data dari API dan menyimpannya
+    Future<void> fetchData(String url, String key, String group) async {
+      var headers = <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8'
+      };
+      Client client = Client();
+
+      final response = await client.get(Uri.parse(url), headers: headers);
+      if (response.statusCode == 200) {
+        var jsonList = jsonDecode(response.body) as List;
+        List<Map<String, dynamic>> data = jsonList.map((json) {
+          return {
+            'name': json['name'],
+            'id': json['id'],
+            'group': group,
+          };
+        }).toList();
+
+        // Simpan ke Shared Preferences
+        prefs.setString(key, jsonEncode(data));
+      } else {
+        throw Exception("Failed to load $key");
+      }
+    }
+
+    // Ambil dan simpan data dari API
+    await Future.wait([
+      fetchData("https://www.univgo.my.id/api/degree_levels", 'degree_levels',
+          'degree_level'),
+      fetchData(
+          "https://www.univgo.my.id/api/province", 'locations', 'location'),
+      fetchData("https://www.univgo.my.id/api/accreditations", 'accreditations',
+          'accreditation'),
+      fetchData("https://www.univgo.my.id/api/campus_types", 'campus_types',
+          'campus_type'),
+    ]);
+  }
+
+  Map<String, List<Filter>> filters = {};
+
+  Future<Map<String, List<Filter>>> loadFiltersFromStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, List<Filter>> loadedFilters = {};
+
+    void addFilters(String key, String group, String displayName) {
+      String? jsonData = prefs.getString(key);
+      if (jsonData != null) {
+        List<dynamic> decodedData = jsonDecode(jsonData);
+        loadedFilters[displayName] = decodedData.map((data) {
+          return Filter(
+            name: data['name'],
+            id: data['id'],
+            group: group,
+          );
+        }).toList();
+      }
+    }
+
+    addFilters('degree_levels', 'degree_level', 'Level Studi');
+    // addFilters('locations', 'location', 'Lokasi');
+    addFilters('accreditations', 'accreditation', 'Akreditasi');
+    addFilters('campus_types', 'campus_type', 'Jenis PTN');
+
+    filters = loadedFilters;
+    return filters;
   }
 }
