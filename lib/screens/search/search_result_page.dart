@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:univ_go/components/card/placeholder_card_study_program.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
 import 'package:univ_go/services/api_data_provider.dart';
 import 'package:univ_go/services/location_service.dart';
@@ -251,19 +252,7 @@ class SearchResultPageState extends State<SearchResultPage>
                         leading: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Container(
-                              width: 20,
-                              alignment: Alignment.center,
-                              child: Text(
-                                '${index + 1}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 15),
+                            const SizedBox(width: 8),
                             campus.logoPath != null
                                 ? Image.network(
                                     campus.logoPath,
@@ -314,8 +303,8 @@ class SearchResultPageState extends State<SearchResultPage>
             return Expanded(
               child: ListView.builder(
                 itemCount: 10,
-                itemBuilder: (context, index) =>
-                    PlaceholderCard(animationController: _animationController),
+                itemBuilder: (context, index) => PlaceholderCardStudyProgram(
+                    animationController: _animationController),
               ),
             );
           } else if (snapshot.hasError) {
@@ -384,24 +373,6 @@ class SearchResultPageState extends State<SearchResultPage>
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: ListTile(
-                        leading: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 20,
-                              alignment: Alignment.center,
-                              child: Text(
-                                '${index + 1}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 5),
-                          ],
-                        ),
                         title: Text(studyProgram.name,
                             style: GoogleFonts.poppins(
                               fontSize: 14,
