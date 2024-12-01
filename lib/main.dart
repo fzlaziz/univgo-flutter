@@ -31,16 +31,16 @@ class MyApp extends StatelessWidget {
           name: '/search',
           page: () => SearchEntry(
             searchController: TextEditingController(),
-            focusNode: FocusNode(),
           ),
         ),
         GetPage(
             name: '/home', page: () => MainPage(), transition: Transition.fade),
         GetPage(
-            name: '/search_result',
-            page: () => SearchResultPage(
-                  value: '',
-                )),
+          name: '/search_result',
+          page: () => SearchResultPage(
+            value: Get.arguments['value'] ?? '',
+          ),
+        ),
       ],
     );
   }
@@ -52,7 +52,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final FocusNode _focusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
   int _selectedIndex = 0;
   bool _isSearchMode = false;
@@ -69,14 +68,12 @@ class _MainPageState extends State<MainPage> {
       });
       Get.toNamed('/search', arguments: {
         "searchController": _selectedIndex,
-        "focusNode": _focusNode
       })?.then((_) {
         setState(() {
           _selectedIndex = 0;
           _searchController.clear();
           _isSearchMode = false;
         });
-        _focusNode.unfocus();
       });
     }
   }
@@ -85,19 +82,10 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     apiDataProvider.fetchAndStoreFilters();
-
-    _focusNode.addListener(() {
-      if (!_focusNode.hasFocus) {
-        setState(() {
-          _isSearchMode = false;
-        });
-      }
-    });
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -115,7 +103,6 @@ class _MainPageState extends State<MainPage> {
         selectedIndex: _selectedIndex,
         backgroundColor: const Color(blueTheme),
         searchController: _searchController,
-        focusNode: _focusNode,
         isSearchMode: _isSearchMode,
       ),
       bottomNavigationBar: _isSearchMode

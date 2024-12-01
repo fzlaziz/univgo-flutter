@@ -7,7 +7,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int selectedIndex;
   final Color backgroundColor;
   final TextEditingController searchController;
-  final FocusNode focusNode;
   final bool isSearchMode;
 
   const CustomAppBar({
@@ -15,7 +14,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.selectedIndex,
     required this.backgroundColor,
     required this.searchController,
-    required this.focusNode,
     required this.isSearchMode,
   });
 
@@ -54,7 +52,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         Expanded(
                           child: TextField(
                             controller: searchController,
-                            focusNode: focusNode,
+                            autofocus: false,
+                            readOnly: true,
                             decoration: InputDecoration(
                               hintText: "Cari Perguruan Tinggi",
                               hintStyle: GoogleFonts.poppins(
@@ -66,10 +65,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                             onTap: () {
                               Get.toNamed("/search", arguments: {
                                 "searchController": searchController,
-                                "focusNode": focusNode
                               })?.then((_) {
                                 searchController.clear();
-                                focusNode.unfocus();
                               });
                             },
                           ),

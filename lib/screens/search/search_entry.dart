@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
-import 'search_result_page.dart';
 
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
 
 class SearchEntry extends StatelessWidget {
   final TextEditingController searchController;
-  final FocusNode focusNode;
 
-  const SearchEntry({required this.searchController, required this.focusNode});
+  const SearchEntry({required this.searchController});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +37,6 @@ class SearchEntry extends StatelessWidget {
                     Expanded(
                       child: TextFormField(
                         controller: searchController,
-                        // focusNode: focusNode,
                         decoration: const InputDecoration(
                           hintText: "",
                           hintStyle: TextStyle(color: Colors.black),

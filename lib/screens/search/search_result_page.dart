@@ -52,11 +52,10 @@ class SearchResultPageState extends State<SearchResultPage>
     });
   }
 
-  // Fungsi untuk memuat filters secara asinkron
   Future<void> _loadFilters() async {
     final loadedFilters = await apiDataProvider.loadFiltersFromStorage();
     setState(() {
-      filters = loadedFilters; // Menyimpan data yang sudah dimuat
+      filters = loadedFilters;
     });
   }
 
@@ -413,7 +412,7 @@ class SearchResultPageState extends State<SearchResultPage>
           actions: <Widget>[Container()],
           automaticallyImplyLeading: false,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Get.offAllNamed('/home');
             },

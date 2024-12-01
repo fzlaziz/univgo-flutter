@@ -1,4 +1,3 @@
-import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:univ_go/functions/calculate_distance.dart';
@@ -34,7 +33,6 @@ class ApiDataProvider {
           campus.logoPath = awsUrl + '/' + campus.logoPath!;
         }
       }
-      // Filter by query
       if (query.isNotEmpty) {
         campuses = campuses
             .where((campus) =>
@@ -177,7 +175,6 @@ class ApiDataProvider {
   Future<void> fetchAndStoreFilters() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    // Fungsi untuk mengambil data dari API dan menyimpannya
     Future<void> fetchData(String url, String key, String group) async {
       var headers = <String, String>{
         'Content-Type': 'application/json; charset=UTF-8'
@@ -195,20 +192,18 @@ class ApiDataProvider {
           };
         }).toList();
 
-        // Simpan ke Shared Preferences
         prefs.setString(key, jsonEncode(data));
       } else {
         throw Exception("Failed to load $key");
       }
     }
 
-    // Ambil dan simpan data dari API
     await Future.wait([
       fetchData("$baseUrl/api/degree_levels", 'degree_levels', 'degree_level'),
       fetchData("$baseUrl/api/province", 'locations', 'location'),
       fetchData(
           "$baseUrl/api/accreditations", 'accreditations', 'accreditation'),
-      fetchData("$baseUrl/campus_types", 'campus_types', 'campus_type'),
+      fetchData("$baseUrl/api/campus_types", 'campus_types', 'campus_type'),
     ]);
   }
 
