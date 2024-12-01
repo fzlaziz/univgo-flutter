@@ -200,14 +200,11 @@ class ApiDataProvider {
 
     // Ambil dan simpan data dari API
     await Future.wait([
-      fetchData("https://www.univgo.my.id/api/degree_levels", 'degree_levels',
-          'degree_level'),
+      fetchData("$baseUrl/api/degree_levels", 'degree_levels', 'degree_level'),
+      fetchData("$baseUrl/api/province", 'locations', 'location'),
       fetchData(
-          "https://www.univgo.my.id/api/province", 'locations', 'location'),
-      fetchData("https://www.univgo.my.id/api/accreditations", 'accreditations',
-          'accreditation'),
-      fetchData("https://www.univgo.my.id/api/campus_types", 'campus_types',
-          'campus_type'),
+          "$baseUrl/api/accreditations", 'accreditations', 'accreditation'),
+      fetchData("$baseUrl/campus_types", 'campus_types', 'campus_type'),
     ]);
   }
 
@@ -232,7 +229,7 @@ class ApiDataProvider {
     }
 
     addFilters('degree_levels', 'degree_level', 'Level Studi');
-    // addFilters('locations', 'location', 'Lokasi');
+    addFilters('locations', 'location', 'Lokasi');
     addFilters('accreditations', 'accreditation', 'Akreditasi');
     addFilters('campus_types', 'campus_type', 'Jenis PTN');
 
