@@ -11,9 +11,7 @@ import 'package:univ_go/models/campus/campus_response.dart';
 import 'package:univ_go/models/study_program/study_programs_response.dart';
 import 'package:univ_go/widgets/search_results/campus_list.dart';
 import 'package:univ_go/widgets/search_results/study_program_list.dart';
-
-const blueTheme = 0xff0059ff;
-const greyTheme = 0xff808080;
+import 'package:univ_go/const/theme_color.dart';
 
 class SearchResultPage extends StatefulWidget {
   @override
@@ -37,6 +35,7 @@ class SearchResultPageState extends State<SearchResultPage>
   Map<String, List<int>> selectedFilters = {};
   bool showCampus = true;
   late Map<String, List<Filter>> filters;
+
   void _toggleView() {
     setState(() {
       showCampus = !showCampus;
@@ -253,7 +252,7 @@ class SearchResultPageState extends State<SearchResultPage>
                   MediaQuery.of(context).padding.top + 16.0, // Padding atas
                   16.0,
                   16.0),
-              color: const Color(0xFF0059FF),
+              color: const Color(blueTheme),
               child: const Text(
                 'Filter',
                 style: TextStyle(
@@ -323,14 +322,14 @@ class SearchResultPageState extends State<SearchResultPage>
                     child: const Text(
                       'Reset Filter',
                       style: TextStyle(
-                        color: Color(0xFF0059FF),
+                        color: Color(blueTheme),
                       ),
                     ),
                   ),
                   ElevatedButton(
                     onPressed: applyFilters,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0059FF),
+                      backgroundColor: const Color(blueTheme),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                         side: const BorderSide(
@@ -354,7 +353,7 @@ class SearchResultPageState extends State<SearchResultPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            color: const Color(0xFF0059FF),
+            color: const Color(blueTheme),
             padding: const EdgeInsets.only(top: 13, right: 20.0, left: 20.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

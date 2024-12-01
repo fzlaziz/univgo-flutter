@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-const blueTheme = 0xff0059ff;
-const greyTheme = 0xff808080;
+import 'package:univ_go/const/theme_color.dart';
 
 class NewsDetailScreen extends StatefulWidget {
   final String title;

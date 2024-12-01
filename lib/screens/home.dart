@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/screens/news/news_list.dart';
 import 'package:univ_go/screens/campus/profile_campus.dart';
-
-const blueTheme = 0xff0059ff;
-const greyTheme = 0xff808080;
+import 'package:univ_go/const/theme_color.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});

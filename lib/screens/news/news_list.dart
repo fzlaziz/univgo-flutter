@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:univ_go/main.dart';
 import 'news_detail.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-const blueTheme = 0xff0059ff;
-const greyTheme = 0xff808080;
+import 'package:univ_go/const/theme_color.dart';
 
 class NewsListScreen extends StatelessWidget {
   final List<Map<String, String>> newsItems = [

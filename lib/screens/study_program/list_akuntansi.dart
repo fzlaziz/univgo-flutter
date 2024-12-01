@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:univ_go/screens/campus/profile_campus.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:univ_go/const/theme_color.dart';
 
 class ListAkuntansi extends StatelessWidget {
   @override
@@ -74,7 +75,7 @@ class ListAkuntansi extends StatelessWidget {
             color: Colors.grey.withOpacity(0.3),
             spreadRadius: 2,
             blurRadius: 7,
-            offset: Offset(0, 3), 
+            offset: Offset(0, 3),
           ),
         ],
       ),
@@ -85,7 +86,10 @@ class ListAkuntansi extends StatelessWidget {
             padding: EdgeInsets.all(12.0),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF1E88E5), Color(0xFF42A5F5)], // Gradient effect
+                colors: [
+                  Color(0xFF1E88E5),
+                  Color(0xFF42A5F5)
+                ], // Gradient effect
               ),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(12.0),
@@ -112,7 +116,8 @@ class ListAkuntansi extends StatelessWidget {
               ),
             ),
             child: Column(
-              children: items.map((item) => _buildListItem(item, fontSize)).toList(),
+              children:
+                  items.map((item) => _buildListItem(item, fontSize)).toList(),
             ),
           ),
         ],
@@ -126,13 +131,11 @@ class ListAkuntansi extends StatelessWidget {
         title,
         style: TextStyle(
           fontSize: fontSize,
-          fontWeight: FontWeight.w600, 
+          fontWeight: FontWeight.w600,
         ),
       ),
       tileColor: Colors.white,
-      onTap: () {
-        
-      },
+      onTap: () {},
     );
   }
 }

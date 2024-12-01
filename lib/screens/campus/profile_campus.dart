@@ -4,9 +4,7 @@ import 'package:univ_go/main.dart';
 import '../study_program/list_akuntansi.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-const blueTheme = 0xff0059ff;
-const greyTheme = 0xff808080;
+import 'package:univ_go/const/theme_color.dart';
 
 void main() {
   runApp(ProfileCampus());

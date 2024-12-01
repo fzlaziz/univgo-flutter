@@ -7,9 +7,7 @@ import 'package:univ_go/screens/home.dart';
 import 'package:univ_go/screens/profile/profile.dart';
 import 'package:univ_go/services/api_data_provider.dart';
 import 'package:get/get.dart';
-
-const blueTheme = 0xff0059ff;
-const greyTheme = 0xff808080;
+import 'package:univ_go/const/theme_color.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");

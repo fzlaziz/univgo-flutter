@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/components/card/placeholder_card.dart';
 import 'package:univ_go/models/campus/campus_response.dart';
-
-const blueTheme = 0xff0059ff;
-const greyTheme = 0xff808080;
+import 'package:univ_go/const/theme_color.dart';
 
 class CampusList extends StatelessWidget {
   final Future<List<CampusResponse>> response;
@@ -58,7 +56,7 @@ class CampusList extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         foregroundColor: Colors.white,
-                        backgroundColor: const Color(0xFF0059FF),
+                        backgroundColor: const Color(blueTheme),
                         padding: const EdgeInsets.symmetric(
                             vertical: 12, horizontal: 24),
                         shape: RoundedRectangleBorder(
