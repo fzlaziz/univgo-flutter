@@ -5,9 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LocationService {
   double? userLatitude;
   double? userLongitude;
-  BuildContext context;
+  BuildContext? context;
 
-  LocationService(this.context);
+  LocationService([this.context]);
 
   Future<void> loadUserLocation() async {
     final prefs = await SharedPreferences.getInstance();
@@ -19,6 +19,10 @@ class LocationService {
       userLatitude = prefs.getDouble('userLatitude');
       userLongitude = prefs.getDouble('userLongitude');
     }
+  }
+
+  Future<void> updateLocation() async {
+    await _getCurrentPosition();
   }
 
   Future<void> _getCurrentPosition() async {
@@ -45,7 +49,7 @@ class LocationService {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
     if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context!).showSnackBar(const SnackBar(
           content: Text('Izin Lokasi dimatikan, mohon aktifkan izin lokasi.')));
       return false;
     }
@@ -54,13 +58,13 @@ class LocationService {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context!).showSnackBar(
             const SnackBar(content: Text('Izin Lokasi ditolak.')));
         return false;
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context!).showSnackBar(const SnackBar(
           content: Text(
               'Izin Lokasi ditolak secara permanen, buka pengaturan untuk mengaktifkan izin lokasi.')));
       return false;

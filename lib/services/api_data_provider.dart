@@ -1,3 +1,4 @@
+import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:univ_go/functions/calculate_distance.dart';
@@ -6,10 +7,12 @@ import 'package:univ_go/models/study_program/study_programs_response.dart';
 import 'package:univ_go/models/campus/campus_response.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:univ_go/models/filter/filter_model.dart';
+import 'package:univ_go/services/location_service.dart';
 
 class ApiDataProvider {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
   String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
+  LocationService locationService = LocationService();
   Future<List<CampusResponse>> getCampus(String query,
       {String? sortBy, Map<String, List<int>>? selectedFilters}) async {
     await Future.delayed(const Duration(seconds: 0), () {});
@@ -39,6 +42,7 @@ class ApiDataProvider {
             .toList();
       }
 
+      await locationService.updateLocation();
       final prefs = await SharedPreferences.getInstance();
       double? userLatitude = prefs.getDouble('userLatitude');
       double? userLongitude = prefs.getDouble('userLongitude');
