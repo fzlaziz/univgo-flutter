@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:univ_go/screens/auth/login.dart';
+import 'package:univ_go/routes/route.dart';
 import 'package:univ_go/components/appbar/custom_app_bar.dart';
 import 'package:univ_go/components/navbar/bottom_navbar.dart';
 import 'package:univ_go/screens/home.dart';
 import 'package:univ_go/screens/profile/profile.dart';
-import 'package:univ_go/screens/search/search_result_page.dart';
-import 'screens/search/search_entry.dart';
 import 'package:univ_go/services/api_data_provider.dart';
 import 'package:get/get.dart';
 
@@ -25,23 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Univ Go',
       initialRoute: '/home',
-      getPages: [
-        GetPage(name: "/login", page: () => LoginScreen()),
-        GetPage(
-          name: '/search',
-          page: () => SearchEntry(
-            searchController: TextEditingController(),
-          ),
-        ),
-        GetPage(
-            name: '/home', page: () => MainPage(), transition: Transition.fade),
-        GetPage(
-          name: '/search_result',
-          page: () => SearchResultPage(
-            value: Get.arguments['value'] ?? '',
-          ),
-        ),
-      ],
+      getPages: routes,
     );
   }
 }

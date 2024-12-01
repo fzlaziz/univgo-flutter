@@ -215,7 +215,7 @@ class SearchResultPageState extends State<SearchResultPage>
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(10), // Sudut melengkung
-                          side: BorderSide(
+                          side: const BorderSide(
                             color: Color(blueTheme), // Warna border
                             width: 0.5, // Ketebalan border
                           ),
@@ -339,7 +339,7 @@ class SearchResultPageState extends State<SearchResultPage>
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(10), // Sudut melengkung
-                          side: BorderSide(
+                          side: const BorderSide(
                             color: Color(blueTheme), // Warna border
                             width: 0.5, // Ketebalan border
                           ),
@@ -368,7 +368,7 @@ class SearchResultPageState extends State<SearchResultPage>
                     child: Card(
                       shape: RoundedRectangleBorder(
                         side: const BorderSide(
-                            color: const Color.fromARGB(255, 198, 197, 197)),
+                            color: Color.fromARGB(255, 198, 197, 197)),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: ListTile(
@@ -404,6 +404,7 @@ class SearchResultPageState extends State<SearchResultPage>
 
   @override
   Widget build(BuildContext context) {
+    print("rerender");
     return Scaffold(
       key: _scaffoldKey,
       appBar: PreferredSize(
@@ -441,7 +442,7 @@ class SearchResultPageState extends State<SearchResultPage>
                         decoration: InputDecoration(
                           hintText:
                               showCampus ? 'Cari Kampus' : 'Cari Program Studi',
-                          hintStyle: TextStyle(color: Colors.black),
+                          hintStyle: const TextStyle(color: Colors.black),
                           border: InputBorder.none,
                         ),
                         style: GoogleFonts.poppins(
@@ -545,12 +546,6 @@ class SearchResultPageState extends State<SearchResultPage>
                 children: [
                   ElevatedButton(
                     onPressed: resetFilters,
-                    child: const Text(
-                      'Reset Filter',
-                      style: TextStyle(
-                        color: Color(0xFF0059FF),
-                      ),
-                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -559,21 +554,27 @@ class SearchResultPageState extends State<SearchResultPage>
                             color: Color.fromARGB(255, 33, 149, 243)),
                       ),
                     ),
+                    child: const Text(
+                      'Reset Filter',
+                      style: TextStyle(
+                        color: Color(0xFF0059FF),
+                      ),
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: applyFilters,
-                    child: const Text(
-                      'Terapkan Filter',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF0059FF),
+                      backgroundColor: const Color(0xFF0059FF),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                         side: const BorderSide(
                             color: Color.fromARGB(255, 33, 149, 243)),
+                      ),
+                    ),
+                    child: const Text(
+                      'Terapkan Filter',
+                      style: TextStyle(
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -660,7 +661,7 @@ class SearchResultPageState extends State<SearchResultPage>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CircleAvatar(
-                    backgroundColor: Color(blueTheme),
+                    backgroundColor: const Color(blueTheme),
                     radius: 20.0,
                     child: Builder(builder: (context) {
                       return IconButton(

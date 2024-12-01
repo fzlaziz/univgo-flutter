@@ -8,6 +8,7 @@ class FilterButtonWidget extends StatelessWidget {
   final bool isSelected;
   final ValueChanged<bool> onSelected;
   final double? width;
+  final int overflowThreshold = 13;
 
   const FilterButtonWidget({
     Key? key,
@@ -21,24 +22,30 @@ class FilterButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int overflowThreshold = 13;
-
     return ChoiceChip(
-      label: Container(
+      label: SizedBox(
         width: width ?? 100,
         child: (label.length > overflowThreshold)
-            ? SizedBox(
-                height: 20,
-                child: Marquee(
-                  text: label,
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : const Color(0xFF0059FF),
-                  ),
-                  scrollAxis: Axis.horizontal,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  blankSpace: 20.0,
-                  velocity: 30.0,
-                  pauseAfterRound: Duration(seconds: 1),
+            // ? SizedBox(
+            //     height: 20,
+            //     child: Marquee(
+            //       text: label,
+            //       style: TextStyle(
+            //         fontSize: 12,
+            //         color: isSelected ? Colors.white : const Color(0xFF0059FF),
+            //       ),
+            //       scrollAxis: Axis.horizontal,
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+            //       blankSpace: 20.0,
+            //       velocity: 30.0,
+            //       pauseAfterRound: const Duration(seconds: 1),
+            //     ),
+            //   )
+            ? Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: isSelected ? Colors.white : const Color(0xFF0059FF),
                 ),
               )
             : Text(

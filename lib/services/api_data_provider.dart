@@ -30,7 +30,7 @@ class ApiDataProvider {
 
       for (var campus in campuses) {
         if (campus.logoPath != null && campus.logoPath!.isNotEmpty) {
-          campus.logoPath = awsUrl + '/' + campus.logoPath!;
+          campus.logoPath = "$awsUrl/${campus.logoPath!}";
         }
       }
       if (query.isNotEmpty) {
