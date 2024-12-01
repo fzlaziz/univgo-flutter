@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
-import '../../screens/search/search_page.dart';
+import 'package:get/get.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int selectedIndex;
@@ -64,16 +64,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                               border: InputBorder.none,
                             ),
                             onTap: () {
-                              Navigator.of(context)
-                                  .push(
-                                MaterialPageRoute(
-                                  builder: (context) => SearchPage(
-                                    searchController: searchController,
-                                    focusNode: focusNode,
-                                  ),
-                                ),
-                              )
-                                  .then((_) {
+                              Get.toNamed("/search", arguments: {
+                                "searchController": searchController,
+                                "focusNode": focusNode
+                              })?.then((_) {
                                 searchController.clear();
                                 focusNode.unfocus();
                               });

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
 import 'search_result_page.dart';
@@ -6,11 +7,11 @@ import 'search_result_page.dart';
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
 
-class SearchPage extends StatelessWidget {
+class SearchEntry extends StatelessWidget {
   final TextEditingController searchController;
   final FocusNode focusNode;
 
-  const SearchPage({required this.searchController, required this.focusNode});
+  const SearchEntry({required this.searchController, required this.focusNode});
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +51,9 @@ class SearchPage extends StatelessWidget {
                         ),
                         autofocus: true,
                         onFieldSubmitted: (value) {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SearchResultPage(
-                                        value: value,
-                                      )));
+                          Get.offNamed("/search_result", arguments: {
+                            "value": value,
+                          });
                         },
                       ),
                     ),

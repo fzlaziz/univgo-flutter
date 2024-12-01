@@ -5,8 +5,10 @@ import 'package:univ_go/components/appbar/custom_app_bar.dart';
 import 'package:univ_go/components/navbar/bottom_navbar.dart';
 import 'package:univ_go/screens/home.dart';
 import 'package:univ_go/screens/profile/profile.dart';
-import 'screens/search/search_page.dart';
+import 'package:univ_go/screens/search/search_result_page.dart';
+import 'screens/search/search_entry.dart';
 import 'package:univ_go/services/api_data_provider.dart';
+import 'package:get/get.dart';
 
 const blueTheme = 0xff0059ff;
 const greyTheme = 0xff808080;
@@ -19,13 +21,27 @@ Future main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Univ Go',
       initialRoute: '/home',
-      routes: {
-        '/login': (context) => LoginScreen(),
-        '/home': (context) => MainPage(),
-      },
+      getPages: [
+        GetPage(name: "/login", page: () => LoginScreen()),
+        GetPage(
+          name: '/search',
+          page: () => SearchEntry(
+            searchController: TextEditingController(),
+            focusNode: FocusNode(),
+          ),
+        ),
+        GetPage(
+            name: '/home', page: () => MainPage(), transition: Transition.fade),
+        GetPage(
+            name: '/search_result',
+            page: () => SearchResultPage(
+                  value: '',
+                )),
+      ],
     );
   }
 }
@@ -51,16 +67,10 @@ class _MainPageState extends State<MainPage> {
       setState(() {
         _isSearchMode = true;
       });
-      Navigator.of(context)
-          .push(
-        MaterialPageRoute(
-          builder: (context) => SearchPage(
-            searchController: _searchController,
-            focusNode: _focusNode,
-          ),
-        ),
-      )
-          .then((_) {
+      Get.toNamed('/search', arguments: {
+        "searchController": _selectedIndex,
+        "focusNode": _focusNode
+      })?.then((_) {
         setState(() {
           _selectedIndex = 0;
           _searchController.clear();
@@ -92,6 +102,12 @@ class _MainPageState extends State<MainPage> {
     super.dispose();
   }
 
+  var index = [
+    const Home(),
+    const Center(),
+    const Profile(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,18 +120,12 @@ class _MainPageState extends State<MainPage> {
       ),
       bottomNavigationBar: _isSearchMode
           ? null
-          : Container(
+          : SizedBox(
               height: 65,
               child: BottomNavBar(
                   selectedIndex: _selectedIndex, onItemTapped: _onItemTapped),
             ),
-      body: _selectedIndex == 0
-          ? Home()
-          : _selectedIndex == 1
-              ? const Center(
-                  child: Text('Cari'),
-                )
-              : Profile(),
+      body: index[_selectedIndex],
     );
   }
 }

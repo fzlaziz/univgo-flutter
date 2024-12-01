@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
 import 'package:univ_go/services/api_data_provider.dart';
@@ -62,10 +63,6 @@ class SearchResultPageState extends State<SearchResultPage>
     _scaffoldKey.currentState!.openEndDrawer();
   }
 
-  void _closeEndDrawer() {
-    Navigator.of(context).pop();
-  }
-
   double _getWidthForGroup(String group) {
     switch (group) {
       case 'location':
@@ -111,7 +108,7 @@ class SearchResultPageState extends State<SearchResultPage>
             sortBy: selectedSort, selectedFilters: selectedFilters);
       }
     });
-    Navigator.pop(context);
+    Get.back();
   }
 
   void applyFilters() {
@@ -126,7 +123,7 @@ class SearchResultPageState extends State<SearchResultPage>
         debugPrint('selectedFilters: $selectedFilters');
       }
     });
-    Navigator.pop(context);
+    Get.back();
   }
 
   void _applySort(String sort, bool isSelected) {
@@ -152,6 +149,7 @@ class SearchResultPageState extends State<SearchResultPage>
   void initState() {
     super.initState();
     _loadFilters();
+
     _controller = TextEditingController(text: widget.value);
     response = apiDataProvider.getCampus(widget.value);
     responseStudyProgram = apiDataProvider.getStudyProgram(widget.value);
@@ -446,7 +444,7 @@ class SearchResultPageState extends State<SearchResultPage>
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.of(context).popUntil((route) => route.isFirst);
+              Get.offAllNamed('/home');
             },
           ),
           iconTheme: const IconThemeData(color: Colors.white),
@@ -480,7 +478,7 @@ class SearchResultPageState extends State<SearchResultPage>
                           fontWeight: FontWeight.w400,
                           color: Colors.black,
                         ),
-                        autofocus: true,
+                        autofocus: false,
                         controller: _controller,
                         onSubmitted: (value) {
                           setState(() {
