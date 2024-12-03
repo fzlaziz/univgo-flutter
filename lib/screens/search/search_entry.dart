@@ -13,6 +13,7 @@ class SearchEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    searchController.text = '';
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70.0),

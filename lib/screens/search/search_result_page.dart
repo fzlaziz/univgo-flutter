@@ -154,6 +154,7 @@ class SearchResultPageState extends State<SearchResultPage>
     responseStudyProgram = apiDataProvider.getStudyProgram(widget.value);
     locationService = LocationService(context);
     locationService.loadUserLocation();
+    locationService.updateLocation();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,

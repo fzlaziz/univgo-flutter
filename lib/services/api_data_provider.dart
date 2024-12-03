@@ -40,7 +40,6 @@ class ApiDataProvider {
             .toList();
       }
 
-      await locationService.updateLocation();
       final prefs = await SharedPreferences.getInstance();
       double? userLatitude = prefs.getDouble('userLatitude');
       double? userLongitude = prefs.getDouble('userLongitude');
