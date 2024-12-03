@@ -22,7 +22,7 @@ var routes = [
   GetPage(
     name: searchResultRoute,
     page: () => SearchResultPage(
-      value: Get.arguments['value'] ?? '',
+      value: (Get.arguments?['value'] as String?) ?? '',
     ),
   ),
 ];
