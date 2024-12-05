@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/screens/news/news_list.dart';
 import 'package:univ_go/screens/campus/profile_campus.dart';
 import 'package:univ_go/const/theme_color.dart';
+import 'package:univ_go/controller/home_controller.dart';
+import 'package:get/get.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -27,7 +29,7 @@ class Home extends StatelessWidget {
             ),
             GridView.count(
               crossAxisCount: 2,
-              childAspectRatio: 2 / 3,
+              childAspectRatio: 2 / 2.5,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               children: List.generate(4, (index) {
@@ -117,54 +119,77 @@ class Home extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 4,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: MediaQuery.of(context).size.width / 2,
-                    margin: const EdgeInsets.all(8.0),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15.0),
-                            child: Image.network(
-                              'https://dummyimage.com/400x600/000/fff',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 16,
-                            left: 16,
-                            right: 16,
-                            child: Container(
-                              color: Colors.black54,
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Campus Name $index',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+            GetX<HomeController>(
+              init: HomeController(), // Inisialisasi HomeController
+              builder: (controller) {
+                if (controller.ptnList.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height / 2.5,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: controller.ptnList.length,
+                      itemBuilder: (context, index) {
+                        final campus = controller.ptnList[index];
+                        return Container(
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          margin: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              elevation: 5.0,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      child: Image.network(
+                                        campus.logoPath ??
+                                            'https://dummyimage.com/400x600/000/fff',
+                                        height:
+                                            80, // Adjust the size of the logo
+                                        width: 80,
+                                        fit: BoxFit.contain,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return const Icon(
+                                            Icons.broken_image,
+                                            size: 50,
+                                            color: Colors.grey,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Text(
+                                      campus.name,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                   );
-                },
-              ),
+                }
+              },
             ),
+
             const SizedBox(
               height: 16,
             ),
@@ -179,54 +204,162 @@ class Home extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 4,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: MediaQuery.of(context).size.width / 2,
-                    margin: const EdgeInsets.all(8.0),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15.0),
-                            child: Image.network(
-                              'https://dummyimage.com/400x600/000/fff',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 16,
-                            left: 16,
-                            right: 16,
-                            child: Container(
-                              color: Colors.black54,
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Campus Name $index',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+            GetX<HomeController>(
+              init: HomeController(), // Inisialisasi HomeController
+              builder: (controller) {
+                if (controller.politeknikList.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height / 2.5,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: controller.politeknikList.length,
+                      itemBuilder: (context, index) {
+                        final campus = controller.politeknikList[index];
+                        return Container(
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          margin: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              elevation: 5.0,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      child: Image.network(
+                                        campus.logoPath ??
+                                            'https://dummyimage.com/400x600/000/fff',
+                                        height:
+                                            80, // Adjust the size of the logo
+                                        width: 80,
+                                        fit: BoxFit.contain,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return const Icon(
+                                            Icons.broken_image,
+                                            size: 50,
+                                            color: Colors.grey,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Text(
+                                      campus.name,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                   );
-                },
+                }
+              },
+            ),
+
+            const SizedBox(
+              height: 16,
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Top 10 Kampus Swasta',
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
+            GetX<HomeController>(
+              init: HomeController(), // Inisialisasi HomeController
+              builder: (controller) {
+                if (controller.swastaList.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height / 2.5,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: controller.swastaList.length,
+                      itemBuilder: (context, index) {
+                        final campus = controller.swastaList[index];
+                        return Container(
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          margin: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              elevation: 5.0,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      child: Image.network(
+                                        campus.logoPath ??
+                                            'https://dummyimage.com/400x600/000/fff',
+                                        height:
+                                            80, // Adjust the size of the logo
+                                        width: 80,
+                                        fit: BoxFit.contain,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return const Icon(
+                                            Icons.broken_image,
+                                            size: 50,
+                                            color: Colors.grey,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Text(
+                                      campus.name,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                }
+              },
+            ),
+
             const SizedBox(height: 16.0), // Add spacing below the row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -282,7 +415,7 @@ class Home extends StatelessWidget {
             const SizedBox(height: 16.0), // Add spacing below the row
             GridView.count(
               crossAxisCount: 2,
-              childAspectRatio: 1 / 1.5,
+              childAspectRatio: 1 / 1.2,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               children: List.generate(4, (index) {
