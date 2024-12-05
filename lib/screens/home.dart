@@ -413,57 +413,85 @@ class Home extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16.0), // Add spacing below the row
-            GridView.count(
-              crossAxisCount: 2,
-              childAspectRatio: 1 / 1.2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: List.generate(4, (index) {
-                return GestureDetector(
-                  onTap: () {},
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(15.0),
-                          child: Image.network(
-                            'https://dummyimage.com/400x600/000/fff',
-                            fit: BoxFit.cover,
-                            height: 150, // Set a fixed height for the image
-                            width: double.infinity,
+            GetX<HomeController>(
+              init: HomeController(), // Inisialisasi HomeController
+              builder: (controller) {
+                if (controller.latestNews.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  return GridView.count(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1 / 1.2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children:
+                        List.generate(controller.latestNews.length, (index) {
+                      final news = controller.latestNews[index];
+                      return GestureDetector(
+                        onTap: () {
+                          final homeController = Get.find<HomeController>();
+                          homeController.navigateToDetail(news.id);
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Image.network(
+                                  news.attachment ??
+                                      'https://dummyimage.com/400x600/000/fff', // Default jika attachment null
+                                  fit: BoxFit.cover,
+                                  height:
+                                      150, // Set a fixed height for the image
+                                  width: double.infinity,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Icon(
+                                      Icons.broken_image,
+                                      size: 50,
+                                      color: Colors.grey,
+                                    );
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  news.title,
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2, // Menampilkan maksimal 2 baris
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  news.createdAt
+                                      .toLocal()
+                                      .toString()
+                                      .split(' ')[0],
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Pendaftar terus meningkat, bukti IISMA $index',
-                            style: GoogleFonts.poppins(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2, // Adjust the number of lines as needed
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            '${DateTime.now().toLocal().toString().split(' ')[0]}',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }),
+                      );
+                    }),
+                  );
+                }
+              },
             ),
           ],
         ),
