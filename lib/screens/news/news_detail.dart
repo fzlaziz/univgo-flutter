@@ -1,143 +1,532 @@
 import 'package:flutter/material.dart';
+import 'package:univ_go/services/news/news_provider.dart';
+import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:univ_go/const/theme_color.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class NewsDetailScreen extends StatefulWidget {
-  final String title;
-  final String date;
-  final String detail;
+class NewsDetail extends StatefulWidget {
+  final DetailBerita berita;
 
-  NewsDetailScreen({
-    required this.title,
-    required this.date,
-    required this.detail,
-  });
+  const NewsDetail({required this.berita});
 
   @override
-  _NewsDetailScreenState createState() => _NewsDetailScreenState();
+  _NewsDetailState createState() => _NewsDetailState();
 }
 
-class _NewsDetailScreenState extends State<NewsDetailScreen> {
-  final TextEditingController _nameController = TextEditingController();
+class _NewsDetailState extends State<NewsDetail> {
+  String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
+  String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
   final TextEditingController _commentController = TextEditingController();
+  bool _isCommentValid = false; //Variabel untuk memvalidasi komentar
+  late Future<List<Comment>> _comments;
+  int _commentsToShow = 3; // Awalnya hanya 3 komentar ditampilkan
 
-  // Daftar untuk menyimpan komentar yang ditulis pengguna
-  final List<Map<String, String>> _comments = [
-    {
-      'username': 'Elizabeth',
-      'text':
-          'geda gedi geda geda o, skibidi sigma rizz, what the hell is this.'
-    },
-    {
-      'username': 'Your name',
-      'text': 'Does everyone really bother to write comments?'
-    },
-  ];
-
-  // Data berita lain
-  final List<Map<String, String>> otherNewsData = [
-    {
-      'title': 'Pendaftaran Terus Meningkat, Bukti IISMA menyita Perhatian.',
-      'date': '16 September 2024 - 12:50',
-      'imageUrl': 'assets/images/iisma.png',
-    },
-    {
-      'title': 'Pendaftaran Terus Meningkat, Bukti IISMA menyita Perhatian.',
-      'date': '16 September 2024 - 12:50',
-      'imageUrl': 'assets/images/iisma.png',
-    },
-    {
-      'title': 'Pendaftaran Terus Meningkat, Bukti IISMA menyita Perhatian.',
-      'date': '16 September 2024 - 12:50',
-      'imageUrl': 'assets/images/iisma.png',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _comments = NewsProvider().fetchComments(widget.berita.id);
+    // Tambahkan listener untuk memperbarui validitas komentar
+    _commentController.addListener(_validateComment);
+  }
 
   @override
   void dispose() {
-    _nameController.dispose();
     _commentController.dispose();
+    // Jangan lupa untuk menghapus listener saat halaman dihapus
+    _commentController.removeListener(_validateComment);
     super.dispose();
+  }
+
+  // Fungsi untuk mengecek apakah komentar valid
+  void _validateComment() {
+    setState(() {
+      // Memvalidasi apakah kolom komentar tidak kosong
+      _isCommentValid = _commentController.text.isNotEmpty;
+    });
+  }
+
+  //Fungsi untuk mengirim komentar
+  Future<bool> _submitComment() async {
+    if (_commentController.text.isNotEmpty) {
+      try {
+        // Mengirimkan komentar dan username ke API
+        await NewsProvider().addComment(
+          widget.berita.id,
+          _commentController.text,
+        );
+
+        // Mengambil komentar lagi setelah menambah komentar
+        setState(() {
+          _comments = NewsProvider().fetchComments(widget.berita.id);
+          _commentController.clear(); // Menghapus teks input komentar
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Komentar berhasil dikirim!')),
+        );
+
+        return true; // Menandakan pengiriman komentar berhasil
+      } catch (e) {
+        // Jika terjadi error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal mengirim komentar, coba lagi.')),
+        );
+        return false; // Menandakan pengiriman gagal
+      }
+    } else {
+      // Jika komentar kosong
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Komentar tidak boleh kosong!')),
+      );
+      return false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          toolbarHeight: 70,
-          backgroundColor: const Color(blueTheme),
-          centerTitle: true,
-          title: Text(
-            "Detail Berita",
-            style: GoogleFonts.poppins(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: const Color(0xffffffff),
-            ),
-          ),
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.pop(context))),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+        title: Text(
+          'Detail Berita',
+          style: GoogleFonts.poppins(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        backgroundColor: Colors.blue,
+        centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(
+                context); // Menutup halaman detail dan kembali ke halaman sebelumnya
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildNewsHeader(),
-              SizedBox(height: 16),
-              Image.asset(
-                  'assets/images/iisma_detail.png'), // Gambar detail berita
-              SizedBox(height: 16),
+              // Title berita
               Text(
-                widget.detail,
-                style: TextStyle(fontSize: 16),
-                textAlign: TextAlign.justify,
+                widget.berita.title,
+                style: GoogleFonts.poppins(
+                    fontSize: 20, fontWeight: FontWeight.bold),
               ),
 
-              // Bagian Komentar
-              SizedBox(height: 20), // Jarak sebelum bagian komentar
-              Text(
-                "Komentar",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
               SizedBox(height: 8),
-
-              // Menampilkan daftar komentar
-              ..._buildComments(),
-              SizedBox(height: 16),
-
-              // Input untuk komentar baru
-              _buildCommentInput(),
-
-              // Judul untuk berita lainnya
-              SizedBox(height: 20), // Jarak sebelum judul berita lainnya
+              // Excerpt berita
               Text(
-                'Baca Lainnya',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                widget.berita.excerpt,
+                style: GoogleFonts.poppins(
+                    fontSize: 16, fontStyle: FontStyle.normal),
+              ),
+              SizedBox(height: 16),
+              // Tanggal berita
+              Text(
+                widget.berita.createdAt != null
+                    ? DateFormat('dd MMMM yyyy - HH:mm:ss')
+                        .format(widget.berita.createdAt)
+                    : 'No Date',
+                style:
+                    GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
+              ),
+              SizedBox(height: 16),
+              // Menampilkan gambar berita jika ada
+              Center(
+                child: Image.network(
+                  widget.berita.attachment != null
+                      ? '$awsUrl/${widget.berita.attachment}'
+                      : 'https://via.placeholder.com/150', // URL gambar default
+                  height: 200, // Menyesuaikan tinggi gambar
+                  width: double.infinity, // Lebar gambar mengikuti lebar layar
+                  fit: BoxFit.cover, // Agar gambar tetap proporsional
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      height: 200, // Menyesuaikan tinggi container
+                      width: double.infinity, // Menyesuaikan lebar container
+                      color: Colors.grey.shade200, // Warna background opsional
+                      child: Icon(Icons.image_not_supported,
+                          size: 100), // Ikon fallback
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 24),
+              // Konten berita
+              if (widget.berita.content != null &&
+                  widget.berita.content!.isNotEmpty)
+                Text(
+                  widget.berita.content!,
+                  style: GoogleFonts.poppins(fontSize: 16),
+                  textAlign: TextAlign.justify, // Menambahkan justify alignment
+                ),
+              if (widget.berita.content == null ||
+                  widget.berita.content!.isEmpty)
+                Text(
+                  'Konten berita tidak tersedia.',
+                  style: GoogleFonts.poppins(
+                      fontSize: 16, color: Colors.grey[700]),
+                  textAlign: TextAlign.justify, // Menambahkan justify alignment
+                ),
+              SizedBox(
+                  height:
+                      16), // Menambahkan jarak antara konten berita dan komentar
+
+// Menampilkan daftar komentar di atas berita terkait
+              Text(
+                'Komentar',
+                style: GoogleFonts.poppins(
+                    fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(
-                height: 10,
+                  height:
+                      8), // Jarak antara judul "Komentar" dan daftar komentar
+              FutureBuilder<List<Comment>>(
+                future: _comments,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('Tidak ada komentar.'));
+                  } else {
+                    // Batasi komentar yang ditampilkan sesuai dengan _commentsToShow
+                    final List<Comment> displayedComments =
+                        snapshot.data!.take(_commentsToShow).toList();
+                    final bool hasMoreComments =
+                        snapshot.data!.length > _commentsToShow;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Tampilkan komentar tanpa bubble, tetapi dengan batas garis
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: displayedComments
+                              .length, // Gunakan displayedComments
+                          itemBuilder: (context, index) {
+                            final comment = displayedComments[
+                                index]; // Ambil komentar berdasarkan index
+
+                            return Container(
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 4.0), // Jarak antar komentar
+                              padding: const EdgeInsets.all(
+                                  12.0), // Padding di dalam komentar
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color:
+                                        Colors.grey[300]!, // Warna garis bawah
+                                    width: 1.0, // Ketebalan garis bawah
+                                  ),
+                                ),
+                              ),
+                              child: Stack(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start, // Konten rata kiri
+                                    children: [
+                                      // Nama pengguna
+                                      Text(
+                                        comment.user
+                                            .name, // Menampilkan nama pengguna
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                          height:
+                                              4.0), // Jarak antara nama dan teks komentar
+                                      // Teks komentar
+                                      Text(
+                                        comment.text,
+                                        style: GoogleFonts.poppins(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.normal),
+                                      ),
+                                      // Menampilkan teks komentar
+                                      SizedBox(
+                                          height:
+                                              4.0), // Jarak antara teks komentar dan tanggal
+                                    ],
+                                  ),
+                                  Positioned(
+                                    bottom: 0, // Posisikan tanggal di bawah
+                                    right: 0, // Posisikan tanggal di kanan
+                                    child: Text(
+                                      comment.createdAt != null
+                                          ? DateFormat('dd MMM yyyy, HH:mm')
+                                              .format(comment
+                                                  .createdAt!) // Format tanggal
+                                          : 'No Date',
+                                      style: GoogleFonts.poppins(
+                                          fontSize: 12,
+                                          color: Colors
+                                              .grey[600]), // Warna teks tanggal
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        if (hasMoreComments) // Jika masih ada komentar yang belum ditampilkan
+                          Center(
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _commentsToShow +=
+                                      3; // Tambahkan 3 komentar lagi
+                                });
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize
+                                    .min, // Agar Row tidak mengambil ruang penuh
+                                children: [
+                                  Text(
+                                    'View More',
+                                    style: GoogleFonts.poppins(
+                                        color: Colors.black),
+                                  ),
+                                  SizedBox(
+                                      width: 4), // Jarak antara teks dan ikon
+                                  Icon(
+                                    Icons.expand_more,
+                                    color: Colors.black,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+                  }
+                },
               ),
-              // List berita lainnya
+              SizedBox(height: 16),
+              // Form untuk menambah komentar
+              TextField(
+                controller: _commentController,
+                decoration: InputDecoration(
+                  labelText: 'Tulis komentar',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
+              ),
+              SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity, // Tombol memenuhi lebar TextField
+                child: ElevatedButton(
+                  onPressed: _isCommentValid
+                      ? () async {
+                          bool isSuccess = await _submitComment();
+                          if (isSuccess) {
+                            showDialog(
+                              context: context,
+                              barrierDismissible:
+                                  true, // Klik di luar dialog untuk menutup
+                              builder: (BuildContext context) {
+                                return Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.check_circle,
+                                          color: Colors.white,
+                                          size: 50,
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          'Berhasil mengirim komentar!',
+                                          style: GoogleFonts.poppins(
+                                              color: Colors.white,
+                                              fontSize: 16),
+                                        ),
+                                        SizedBox(height: 20),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop(); // Menutup dialog
+                                          },
+                                          child: Text('OK'),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.white,
+                                            foregroundColor: Colors.blue,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+
+                            // Refresh halaman detail berita
+                            setState(() {
+                              _comments = NewsProvider()
+                                  .fetchComments(widget.berita.id);
+                            });
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.error,
+                                          color: Colors.white,
+                                          size: 50,
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          'Gagal mengirim komentar, coba lagi.',
+                                          style: GoogleFonts.poppins(
+                                              color: Colors.white,
+                                              fontSize: 16),
+                                        ),
+                                        SizedBox(height: 20),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('OK'),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.white,
+                                            foregroundColor: Colors.red,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                        }
+                      : null,
+                  child: Text('Kirim Komentar'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white, // Background putih
+                    foregroundColor: _isCommentValid
+                        ? Colors.blue
+                        : Colors.grey, // Warna teks biru/abu-abu
+                    side: BorderSide(
+                      color: _isCommentValid
+                          ? Colors.blue
+                          : Colors.grey, // Garis biru/abu-abu
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          5), // Menghilangkan sudut melengkung (circular)
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 24),
+              // Judul berita terkait
+              Text(
+                'Berita Terkait',
+                style: GoogleFonts.poppins(
+                    fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+// Menampilkan berita terkait menggunakan ListView.builder
               ListView.builder(
-                physics:
-                    NeverScrollableScrollPhysics(), // Menghindari scroll di dalam scroll
-                shrinkWrap:
-                    true, // Mengatur ukuran ListView agar sesuai dengan konten
-                itemCount: otherNewsData.length,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount:
+                    widget.berita.relatedNews.length, // Jumlah berita terkait
                 itemBuilder: (context, index) {
-                  final news = otherNewsData[index];
-                  return ListTile(
-                    trailing: Image.asset(news['imageUrl']!),
-                    title: Text(news['title']!,
-                        style: GoogleFonts.poppins(
-                            fontSize: 12, fontWeight: FontWeight.w700)),
-                    subtitle: Text(news['date']!,
-                        style: GoogleFonts.poppins(fontSize: 12)),
-                    onTap: () {
-                      // Navigasi ke detail berita lain jika diinginkan
-                    },
+                  final related = widget.berita.relatedNews[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                          related.title, // Judul berita terkait
+                          style: GoogleFonts.poppins(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          related.createdAt != null
+                              ? DateFormat('dd MMMM yyyy - HH:mm:ss')
+                                  .format(related.createdAt)
+                              : 'No Date', // Menampilkan tanggal atau 'No Date'
+                          style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color:
+                                  Colors.grey[600]), // Ringkasan berita terkait
+                        ),
+                        trailing: Image.network(
+                          related.attachment != null
+                              ? '$awsUrl/${related.attachment}'
+                              : 'https://via.placeholder.com/150', // URL gambar default
+                          height: 60, // Menyesuaikan tinggi gambar
+                          width: 80, // Lebar gambar mengikuti lebar layar
+                          fit: BoxFit.cover, // Agar gambar tetap proporsional
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              height: 60, // Menyesuaikan tinggi container
+                              width: 80, // Menyesuaikan lebar container
+                              color: Colors
+                                  .grey.shade200, // Warna background opsional
+                              child: Icon(Icons.image_not_supported,
+                                  size: 30), // Ikon fallback
+                            ); // Ikon fallback jika gagal
+                          },
+                        ),
+                        onTap: () {
+                          // Navigasi ke halaman DetailBeritaPage untuk berita terkait
+                          final relatedBerita = DetailBerita(
+                            id: related.id,
+                            title: related.title,
+                            slug: related.slug,
+                            excerpt: related.excerpt,
+                            content: related.content,
+                            attachment: related.attachment,
+                            campusId: related.campusId,
+                            createdAt: related.createdAt,
+                            relatedNews: [], // Isi dengan berita terkait lainnya jika ada
+                          );
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  NewsDetail(berita: relatedBerita),
+                            ),
+                          );
+                        },
+                      ),
+                      // Garis pemisah antar berita
+                      Divider(
+                        color: Colors.grey[300], // Warna garis
+                        thickness: 1.0, // Ketebalan garis
+                      ),
+                    ],
                   );
                 },
               ),
@@ -145,115 +534,8 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  // Widget untuk menampilkan header berita
-  Widget _buildNewsHeader() {
-    return Column(
-      children: [
-        Center(
-          child: Text(
-            widget.title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-        SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            widget.date,
-            style: TextStyle(color: Colors.grey),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Widget untuk menampilkan daftar komentar
-  List<Widget> _buildComments() {
-    List<Widget> commentWidgets = [];
-    for (var comment in _comments) {
-      commentWidgets.add(_buildComment(comment['username']!, comment['text']!));
-      commentWidgets.add(SizedBox(height: 8)); // Jarak antar komentar
-    }
-    return commentWidgets;
-  }
-
-  // Widget untuk menampilkan setiap komentar
-  Widget _buildComment(String username, String comment) {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            username,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 4),
-          Text(comment),
-        ],
-      ),
-    );
-  }
-
-  // Widget untuk input komentar
-  Widget _buildCommentInput() {
-    return Column(
-      children: [
-        TextField(
-          controller: _nameController,
-          decoration: InputDecoration(
-            labelText: "Your name",
-            border: OutlineInputBorder(),
-          ),
-        ),
-        SizedBox(height: 8),
-        TextField(
-          controller: _commentController,
-          decoration: InputDecoration(
-            labelText: "Tulis Komentar",
-            border: OutlineInputBorder(),
-          ),
-          maxLines: 3, // Membolehkan beberapa baris
-        ),
-        SizedBox(height: 8),
-        ElevatedButton.icon(
-          onPressed: () {
-            String name = _nameController.text;
-            String comment = _commentController.text;
-            if (name.isNotEmpty && comment.isNotEmpty) {
-              // Menambahkan komentar baru ke daftar
-              setState(() {
-                _comments.add({'username': name, 'text': comment});
-              });
-              _nameController.clear();
-              _commentController.clear();
-            }
-          },
-          label: const Text(
-            'Kirim Komentar',
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color(blueTheme),
-            padding: EdgeInsets.symmetric(vertical: 20),
-            minimumSize: const Size.fromHeight(50), // Make button full width
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      ],
+      backgroundColor:
+          Colors.white, // Menambahkan background putih untuk seluruh halaman
     );
   }
 }

@@ -247,7 +247,7 @@ class Home extends StatelessWidget {
                     // Navigate to all news page
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => NewsListScreen()),
+                      MaterialPageRoute(builder: (context) => const NewsList()),
                     );
                   },
                   icon: const Text(
