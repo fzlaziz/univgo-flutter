@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:univ_go/controller/search_result_controller.dart';
 import 'package:univ_go/main.dart';
 import 'package:univ_go/screens/search/search_result_page.dart';
 import 'package:univ_go/screens/search/search_entry.dart';
@@ -20,9 +21,10 @@ var routes = [
   ),
   GetPage(name: homeRoute, page: () => MainPage(), transition: Transition.fade),
   GetPage(
-    name: searchResultRoute,
-    page: () => SearchResultPage(
-      value: (Get.arguments?['value'] as String?) ?? '',
-    ),
-  ),
+    name: '/search-result',
+    page: () => const SearchResultPage(),
+    binding: BindingsBuilder(() {
+      Get.lazyPut(() => SearchResultController());
+    }),
+  )
 ];

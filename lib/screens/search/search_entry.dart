@@ -49,9 +49,10 @@ class SearchEntry extends StatelessWidget {
                         ),
                         autofocus: true,
                         onFieldSubmitted: (value) {
-                          Get.offNamed("/search_result", arguments: {
-                            "value": value,
-                          });
+                          Get.offNamed(
+                            "/search-result",
+                            arguments: {"value": value},
+                          );
                         },
                       ),
                     ),
