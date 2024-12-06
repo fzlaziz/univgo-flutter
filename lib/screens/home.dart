@@ -126,14 +126,14 @@ class Home extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 } else {
                   return SizedBox(
-                    height: MediaQuery.of(context).size.height / 2.5,
+                    height: MediaQuery.of(context).size.height / 3.5,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: controller.ptnList.length,
                       itemBuilder: (context, index) {
                         final campus = controller.ptnList[index];
                         return Container(
-                          width: MediaQuery.of(context).size.width / 2.5,
+                          width: MediaQuery.of(context).size.width / 2,
                           margin: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {},
@@ -211,14 +211,14 @@ class Home extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 } else {
                   return SizedBox(
-                    height: MediaQuery.of(context).size.height / 2.5,
+                    height: MediaQuery.of(context).size.height / 3.5,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: controller.politeknikList.length,
                       itemBuilder: (context, index) {
                         final campus = controller.politeknikList[index];
                         return Container(
-                          width: MediaQuery.of(context).size.width / 2.5,
+                          width: MediaQuery.of(context).size.width / 2,
                           margin: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {},
@@ -296,14 +296,14 @@ class Home extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 } else {
                   return SizedBox(
-                    height: MediaQuery.of(context).size.height / 2.5,
+                    height: MediaQuery.of(context).size.height / 3.5,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: controller.swastaList.length,
                       itemBuilder: (context, index) {
                         final campus = controller.swastaList[index];
                         return Container(
-                          width: MediaQuery.of(context).size.width / 2.5,
+                          width: MediaQuery.of(context).size.width / 2,
                           margin: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {},
@@ -421,7 +421,7 @@ class Home extends StatelessWidget {
                 } else {
                   return GridView.count(
                     crossAxisCount: 2,
-                    childAspectRatio: 1 / 1.2,
+                    childAspectRatio: 1 / 1.5,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     children:
