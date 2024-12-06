@@ -8,12 +8,14 @@ class StudyProgramList extends StatelessWidget {
   final Future<List<StudyProgramResponse>> responseStudyProgram;
   final bool showCampus;
   final AnimationController _animationController;
+  final VoidCallback onToggleView; 
 
   const StudyProgramList({
     super.key,
     required this.responseStudyProgram,
     required this.showCampus,
     required AnimationController animationController,
+    required this.onToggleView,
   }) : _animationController = animationController;
 
   @override
@@ -50,9 +52,7 @@ class StudyProgramList extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () {
-                        // Handle button press here
-                      },
+                      onPressed: onToggleView,
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         foregroundColor: Colors.white,

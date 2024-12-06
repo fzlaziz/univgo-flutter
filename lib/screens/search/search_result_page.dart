@@ -347,11 +347,13 @@ class SearchResultPage extends GetView<SearchResultController> {
                       response: controller.response,
                       showCampus: controller.showCampus.value,
                       animationController: controller.animationController,
+                      onToggleView: controller.toggleView, // Add this line
                     )
                   : StudyProgramList(
                       responseStudyProgram: controller.responseStudyProgram,
                       showCampus: controller.showCampus.value,
                       animationController: controller.animationController,
+                      onToggleView: controller.toggleView, // Add this line
                     ),
             ),
           ),

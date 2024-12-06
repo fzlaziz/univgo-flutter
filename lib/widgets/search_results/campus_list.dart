@@ -8,12 +8,14 @@ class CampusList extends StatelessWidget {
   final Future<List<CampusResponse>> response;
   final bool showCampus;
   final AnimationController _animationController;
+  final VoidCallback onToggleView; 
 
   const CampusList({
     super.key,
     required this.response,
     required this.showCampus,
     required AnimationController animationController,
+    required this.onToggleView,
   }) : _animationController = animationController;
 
   @override
@@ -50,9 +52,7 @@ class CampusList extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () {
-                        // handle button press
-                      },
+                      onPressed: onToggleView,
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         foregroundColor: Colors.white,
