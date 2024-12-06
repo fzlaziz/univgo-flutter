@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:univ_go/screens/news/news_list.dart';
 import 'package:univ_go/screens/campus/profile_campus.dart';
 import 'package:univ_go/const/theme_color.dart';
@@ -474,10 +475,8 @@ class Home extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
-                                  news.createdAt
-                                      .toLocal()
-                                      .toString()
-                                      .split(' ')[0],
+                                  DateFormat('dd MMMM yyyy - HH:mm')
+                                      .format(news.createdAt),
                                   style: const TextStyle(
                                     color: Colors.grey,
                                     fontSize: 13,
