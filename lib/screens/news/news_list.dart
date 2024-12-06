@@ -134,9 +134,28 @@ class _NewsListState extends State<NewsList> {
   Widget _buildPagination(int totalItems) {
     _totalPages = (totalItems / _perPage).ceil();
 
+    // Tentukan rentang halaman yang akan ditampilkan
+    int startPage = _currentPage - 1;
+    int endPage = _currentPage + 1;
+
+    // Pastikan startPage dan endPage berada dalam rentang yang valid
+    if (startPage < 1) {
+      startPage = 1;
+      endPage = 3; // Tampilkan 3 halaman pertama
+    }
+    if (endPage > _totalPages) {
+      endPage = _totalPages;
+      startPage = _totalPages - 2; // Tampilkan 3 halaman terakhir
+    }
+    if (_totalPages <= 3) {
+      startPage = 1;
+      endPage =
+          _totalPages; // Jika total halaman kurang dari atau sama dengan 3
+    }
+
+    // Pastikan hanya 3 halaman yang ditampilkan
     List<Widget> pageButtons = [];
-    // Generate page buttons
-    for (int i = 1; i <= _totalPages; i++) {
+    for (int i = startPage; i <= endPage; i++) {
       pageButtons.add(
         GestureDetector(
           onTap: () {
@@ -145,27 +164,18 @@ class _NewsListState extends State<NewsList> {
             });
           },
           child: Container(
-            width: 40, // Set a fixed width for each button
-            height: 40, // Set a fixed height for each button
+            width: 40,
+            height: 40,
+            margin: const EdgeInsets.symmetric(horizontal: 5),
             decoration: BoxDecoration(
-              color: Colors.white, // Set the background to white
-              borderRadius: BorderRadius.zero, // Remove rounded corners
-              border: Border.all(
-                color: _currentPage == i
-                    ? Colors.black
-                    : Colors
-                        .grey.shade400, // Change border color for selected page
-                width: 2,
-              ),
+              color: _currentPage == i ? Colors.blue : Colors.white,
+              shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 '$i',
-                style: TextStyle(
-                  color: _currentPage == i
-                      ? Colors.black
-                      : Colors
-                          .black, // Text is black when selected, grey otherwise
+                style: GoogleFonts.poppins(
+                  color: _currentPage == i ? Colors.white : Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -176,79 +186,131 @@ class _NewsListState extends State<NewsList> {
     }
 
     return Container(
-      padding:
-          EdgeInsets.symmetric(vertical: 10), // Padding for the whole container
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Previous Button
-          Container(
-            width: 100,
-            height: 40,
-            decoration: BoxDecoration(
-              color: _currentPage > 1 ? Colors.white : Colors.transparent,
-              borderRadius: BorderRadius.zero, // No rounded corners
-              border: Border.all(
-                color: _currentPage > 1
-                    ? Colors.grey.shade400
-                    : Colors.grey.shade400,
-                width: 2,
+          // First Page Button
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _currentPage = 1;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                '<<',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: _currentPage > 1 ? Colors.black : Colors.grey,
+                ),
               ),
             ),
-            child: TextButton(
-              onPressed: _currentPage > 1
-                  ? () {
-                      setState(() {
-                        _currentPage--;
-                      });
-                    }
-                  : null,
-              child: Center(
-                child: Text(
-                  '< Previous',
-                  style: TextStyle(
-                    color: _currentPage > 1 ? Colors.black : Colors.grey,
-                    fontWeight: FontWeight.bold,
-                  ),
+          ),
+          // Previous Page Button
+          GestureDetector(
+            onTap: _currentPage > 1
+                ? () {
+                    setState(() {
+                      _currentPage--;
+                    });
+                  }
+                : null,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                '<',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: _currentPage > 1 ? Colors.black : Colors.grey,
                 ),
               ),
             ),
           ),
           // Page number buttons (1, 2, 3, ...)
           ...pageButtons,
-          // Next Button
-          Container(
-            width: 100,
-            height: 40,
-            decoration: BoxDecoration(
-              color: _currentPage < _totalPages
-                  ? Colors.white
-                  : Colors.transparent,
-              borderRadius: BorderRadius.zero, // No rounded corners
-              border: Border.all(
-                color: _currentPage < _totalPages ? Colors.grey : Colors.grey,
-                width: 2,
-              ),
-            ),
-            child: TextButton(
-              onPressed: _currentPage < _totalPages
-                  ? () {
-                      setState(() {
-                        _currentPage++;
-                      });
-                    }
-                  : null,
-              child: Center(
-                child: Text(
-                  'Next >',
-                  style: TextStyle(
-                    color:
-                        _currentPage < _totalPages ? Colors.black : Colors.grey,
-                    fontWeight: FontWeight.bold,
-                  ),
+          // Next Page Button
+          GestureDetector(
+            onTap: _currentPage < _totalPages
+                ? () {
+                    setState(() {
+                      _currentPage++;
+                    });
+                  }
+                : null,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                '>',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color:
+                      _currentPage < _totalPages ? Colors.black : Colors.grey,
                 ),
               ),
             ),
+          ),
+          // Last Page Button
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _currentPage = _totalPages;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                '>>',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize:
+                      14, // Tambahkan ukuran font lebih besar jika diperlukan
+                  color:
+                      _currentPage < _totalPages ? Colors.black : Colors.grey,
+                ),
+              ),
+            ),
+          ),
+          // "Go to Page" Input Field
+          const SizedBox(width: 20),
+          Row(
+            children: [
+              Text(
+                '| Go to page : ',
+                style: GoogleFonts.poppins(
+                  fontSize: 14, // Sesuaikan ukuran font
+                  fontWeight:
+                      FontWeight.w400, // Gunakan font weight yang diinginkan
+                  color: Colors.black, // Warna teks
+                ),
+              ),
+              SizedBox(
+                width: 40,
+                child: TextField(
+                  onSubmitted: (value) {
+                    final page = int.tryParse(value);
+                    if (page != null && page > 0 && page <= _totalPages) {
+                      setState(() {
+                        _currentPage = page;
+                      });
+                    }
+                  },
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
