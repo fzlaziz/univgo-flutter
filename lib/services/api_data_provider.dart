@@ -234,4 +234,33 @@ class ApiDataProvider {
     filters = loadedFilters;
     return filters;
   }
+
+  Future<List<CampusResponse>> getCampusesNearby(
+      {required double latitude, required double longitude}) async {
+    var headers = <String, String>{};
+    Client client = Client();
+    headers["Content-Type"] = 'application/json; charset=UTF-8';
+
+    final response = await client.get(
+        Uri.parse(
+            "$baseUrl/api/campuses-nearest?latitude=$latitude&longitude=$longitude"),
+        headers: headers);
+
+    if (response.statusCode == 200) {
+      var jsonList = jsonDecode(response.body) as List;
+      var campuses =
+          jsonList.map((json) => CampusResponse.fromJson(json)).toList();
+
+      // Process logo paths
+      for (var campus in campuses) {
+        if (campus.logoPath != null && campus.logoPath!.isNotEmpty) {
+          campus.logoPath = "$awsUrl${campus.logoPath!}";
+        }
+      }
+
+      return campuses;
+    } else {
+      throw Exception("Oops! Something went wrong");
+    }
+  }
 }

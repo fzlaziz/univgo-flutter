@@ -28,84 +28,87 @@ class Home extends StatelessWidget {
                 ),
               ),
             ),
-            GridView.count(
-              crossAxisCount: 2,
-              childAspectRatio: 2 / 2.5,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: List.generate(4, (index) {
-                // List of different image URLs
-                final imageUrls = [
-                  'assets/images/logo_polines.png',
-                  'assets/images/logo_undip.png',
-                  'assets/images/logo_polkesmar.png',
-                  'assets/images/logo_unnes.png',
-                ];
 
-                // List of different campus names
-                final campusNames = [
-                  'Politeknik Negeri Semarang',
-                  'Universitas Diponegoro',
-                  'Politeknik Kesehatan Semarang',
-                  'Universitas Negeri Semarang',
-                ];
-
-                return Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      ClipRRect(
+            GetX<HomeController>(
+              init: HomeController(),
+              builder: (controller) {
+                if (controller.recommendedCampuses.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: 2 / 2.5,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: List.generate(controller.recommendedCampuses.length,
+                      (index) {
+                    final campus = controller.recommendedCampuses[index];
+                    return Card(
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
-                        child: ColorFiltered(
-                          colorFilter: ColorFilter.mode(
-                            Colors.black.withOpacity(0.5),
-                            BlendMode.darken,
-                          ),
-                          child: Image.asset(
-                            imageUrls[index % imageUrls.length],
-                            fit: BoxFit.cover,
-                          ),
-                        ),
                       ),
-                      Positioned(
-                        top: 16,
-                        left: 16,
-                        right: 16,
-                        child: Container(
-                          height: 40, // Set a fixed height for the container
-                          child: Text(
-                            campusNames[index % campusNames.length],
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(15.0),
+                            child: ColorFiltered(
+                              colorFilter: ColorFilter.mode(
+                                Colors.black.withOpacity(0.5),
+                                BlendMode.darken,
+                              ),
+                              child: Image.network(
+                                campus.logoPath ??
+                                    'https://dummyimage.com/400x600/000/fff',
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(
+                                    Icons.broken_image,
+                                    size: 50,
+                                    color: Colors.grey,
+                                  );
+                                },
+                              ),
                             ),
-                            overflow: TextOverflow.visible, // Allow overflow
                           ),
-                        ),
+                          Positioned(
+                            top: 16,
+                            left: 16,
+                            right: 16,
+                            child: Text(
+                              campus.name,
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.visible,
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 16,
+                            right: 16,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) =>
+                                //         ProfileCampus(campusId: campus.id),
+                                //   ),
+                                // );
+                              },
+                              child: Text('More'),
+                            ),
+                          ),
+                        ],
                       ),
-                      Positioned(
-                        bottom: 16,
-                        right: 16,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProfileCampus()),
-                            );
-                          },
-                          child: Text('More'),
-                        ),
-                      ),
-                    ],
-                  ),
+                    );
+                  }),
                 );
-              }),
+              },
             ),
+
             const SizedBox(
               height: 16,
             ),

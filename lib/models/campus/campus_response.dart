@@ -27,6 +27,7 @@ class CampusResponse {
   final dynamic villageId;
   final Accreditation accreditation;
   final List<DegreeLevel> degreeLevels;
+  double? distance;
 
   CampusResponse({
     required this.id,
@@ -54,6 +55,7 @@ class CampusResponse {
     required this.districtId,
     required this.campusTypeId,
     required this.degreeLevels,
+    this.distance,
   });
 
   factory CampusResponse.fromJson(Map<String, dynamic> json) => CampusResponse(
@@ -83,6 +85,7 @@ class CampusResponse {
         degreeLevels: List<DegreeLevel>.from(
             json["degree_levels"].map((x) => DegreeLevel.fromJson(x))),
         accreditation: Accreditation.fromJson(json["accreditation"]),
+        distance: json['distance'] != null ? json['distance'].toDouble() : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -113,5 +116,6 @@ class CampusResponse {
         "accreditation": accreditation.toJson(),
         "degree_levels":
             List<dynamic>.from(degreeLevels.map((x) => x.toJson())),
+        "distance": distance
       };
 }
