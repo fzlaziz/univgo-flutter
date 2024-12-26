@@ -16,7 +16,6 @@ const String searchResultRoute = "/search_result";
 final TextEditingController searchController = TextEditingController();
 
 var routes = [
-  // GetPage(name: loginRoute, page: () => const LoginScreen()),
   GetPage(
     name: searchRoute,
     page: () => SearchEntry(searchController: searchController),
@@ -36,11 +35,11 @@ var routes = [
   GetPage(
     name: '/register',
     page: () =>
-        const RegisterScreen(), // Sesuaikan dengan nama class register Anda
+        const RegisterScreen(),
   ),
   GetPage(
     name: '/splashscreen',
     page: () =>
-        const SplashScreen(), // Sesuaikan dengan nama class register Anda
+        const SplashScreen(),
   ),
 ];

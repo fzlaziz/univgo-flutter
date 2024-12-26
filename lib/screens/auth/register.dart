@@ -141,7 +141,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Lottie.asset(
-                'animations/loading.json',
+                'assets/animations/loading.json',
                 width: 100,
                 height: 100,
                 fit: BoxFit.contain,
@@ -242,7 +242,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Lottie.asset(
-                'animations/success.json',
+                'assets/animations/success.json',
                 width: 150,
                 height: 150,
                 repeat: false,

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:univ_go/screens/auth/login.dart';
@@ -23,9 +24,6 @@ class ProfilePageState extends State<ProfilePage> {
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
 
-  // Base URL for image loading
-  static const String BASE_URL = 'http://10.0.2.2:8000/storage/profile_images';
-
   @override
   void initState() {
     super.initState();
@@ -39,12 +37,7 @@ class ProfilePageState extends State<ProfilePage> {
       setState(() {
         // Extract and store profile image URL
         _profileImageUrl = profileData['profile_image'];
-        print("GAMBAR");
-        print("GAMBAR2");
-        print("GAMBAR3");
-        print('$BASE_URL/$_profileImageUrl');
-        print("GAMBAR");
-        print("GAMBAR");
+        print('$_profileImageUrl');
         // Pre-fill controllers
         nameController.text = profileData['name'] ?? '';
         emailController.text = profileData['email'] ?? '';
@@ -111,7 +104,7 @@ class ProfilePageState extends State<ProfilePage> {
         child: CachedNetworkImage(
           fadeInDuration: Duration.zero,
           fadeOutDuration: Duration.zero,
-          imageUrl: '$BASE_URL/${_profileImageUrl!}',
+          imageUrl: '${_profileImageUrl!}',
           imageBuilder: (context, imageProvider) => CircleAvatar(
             radius: 50,
             backgroundImage: imageProvider,
@@ -163,23 +156,16 @@ class ProfilePageState extends State<ProfilePage> {
           actionsAlignment: MainAxisAlignment.center,
           title: Row(
             children: [
-              // const Icon(
-              //   Icons.warning_amber_rounded,
-              //   color: Colors.redAccent,
-              // ),
-              // const SizedBox(width: 8),
-              const Text(
+              Text(
                 'Confirm Logout',
-                style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
+                style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ],
           ),
-          content: const Text(
+          content: Text(
             'Are you sure you want to log out?',
-            style: TextStyle(fontFamily: 'Poppins'),
+            style: GoogleFonts.poppins(),
           ),
           actionsPadding:
               const EdgeInsets.only(bottom: 10, left: 10, right: 10),
@@ -187,7 +173,7 @@ class ProfilePageState extends State<ProfilePage> {
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(false), // Cancel
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.grey[800],
+                foregroundColor: Colors.black,
                 backgroundColor: Colors.grey[300],
                 elevation: 0,
                 padding:
@@ -196,10 +182,9 @@ class ProfilePageState extends State<ProfilePage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Cancel',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -215,10 +200,9 @@ class ProfilePageState extends State<ProfilePage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Logout',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -307,22 +291,21 @@ class ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 6),
                 Text(
                   userData['name'] ?? '',
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'Poppins',
                   ),
                 ),
                 Text(
                   userData['email'] ?? '',
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.normal,
-                    fontFamily: 'Poppins',
                   ),
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 30),
                 profileDetail('Nama Lengkap', nameController, isEditing),
+                const SizedBox(height: 15),
                 profileDetail('Email', emailController, isEditing),
                 const SizedBox(height: 16),
                 ElevatedButton.icon(
@@ -337,8 +320,7 @@ class ProfilePageState extends State<ProfilePage> {
                   icon: const Icon(Icons.edit, color: Colors.black),
                   label: Text(
                     isEditing ? 'Save Profile' : 'Edit Profile',
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -356,10 +338,9 @@ class ProfilePageState extends State<ProfilePage> {
                 ElevatedButton.icon(
                   onPressed: () => showChangePasswordDialog(context),
                   icon: const Icon(Icons.lock, color: Colors.black),
-                  label: const Text(
-                    'Change Password',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
+                  label: Text(
+                    'Ganti Password',
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -377,10 +358,9 @@ class ProfilePageState extends State<ProfilePage> {
                 ElevatedButton.icon(
                   onPressed: () => _logout(context),
                   icon: const Icon(Icons.logout, color: Colors.white),
-                  label: const Text(
+                  label: Text(
                     'Logout',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -409,10 +389,9 @@ class ProfilePageState extends State<ProfilePage> {
       children: [
         Text(
           title,
-          style: const TextStyle(
+          style: GoogleFonts.poppins(
             fontSize: 16,
             fontWeight: FontWeight.normal,
-            fontFamily: 'Poppins',
           ),
         ),
         const SizedBox(height: 4),
@@ -427,18 +406,16 @@ class ProfilePageState extends State<ProfilePage> {
           child: isEditing
               ? TextField(
                   controller: controller,
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 16.0,
                     color: Colors.black87,
-                    fontFamily: 'Poppins',
                   ),
                 )
               : Text(
                   controller.text,
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 16.0,
                     color: Colors.black87,
-                    fontFamily: 'Poppins',
                   ),
                 ),
         ),
@@ -495,12 +472,11 @@ class ProfilePageState extends State<ProfilePage> {
           backgroundColor: Colors.white,
           title: Center(
             child: Text(
-              'Change Password',
-              style: TextStyle(
+              'Ganti Password',
+              style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.blueAccent,
-                fontFamily: 'Poppins',
+                color: Colors.black,
               ),
             ),
           ),
@@ -509,7 +485,7 @@ class ProfilePageState extends State<ProfilePage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildPasswordInputField(
-                  'Current Password',
+                  'Password Saat Ini',
                   controller: currentPasswordController,
                   obscureText: true,
                 ),
@@ -530,12 +506,20 @@ class ProfilePageState extends State<ProfilePage> {
           ),
           actionsAlignment: MainAxisAlignment.center,
           actions: <Widget>[
-            TextButton(
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              ),
               onPressed: () => Navigator.pop(context),
-              child: const Text(
+              child: Text(
                 'Cancel',
-                style:
-                    TextStyle(color: Colors.redAccent, fontFamily: 'Poppins'),
+                style: GoogleFonts.poppins(
+                    color: Colors.white, fontWeight: FontWeight.w600),
               ),
             ),
             ElevatedButton(
@@ -562,9 +546,10 @@ class ProfilePageState extends State<ProfilePage> {
                           result['message'] ?? 'Unexpected server response')),
                 );
               },
-              child: const Text(
+              child: Text(
                 'Submit',
-                style: TextStyle(color: Colors.white, fontFamily: 'Poppins'),
+                style: GoogleFonts.poppins(
+                    color: Colors.white, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -581,7 +566,7 @@ class ProfilePageState extends State<ProfilePage> {
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle:
-            TextStyle(color: Colors.grey.shade600, fontFamily: 'Poppins'),
+            GoogleFonts.poppins(color: Colors.grey.shade600, fontSize: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: Colors.grey.shade400),

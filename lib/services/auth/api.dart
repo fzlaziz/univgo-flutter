@@ -95,6 +95,7 @@ class Api {
       final uri = Uri.parse('$baseUrl/api/upload-profile-image');
       final request = http.MultipartRequest('POST', uri)
         ..headers['Authorization'] = 'Bearer $_token'
+        ..headers['Accept'] = 'application/json'
         ..files.add(await http.MultipartFile.fromPath(
           'profile_image',
           imageFile.path,
