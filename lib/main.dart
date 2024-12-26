@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:univ_go/controller/home_controller.dart';
 import 'package:univ_go/routes/route.dart';
 import 'package:univ_go/components/appbar/custom_app_bar.dart';
 import 'package:univ_go/components/navbar/bottom_navbar.dart';
@@ -58,6 +59,19 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+  Future<void> _refreshTab() async {
+    await Future.delayed(const Duration(seconds: 1));
+
+    setState(() {
+      if (_selectedIndex == 0) {
+        Get.delete<HomeController>(force: true);
+        index[0] = Home(key: UniqueKey());
+      } else if (_selectedIndex == 2) {
+        index[2] = ProfilePage(key: UniqueKey());
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -92,7 +106,19 @@ class _MainPageState extends State<MainPage> {
               child: BottomNavBar(
                   selectedIndex: _selectedIndex, onItemTapped: _onItemTapped),
             ),
-      body: index[_selectedIndex],
+      // body: index[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: index.map((widget) {
+          return RefreshIndicator(
+            onRefresh: _refreshTab,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: widget,
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 }

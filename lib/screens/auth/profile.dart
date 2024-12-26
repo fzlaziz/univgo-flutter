@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:univ_go/screens/auth/login.dart';
+import 'package:univ_go/screens/auth/shimmer/profile_shimmer_loading.dart';
 import 'package:univ_go/services/auth/api.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -247,7 +247,7 @@ class ProfilePageState extends State<ProfilePage> {
         future: userProfile,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const ProfileShimmerLoading();
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }

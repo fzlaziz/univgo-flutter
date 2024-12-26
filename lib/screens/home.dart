@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:univ_go/components/card/latest_news_placeholder.dart';
 import 'package:univ_go/components/card/top_campus_placeholder.dart';
 import 'package:univ_go/components/card/recommended_campus_placeholder.dart';
 import 'package:univ_go/screens/news/news_list.dart';
@@ -423,7 +424,7 @@ class Home extends StatelessWidget {
               init: HomeController(), // Inisialisasi HomeController
               builder: (controller) {
                 if (controller.latestNews.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const NewsPlaceholder();
                 } else {
                   return GridView.count(
                     crossAxisCount: 2,

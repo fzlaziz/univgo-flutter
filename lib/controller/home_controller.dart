@@ -21,7 +21,7 @@ class HomeController extends GetxController {
   final RxBool isLocationDenied = false.obs;
 
   // Cache duration constants
-  static const campusCacheDuration = Duration(minutes: 30);
+  static const campusCacheDuration = Duration(minutes: 1);
   static const newsCacheDuration = Duration(minutes: 1);
   static const locationThreshold = 0.01; // Roughly 1km difference
 
@@ -39,6 +39,18 @@ class HomeController extends GetxController {
   Future<void> loadCachedData() async {
     final prefs = await SharedPreferences.getInstance();
 
+    // Load recommended campuses
+    final recommendedTime = DateTime.fromMillisecondsSinceEpoch(
+        prefs.getInt('recommendedTimestamp') ?? 0);
+    if (DateTime.now().difference(recommendedTime) < campusCacheDuration) {
+      final cachedRecommended = prefs.getString('recommendedCampuses');
+      if (cachedRecommended != null) {
+        List<dynamic> jsonList = jsonDecode(cachedRecommended);
+        recommendedCampuses.value =
+            jsonList.map((json) => CampusResponse.fromJson(json)).toList();
+      }
+    }
+
     // Load campus data
     final campusDataTime = DateTime.fromMillisecondsSinceEpoch(
         prefs.getInt('campusDataTimestamp') ?? 0);
@@ -51,18 +63,6 @@ class HomeController extends GetxController {
         ptnList.value = topCampusData.ptn;
         politeknikList.value = topCampusData.politeknik;
         swastaList.value = topCampusData.swasta;
-      }
-    }
-
-    // Load recommended campuses
-    final recommendedTime = DateTime.fromMillisecondsSinceEpoch(
-        prefs.getInt('recommendedTimestamp') ?? 0);
-    if (DateTime.now().difference(recommendedTime) < campusCacheDuration) {
-      final cachedRecommended = prefs.getString('recommendedCampuses');
-      if (cachedRecommended != null) {
-        List<dynamic> jsonList = jsonDecode(cachedRecommended);
-        recommendedCampuses.value =
-            jsonList.map((json) => CampusResponse.fromJson(json)).toList();
       }
     }
 
@@ -82,6 +82,9 @@ class HomeController extends GetxController {
   Future<void> refreshDataIfNeeded() async {
     final prefs = await SharedPreferences.getInstance();
 
+    // Initialize location and recommended campuses
+    await initializeLocation();
+
     // Check campus data cache
     final lastCampusRefresh = DateTime.fromMillisecondsSinceEpoch(
         prefs.getInt('campusDataTimestamp') ?? 0);
@@ -95,9 +98,6 @@ class HomeController extends GetxController {
     if (DateTime.now().difference(lastNewsRefresh) > newsCacheDuration) {
       await getLatestNews();
     }
-
-    // Initialize location and recommended campuses
-    await initializeLocation();
   }
 
   Future<bool> shouldUpdateLocation() async {
@@ -123,7 +123,7 @@ class HomeController extends GetxController {
         await locationService.updateLocation();
         isLocationReady.value = true;
 
-        if (await shouldUpdateLocation()) {
+        if (true) {
           await fetchRecommendedCampuses();
 
           final prefs = await SharedPreferences.getInstance();
