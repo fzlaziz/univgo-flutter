@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:univ_go/const/theme_color.dart';
 import 'package:univ_go/screens/auth/login.dart';
 import 'package:univ_go/services/auth/api.dart';
@@ -47,6 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       TextEditingController();
 
   final Api api = Api(); // Initialize API instance
+  final RxBool _isLoading = false.obs;
 
   @override
   void initState() {
@@ -81,7 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _validateUsername() {
     final username = _userController.text.trim();
     setState(() {
-      _usernameError = username.isEmpty ? 'Username Tidak Boleh Kosong' : null;
+      _usernameError = username.isEmpty ? 'Nama Tidak Boleh Kosong' : null;
     });
   }
 
@@ -124,8 +126,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // Register the user
+  void _showLoadingDialog() {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Lottie.asset(
+                'animations/loading.json',
+                width: 100,
+                height: 100,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Mendaftarkan akun...',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
+
+  // Updated register method with loading state
   Future<void> _register() async {
+    if (_isLoading.value) return; // Prevent multiple submissions
+
     _validatePassword();
     _validateConfirmPassword();
     _validateEmail();
@@ -150,49 +190,108 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    final result = await api.register(
-      email: email,
-      name: username,
-      password: password,
-      passwordConfirmation: confirmPassword,
-    );
+    try {
+      _isLoading.value = true;
+      _showLoadingDialog();
 
-    if (result['message']?.toLowerCase().contains('success') == true) {
-      _showMessage(result['message'], backgroundColor: Colors.green);
-      _showRegistrationDialog();
-    } else {
-      _showMessage(result['message'] ?? 'Registrasi gagal');
+      // Add artificial delay to show loading animation (optional)
+      await Future.delayed(const Duration(milliseconds: 1500));
+
+      final result = await api.register(
+        email: email,
+        name: username,
+        password: password,
+        passwordConfirmation: confirmPassword,
+      );
+
+      Get.back(); // Close loading dialog
+
+      if (result['message']?.toLowerCase().contains('success') == true) {
+        _showMessage(result['message'], backgroundColor: Colors.green);
+        _showSuccessDialog();
+      } else {
+        _showMessage(result['message'] ?? 'Registrasi gagal');
+      }
+    } catch (e) {
+      Get.back(); // Close loading dialog
+      _showMessage('Terjadi kesalahan saat mendaftar');
+    } finally {
+      _isLoading.value = false;
     }
   }
 
-  // Show registration success dialog
-  void _showRegistrationDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            'Registrasi Berhasil',
-            style: GoogleFonts.poppins(),
-          ),
-          content: Text(
-            'Cek Email dan Verifikasi Akun Anda',
-            style: GoogleFonts.poppins(),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                'Login',
-                style: GoogleFonts.poppins(),
+  void _showSuccessDialog() {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 5,
+                blurRadius: 10,
               ),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/login');
-              },
-            )
-          ],
-        );
-      },
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Lottie.asset(
+                'animations/success.json',
+                width: 150,
+                height: 150,
+                repeat: false,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Registrasi Berhasil!',
+                style: GoogleFonts.poppins(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(blueTheme),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Cek Email dan Verifikasi Akun Anda',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Get.offAll(() => const LoginPage()),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue[800],
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Ke Halaman Login',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
     );
   }
 
@@ -269,7 +368,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildUserField() {
     return _buildTextField(
       controller: _userController,
-      hintText: 'Masukan Username',
+      hintText: 'Masukan Nama Lengkap',
       errorText: _usernameError,
     );
   }
@@ -300,19 +399,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  // Updated register button widget
   Widget _buildRegisterButton() {
-    return ElevatedButton(
-      onPressed: _register,
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      child: Text('Daftar',
-          style: GoogleFonts.poppins(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: const Color(blueTheme))),
-    );
+    return Obx(() => ElevatedButton(
+          onPressed: _isLoading.value ? null : _register,
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          child: _isLoading.value
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    color: Color(blueTheme),
+                    strokeWidth: 2,
+                  ),
+                )
+              : Text(
+                  'Daftar',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Color(blueTheme),
+                  ),
+                ),
+        ));
   }
 
   Widget _buildSignUpText() {

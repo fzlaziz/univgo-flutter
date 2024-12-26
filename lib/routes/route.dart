@@ -35,10 +35,12 @@ var routes = [
   ),
   GetPage(
     name: '/register',
-    page: () => const RegisterScreen(), // Sesuaikan dengan nama class register Anda
+    page: () =>
+        const RegisterScreen(), // Sesuaikan dengan nama class register Anda
   ),
   GetPage(
     name: '/splashscreen',
-    page: () => const SplashScreen(), // Sesuaikan dengan nama class register Anda
+    page: () =>
+        const SplashScreen(), // Sesuaikan dengan nama class register Anda
   ),
 ];

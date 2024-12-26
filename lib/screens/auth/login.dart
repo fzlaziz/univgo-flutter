@@ -2,8 +2,10 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:univ_go/const/theme_color.dart';
 import 'package:univ_go/screens/auth/register.dart';
 import 'package:univ_go/services/auth/api.dart';
+import 'package:lottie/lottie.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,7 +36,43 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isPasswordVisible = false; // Variable to manage password visibility
+  bool _isPasswordVisible = false;
+  final RxBool _isLoading = false.obs;
+
+  void _showLoadingDialog() {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Lottie.asset(
+                'animations/loading.json',
+                width: 150,
+                height: 150,
+                fit: BoxFit.contain,
+              ),
+              Text(
+                'Loading...',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
   TextFormField _buildPasswordField() {
     return TextFormField(
       controller: _passwordController,
-      obscureText: !_isPasswordVisible, // Toggle password visibility
+      obscureText: !_isPasswordVisible,
       decoration: InputDecoration(
         labelText: 'Password',
         labelStyle: GoogleFonts.poppins(),
@@ -110,13 +148,11 @@ class _LoginPageState extends State<LoginPage> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         suffixIcon: IconButton(
           icon: Icon(
-            _isPasswordVisible
-                ? Icons.visibility
-                : Icons.visibility_off, // Change icon based on visibility
+            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
           ),
           onPressed: () {
             setState(() {
-              _isPasswordVisible = !_isPasswordVisible; // Toggle visibility
+              _isPasswordVisible = !_isPasswordVisible;
             });
           },
         ),
@@ -128,31 +164,41 @@ class _LoginPageState extends State<LoginPage> {
     return SizedBox(
       width: double.infinity,
       height: 50,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue[800],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        onPressed: _login,
-        child: Text(
-          'Login',
-          style: GoogleFonts.poppins(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ),
+      child: Obx(() => ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue[800],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: _isLoading.value ? null : _login,
+            child: _isLoading.value
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : Text(
+                    'Login',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+          )),
     );
   }
 
   Future<void> _login() async {
+    if (_isLoading.value) return;
+
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    // Validasi input
     if (email.isEmpty) {
       _showSnackBar('Email is required', Colors.red);
       return;
@@ -162,37 +208,47 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    // Memanggil API untuk login
-    final result = await Api().login(email: email, password: password);
+    try {
+      _isLoading.value = true;
+      _showLoadingDialog();
 
-    // Menangani hasil
-    if (result['status_code'] == 401) {
-      _showSnackBar(result["message"] ?? 'Gagal melakukan login', Colors.red);
-    } else if (result.containsKey('token')) {
-      await Api().setToken(result['token']);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String username = result['username'] ?? 'default_username';
-      await prefs.setString('username', username);
+      await Future.delayed(const Duration(milliseconds: 1000));
 
-      _showSnackBar('Login successful', Colors.green);
-      await Future.delayed(const Duration(seconds: 1));
-      Navigator.pushReplacementNamed(context, '/home');
-    } else {
-      _showSnackBar('Unexpected response from server', Colors.red);
+      final result = await Api().login(email: email, password: password);
+
+      Get.back();
+
+      if (result['status_code'] == 401) {
+        _showSnackBar(result["message"] ?? 'Gagal melakukan login', Colors.red);
+      } else if (result.containsKey('token')) {
+        await Api().setToken(result['token']);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String username = result['username'] ?? 'default_username';
+        await prefs.setString('username', username);
+
+        _showSnackBar('Login successful', const Color(blueTheme));
+        await Future.delayed(const Duration(seconds: 1));
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        _showSnackBar('Unexpected response from server', Colors.red);
+      }
+    } catch (e) {
+      Get.back();
+      _showSnackBar('An error occurred', Colors.red);
+    } finally {
+      _isLoading.value = false;
     }
   }
 
   void _showSnackBar(String message, Color backgroundColor) {
-    Get.snackbar(
-      '',
-      message,
+    Get.rawSnackbar(
+      message: message,
       backgroundColor: backgroundColor,
-      colorText: Colors.white,
       duration: const Duration(seconds: 2),
       margin: const EdgeInsets.all(10),
       borderRadius: 10,
       snackStyle: SnackStyle.FLOATING,
-      titleText: Container(),
+      snackPosition: SnackPosition.TOP,
     );
   }
 

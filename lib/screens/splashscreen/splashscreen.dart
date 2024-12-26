@@ -106,7 +106,7 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
           Positioned(
-            bottom: 100,
+            bottom: 90,
             right: 40,
             child: CircleAvatar(
               radius: 40,
