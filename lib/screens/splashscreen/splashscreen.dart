@@ -51,11 +51,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Timer to navigate to the next screen after 3 seconds
     Timer(const Duration(seconds: 4), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-            builder: (context) =>
-                const LoginPage()), // Replace with your next screen
-      );
+      Navigator.of(context).pushReplacementNamed('/login');
     });
   }
 

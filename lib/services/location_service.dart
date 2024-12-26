@@ -9,6 +9,12 @@ class LocationService {
 
   LocationService([this.context]);
 
+  Future<bool> hasLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    return permission == LocationPermission.whileInUse || 
+           permission == LocationPermission.always;
+  }
+
   Future<void> loadUserLocation() async {
     final prefs = await SharedPreferences.getInstance();
     userLatitude = prefs.getDouble('userLatitude');
@@ -16,8 +22,6 @@ class LocationService {
 
     if (userLatitude == null || userLongitude == null) {
       await _getCurrentPosition();
-      userLatitude = prefs.getDouble('userLatitude');
-      userLongitude = prefs.getDouble('userLongitude');
     }
   }
 
@@ -29,46 +33,56 @@ class LocationService {
     final hasPermission = await _handleLocationPermission();
     if (!hasPermission) return;
 
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      
       userLatitude = position.latitude;
       userLongitude = position.longitude;
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setDouble('userLatitude', position.latitude);
       await prefs.setDouble('userLongitude', position.longitude);
-    }).catchError((e) {
-      debugPrint(e);
-    });
+    } catch (e) {
+      debugPrint('Error getting current position: $e');
+      rethrow;
+    }
   }
 
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context!).showSnackBar(const SnackBar(
-          content: Text('Izin Lokasi dimatikan, mohon aktifkan izin lokasi.')));
-      return false;
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context!).showSnackBar(
-            const SnackBar(content: Text('Izin Lokasi ditolak.')));
+    try {
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled && context != null) {
+        ScaffoldMessenger.of(context!).showSnackBar(const SnackBar(
+            content: Text('Izin Lokasi dimatikan, mohon aktifkan izin lokasi.')));
         return false;
       }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context!).showSnackBar(const SnackBar(
-          content: Text(
-              'Izin Lokasi ditolak secara permanen, buka pengaturan untuk mengaktifkan izin lokasi.')));
+
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied && context != null) {
+          ScaffoldMessenger.of(context!).showSnackBar(
+              const SnackBar(content: Text('Izin Lokasi ditolak.')));
+          return false;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever && context != null) {
+        ScaffoldMessenger.of(context!).showSnackBar(const SnackBar(
+            content: Text(
+                'Izin Lokasi ditolak secara permanen, buka pengaturan untuk mengaktifkan izin lokasi.')));
+        return false;
+      }
+
+      return permission == LocationPermission.whileInUse || 
+             permission == LocationPermission.always;
+    } catch (e) {
+      debugPrint('Error handling location permission: $e');
       return false;
     }
-    return true;
   }
 }

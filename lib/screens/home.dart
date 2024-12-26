@@ -22,7 +22,7 @@ class Home extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Rekomendasi untuk Anda',
+                'Rekomendasi Kampus Terdekat',
                 style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 18,
@@ -30,7 +30,7 @@ class Home extends StatelessWidget {
                 ),
               ),
             ),
-
+            const SizedBox(height: 16),
             GetX<HomeController>(
               init: HomeController(),
               builder: (controller) {

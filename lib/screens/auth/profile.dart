@@ -217,9 +217,7 @@ class ProfilePageState extends State<ProfilePage> {
 
         if (response['status_code'] == 200) {
           // Navigate to login screen and remove all previous routes
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const LoginPage()),
-          );
+          Navigator.of(context).pushReplacementNamed('/login');
         } else {
           // Show error message
           ScaffoldMessenger.of(context).showSnackBar(

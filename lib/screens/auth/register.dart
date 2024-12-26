@@ -269,7 +269,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => Get.offAll(() => const LoginPage()),
+                  onPressed: () => Get.offAllNamed('/login'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue[800],
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -438,7 +438,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         GestureDetector(
           onTap: () {
-            Get.off(() => const LoginPage());
+            Get.offNamed('/login');
           },
           child: Text(
             "Login",
