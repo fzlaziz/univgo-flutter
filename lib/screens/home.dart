@@ -92,6 +92,12 @@ class Home extends StatelessWidget {
                             bottom: 16,
                             right: 16,
                             child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+                              ),
                               onPressed: () {
                                 // Navigator.push(
                                 //   context,
@@ -101,7 +107,10 @@ class Home extends StatelessWidget {
                                 //   ),
                                 // );
                               },
-                              child: Text('More'),
+                              child: const Icon(
+                                Icons.arrow_outward,
+                                color: Colors.black,
+                              ),
                             ),
                           ),
                         ],

@@ -69,6 +69,11 @@ class _MainPageState extends State<MainPage> {
       } else if (_selectedIndex == 2) {
         index[2] = ProfilePage(key: UniqueKey());
       }
+
+      if (_selectedIndex == 0) {
+        Get.put(
+            HomeController()); // Reinitialize the controller after the rebuild
+      }
     });
   }
 
