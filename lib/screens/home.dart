@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:univ_go/components/card/top_campus_placeholder.dart';
+import 'package:univ_go/components/card/recommended_campus_placeholder.dart';
 import 'package:univ_go/screens/news/news_list.dart';
 import 'package:univ_go/screens/campus/profile_campus.dart';
 import 'package:univ_go/const/theme_color.dart';
@@ -33,7 +35,7 @@ class Home extends StatelessWidget {
               init: HomeController(),
               builder: (controller) {
                 if (controller.recommendedCampuses.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const RecommendedCampusesPlaceholder();
                 }
                 return GridView.count(
                   crossAxisCount: 2,
@@ -127,7 +129,7 @@ class Home extends StatelessWidget {
               init: HomeController(), // Inisialisasi HomeController
               builder: (controller) {
                 if (controller.ptnList.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const CampusPlaceholderList();
                 } else {
                   return SizedBox(
                     height: MediaQuery.of(context).size.height / 3.5,
@@ -212,7 +214,7 @@ class Home extends StatelessWidget {
               init: HomeController(), // Inisialisasi HomeController
               builder: (controller) {
                 if (controller.politeknikList.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const CampusPlaceholderList();
                 } else {
                   return SizedBox(
                     height: MediaQuery.of(context).size.height / 3.5,
@@ -297,7 +299,7 @@ class Home extends StatelessWidget {
               init: HomeController(), // Inisialisasi HomeController
               builder: (controller) {
                 if (controller.swastaList.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const CampusPlaceholderList();
                 } else {
                   return SizedBox(
                     height: MediaQuery.of(context).size.height / 3.5,

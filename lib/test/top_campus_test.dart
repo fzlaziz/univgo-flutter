@@ -18,14 +18,42 @@ void main() async {
 
   await dotenv.load(fileName: ".env");
 
-  test('Response Api PTN', () async {
-    final provider = TopCampusProvider();
-    var result = await provider.getSwasta();
+  group('TopCampusProvider Tests', () {
+    test('Response Api Should Return All Campus Types', () async {
+      final provider = TopCampusProvider();
+      var result = await provider.getAllCampuses();
 
-    for (var campus in result) {
-      campus.toJson().forEach((key, value) {
-        print('$key: $value');
-      });
-    }
+      // Test PTN data
+      print('\nPTN Campuses:');
+      for (var campus in result.ptn) {
+        print('\nCampus Details:');
+        campus.toJson().forEach((key, value) {
+          print('$key: $value');
+        });
+      }
+
+      // Test Politeknik data
+      print('\nPoliteknik Campuses:');
+      for (var campus in result.politeknik) {
+        print('\nCampus Details:');
+        campus.toJson().forEach((key, value) {
+          print('$key: $value');
+        });
+      }
+
+      // Test Swasta data
+      print('\nSwasta Campuses:');
+      for (var campus in result.swasta) {
+        print('\nCampus Details:');
+        campus.toJson().forEach((key, value) {
+          print('$key: $value');
+        });
+      }
+
+      // Add assertions
+      expect(result.ptn, isNotEmpty);
+      expect(result.politeknik, isNotEmpty);
+      expect(result.swasta, isNotEmpty);
+    });
   });
 }

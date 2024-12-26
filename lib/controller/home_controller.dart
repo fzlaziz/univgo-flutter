@@ -22,37 +22,19 @@ class HomeController extends GetxController {
     super.onInit();
     locationService.loadUserLocation();
     locationService.updateLocation();
-    getPtnData();
-    getPoliteknikData();
-    getSwastaData();
+    getAllCampusData();
     getLatestNews();
     fetchRecommendedCampuses();
   }
 
-  void getPtnData() async {
+  void getAllCampusData() async {
     try {
-      var result = await TopCampusProvider().getPtn();
-      ptnList.value = result;
+      final result = await TopCampusProvider().getAllCampuses();
+      ptnList.value = result.ptn;
+      politeknikList.value = result.politeknik;
+      swastaList.value = result.swasta;
     } catch (e) {
-      print('Error fetching PTN data: $e');
-    }
-  }
-
-  void getPoliteknikData() async {
-    try {
-      var result = await TopCampusProvider().getPoliteknik();
-      politeknikList.value = result;
-    } catch (e) {
-      print('Error fetching Politeknik data: $e');
-    }
-  }
-
-  void getSwastaData() async {
-    try {
-      var result = await TopCampusProvider().getSwasta();
-      swastaList.value = result;
-    } catch (e) {
-      print('Error fetching Swasta data: $e');
+      print('Error fetching campus data: $e');
     }
   }
 

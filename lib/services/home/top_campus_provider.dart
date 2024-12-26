@@ -132,48 +132,23 @@ class TopCampusProvider {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
   String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
 
-  Future<List<Ptn>> getPtn() async {
+  Future<TopCampusList> getAllCampuses() async {
     final response = await http.get(Uri.parse('$baseUrl/api/campuses/top-10'));
-    if (response.statusCode == 200) {
-      final data = topCampusListFromJson(response.body);
-      data.ptn.forEach((campus) {
-        if (campus.logoPath != null) {
-          campus.logoPath = "$awsUrl/${campus.logoPath!}";
-        }
-      });
-      return data.ptn;
-    } else {
-      throw Exception('Failed to fetch PTN data');
-    }
-  }
 
-  Future<List<Ptn>> getPoliteknik() async {
-    final response = await http.get(Uri.parse('$baseUrl/api/campuses/top-10'));
     if (response.statusCode == 200) {
       final data = topCampusListFromJson(response.body);
-      data.politeknik.forEach((campus) {
-        if (campus.logoPath != null) {
-          campus.logoPath = "$awsUrl/${campus.logoPath!}";
-        }
-      });
-      return data.politeknik;
-    } else {
-      throw Exception('Failed to fetch Politeknik data');
-    }
-  }
 
-  Future<List<Ptn>> getSwasta() async {
-    final response = await http.get(Uri.parse('$baseUrl/api/campuses/top-10'));
-    if (response.statusCode == 200) {
-      final data = topCampusListFromJson(response.body);
-      data.swasta.forEach((campus) {
-        if (campus.logoPath != null) {
-          campus.logoPath = "$awsUrl/${campus.logoPath!}";
+      for (var list in [data.ptn, data.politeknik, data.swasta]) {
+        for (var campus in list) {
+          if (campus.logoPath != null) {
+            campus.logoPath = "$awsUrl/${campus.logoPath!}";
+          }
         }
-      });
-      return data.swasta;
+      }
+
+      return data;
     } else {
-      throw Exception('Failed to fetch Swasta data');
+      throw Exception('Failed to fetch campus data');
     }
   }
 }
