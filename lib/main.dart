@@ -3,8 +3,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:univ_go/routes/route.dart';
 import 'package:univ_go/components/appbar/custom_app_bar.dart';
 import 'package:univ_go/components/navbar/bottom_navbar.dart';
+import 'package:univ_go/screens/auth/profile.dart';
 import 'package:univ_go/screens/home.dart';
-import 'package:univ_go/screens/profile/profile.dart';
 import 'package:univ_go/services/api_data_provider.dart';
 import 'package:get/get.dart';
 import 'package:univ_go/const/theme_color.dart';
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Univ Go',
-      initialRoute: '/home',
+      initialRoute: '/splashscreen',
       getPages: routes,
     );
   }
@@ -73,7 +73,7 @@ class _MainPageState extends State<MainPage> {
   var index = [
     const Home(),
     const Center(),
-    const Profile(),
+    const ProfilePage(),
   ];
 
   @override

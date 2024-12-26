@@ -1,132 +1,122 @@
-import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
+import 'package:univ_go/screens/auth/register.dart';
+import 'package:univ_go/services/auth/api.dart';
 
-const blueTheme = 0xff0059ff;
-const greyTheme = 0xff808080;
-void main() => runApp(MainApp());
+void main() {
+  runApp(const MyApp());
+}
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Login Screen',
-      home: LoginScreen(),
+    return GetMaterialApp(
+      title: 'Login Page',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const LoginPage(),
     );
   }
 }
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  bool _obscureText = true;
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false; // Variable to manage password visibility
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              const SizedBox(height: 80),
-              _buildLogo(),
-              const SizedBox(height: 24),
-              _buildLoginText(),
-              const SizedBox(height: 32),
-              _buildEmailField(),
-              const SizedBox(height: 16),
-              _buildPasswordField(),
-              const SizedBox(height: 24),
-              _buildLoginButton(),
-              const SizedBox(height: 24),
-              _buildDivider(),
-              const SizedBox(height: 24),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[300]!),
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 100), // Padding atas
+                // Tambahkan logo di sini
+                Image.asset(
+                  'assets/images/logo.png', // Path ke logo Anda
+                  height: 100, // Atur tinggi sesuai kebutuhan
+                  width: 100, // Atur lebar sesuai kebutuhan
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.network(
-                        'https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-1024.png',
-                        height: 50),
-                  ],
+                const SizedBox(height: 20), // Spacing di bawah logo
+                Text(
+                  'Login',
+                  style: GoogleFonts.poppins(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              const Spacer(),
-              _buildSignUpText(),
-              const SizedBox(height: 8),
-              _buildForgotPasswordButton(),
-              const SizedBox(height: 16),
-            ],
+                const SizedBox(height: 8),
+                Text(
+                  'Welcome Back',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                _buildEmailField(),
+                const SizedBox(height: 16),
+                _buildPasswordField(), // Password field with eye icon
+                const SizedBox(height: 24),
+                _buildLoginButton(),
+                const SizedBox(height: 16),
+                _buildSignupAndForgotPasswordLinks(),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildLogo() {
-    return SizedBox(
-      height: 120,
-      child: Image.asset('assets/images/logo.png', fit: BoxFit.contain),
-    );
-  }
-
-  Widget _buildLoginText() {
-    return Column(
-      children: [
-        const Text(
-          'Login',
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Halo Selamat Datang Kembali',
-          style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEmailField() {
-    return TextField(
+  TextFormField _buildEmailField() {
+    return TextFormField(
+      controller: _emailController,
       decoration: InputDecoration(
+        labelText: 'Email',
+        labelStyle: GoogleFonts.poppins(),
         hintText: 'Masukkan Email',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
 
-  Widget _buildPasswordField() {
-    return TextField(
+  TextFormField _buildPasswordField() {
+    return TextFormField(
       controller: _passwordController,
-      obscureText: _obscureText,
+      obscureText: !_isPasswordVisible, // Toggle password visibility
       decoration: InputDecoration(
+        labelText: 'Password',
+        labelStyle: GoogleFonts.poppins(),
         hintText: 'Masukkan Password',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         suffixIcon: IconButton(
-          icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+          icon: Icon(
+            _isPasswordVisible
+                ? Icons.visibility
+                : Icons.visibility_off, // Change icon based on visibility
+          ),
           onPressed: () {
             setState(() {
-              _obscureText = !_obscureText;
+              _isPasswordVisible = !_isPasswordVisible; // Toggle visibility
             });
           },
         ),
@@ -134,113 +124,107 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  bool _isPasswordStrong(String password) {
-    // Cek apakah password memenuhi kriteria kekuatan
-    return password.length >= 8 &&
-        RegExp(r'[A-Z]').hasMatch(password) &&
-        RegExp(r'[a-z]').hasMatch(password) &&
-        RegExp(r'[0-9]').hasMatch(password) &&
-        RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+  SizedBox _buildLoginButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue[800],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        onPressed: _login,
+        child: Text(
+          'Login',
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
   }
 
-  void _showPasswordStrengthDialog(bool isStrong) {
-    // Menampilkan pop-up yang menampilkan kekuatan password
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(isStrong ? 'Password Kuat' : 'Password Lemah'),
-          content: Text(
-            isStrong
-                ? 'Password Anda kuat dan aman digunakan.'
-                : 'Password Anda lemah, mohon buat password yang lebih kuat.',
-            style: TextStyle(color: isStrong ? Colors.green : Colors.red),
+  Future<void> _login() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    // Validasi input
+    if (email.isEmpty) {
+      _showSnackBar('Email is required', Colors.red);
+      return;
+    }
+    if (password.isEmpty) {
+      _showSnackBar('Password is required', Colors.red);
+      return;
+    }
+
+    // Memanggil API untuk login
+    final result = await Api().login(email: email, password: password);
+
+    // Menangani hasil
+    if (result['status_code'] == 401) {
+      _showSnackBar(result["message"] ?? 'Gagal melakukan login', Colors.red);
+    } else if (result.containsKey('token')) {
+      await Api().setToken(result['token']);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String username = result['username'] ?? 'default_username';
+      await prefs.setString('username', username);
+
+      _showSnackBar('Login successful', Colors.green);
+      await Future.delayed(const Duration(seconds: 1));
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      _showSnackBar('Unexpected response from server', Colors.red);
+    }
+  }
+
+  void _showSnackBar(String message, Color backgroundColor) {
+    Get.snackbar(
+      '',
+      message,
+      backgroundColor: backgroundColor,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 2),
+      margin: const EdgeInsets.all(10),
+      borderRadius: 10,
+      snackStyle: SnackStyle.FLOATING,
+      titleText: Container(),
+    );
+  }
+
+  Column _buildSignupAndForgotPasswordLinks() {
+    return Column(
+      children: [
+        Text(
+          "Belum punya akun? ",
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            color: Colors.black,
           ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
+        ),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Get.off(RegisterScreen());
               },
+              child: Text(
+                "Daftar Sekarang",
+                style: GoogleFonts.poppins(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              ),
             ),
           ],
-        );
-      },
-    );
-  }
-
-  Widget _buildLoginButton() {
-    return ElevatedButton(
-      onPressed: () {
-        // String password = _passwordController.text;
-        // if (_isPasswordStrong(password)) {
-        //   _showPasswordStrengthDialog(true);
-        // } else {
-        //   _showPasswordStrengthDialog(false);
-        // }
-        Navigator.pushReplacementNamed(context, '/home');
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color(blueTheme),
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      child: Text('Login',
-          style: GoogleFonts.poppins(fontSize: 17, color: Colors.white)),
-    );
-  }
-
-  Widget _buildDivider() {
-    return Row(
-      children: <Widget>[
-        const Expanded(child: Divider()),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text('atau login dengan',
-              style: TextStyle(color: Colors.grey[600])),
-        ),
-        const Expanded(child: Divider()),
-      ],
-    );
-  }
-
-  Widget _buildGoogleSignInButton() {
-    return OutlinedButton(
-      onPressed: () {},
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        side: BorderSide(color: Colors.grey[300]!),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset('assets/images/google.png', height: 24),
-          SizedBox(width: 8),
-          Text('Google', style: TextStyle(color: Colors.black87)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSignUpText() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        const Text('Belum punya akun?'),
-        TextButton(
-          child: const Text('Daftar Sekarang',
-              style: TextStyle(color: Colors.blue)),
-          onPressed: () {},
         ),
       ],
-    );
-  }
-
-  Widget _buildForgotPasswordButton() {
-    return TextButton(
-      child: const Text('Lupa Password?', style: TextStyle(color: Colors.blue)),
-      onPressed: () {},
     );
   }
 }
