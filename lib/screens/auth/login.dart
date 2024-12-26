@@ -220,6 +220,9 @@ class _LoginPageState extends State<LoginPage> {
 
       if (result['status_code'] == 401) {
         _showSnackBar(result["message"] ?? 'Gagal melakukan login', Colors.red);
+      } else if (result['status_code'] == 403 &&
+          result['message'] == "Email Belum Di verifikasi") {
+        _showSnackBar('Mohon Verifikasi Email Anda', Colors.red);
       } else if (result.containsKey('token')) {
         await Api().setToken(result['token']);
         SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -73,7 +73,7 @@ class Api {
           )
           .timeout(const Duration(seconds: 10));
 
-      final result = _handleResponse(response);
+      final result = _handleLoginResponse(response);
       if (result.containsKey('token')) {
         await setToken(result['token']);
       }
@@ -258,6 +258,43 @@ class Api {
             'status_code': response.statusCode,
           };
         }
+      } else {
+        return {
+          'message': responseBody['message'] ?? 'Unknown error occurred',
+          'status_code': response.statusCode,
+        };
+      }
+    } catch (e) {
+      print('Non-JSON response received: ${response.body}');
+      return {
+        'message': 'Unexpected response format',
+        'raw_response': response.body,
+        'status_code': response.statusCode,
+      };
+    }
+  }
+
+  Map<String, dynamic> _handleLoginResponse(http.Response response) {
+    print("Status Code: ${response.statusCode}");
+    print("Response Body: ${response.body}");
+    try {
+      final responseBody = jsonDecode(response.body);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        if (responseBody is Map<String, dynamic>) {
+          return responseBody;
+        } else {
+          return {
+            'message': 'Unexpected response format: Not a JSON object',
+            'status_code': response.statusCode,
+          };
+        }
+      } else if (response.statusCode == 403 &&
+          responseBody['message'] ==
+              "Please verify your email before logging in.") {
+        return {
+          'message': 'Email Belum Di verifikasi',
+          'status_code': response.statusCode,
+        };
       } else {
         return {
           'message': responseBody['message'] ?? 'Unknown error occurred',
