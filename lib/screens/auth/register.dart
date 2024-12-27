@@ -40,6 +40,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? _passwordError;
   String? _confirmPasswordError;
 
+  final FocusNode _passwordFocus = FocusNode();
+  final FocusNode _confirmPasswordFocus = FocusNode();
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _userFocus = FocusNode();
+
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _userController = TextEditingController();
@@ -201,6 +206,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _register() async {
+    _emailFocus.unfocus();
+    _userFocus.unfocus();
+    _passwordFocus.unfocus();
+    _confirmPasswordFocus.unfocus();
+    
     if (_isLoading.value) return;
 
     if (!_validateAll()) {
@@ -377,6 +387,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildEmailField() {
     return _buildTextField(
+      focusNode: _emailFocus,
       controller: _emailController,
       hintText: 'Masukan Email',
       errorText: _emailError,
@@ -386,6 +397,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildUserField() {
     return _buildTextField(
+      focusNode: _userFocus,
       controller: _userController,
       hintText: 'Masukan Nama Lengkap',
       errorText: _usernameError,
@@ -395,6 +407,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildPasswordField() {
     return _buildTextField(
+      focusNode: _passwordFocus,
       controller: _passwordController,
       hintText: 'Masukan Password',
       obscureText: _obscureText,
@@ -409,6 +422,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildConfirmPasswordField() {
     return _buildTextField(
+      focusNode: _confirmPasswordFocus,
       controller: _confirmPasswordController,
       hintText: 'Konfirmasi Password',
       obscureText: _obscureText,
@@ -481,11 +495,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     required TextEditingController controller,
     required String hintText,
     required var errorField,
+    required FocusNode focusNode,
     String? errorText,
     bool obscureText = false,
     Widget? suffixIcon,
   }) {
     return TextField(
+      focusNode: focusNode,
       onChanged: (value) {
         if (errorField != null) {
           setState(() {
