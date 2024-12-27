@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:univ_go/const/theme_color.dart';
-import 'package:univ_go/screens/auth/register.dart';
 import 'package:univ_go/services/auth/api.dart';
 import 'package:lottie/lottie.dart';
 

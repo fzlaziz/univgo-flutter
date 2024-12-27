@@ -11,8 +11,8 @@ class LocationService {
 
   Future<bool> hasLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
-    return permission == LocationPermission.whileInUse || 
-           permission == LocationPermission.always;
+    return permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always;
   }
 
   Future<void> loadUserLocation() async {
@@ -34,9 +34,13 @@ class LocationService {
     if (!hasPermission) return;
 
     try {
+      LocationSettings locationSettings = const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      );
       Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      
+          locationSettings: locationSettings);
+
       userLatitude = position.latitude;
       userLongitude = position.longitude;
 
@@ -57,7 +61,8 @@ class LocationService {
       serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled && context != null) {
         ScaffoldMessenger.of(context!).showSnackBar(const SnackBar(
-            content: Text('Izin Lokasi dimatikan, mohon aktifkan izin lokasi.')));
+            content:
+                Text('Izin Lokasi dimatikan, mohon aktifkan izin lokasi.')));
         return false;
       }
 
@@ -78,8 +83,8 @@ class LocationService {
         return false;
       }
 
-      return permission == LocationPermission.whileInUse || 
-             permission == LocationPermission.always;
+      return permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always;
     } catch (e) {
       debugPrint('Error handling location permission: $e');
       return false;
