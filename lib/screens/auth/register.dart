@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:univ_go/const/theme_color.dart';
-import 'package:univ_go/screens/auth/login.dart';
 import 'package:univ_go/services/auth/api.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -53,17 +52,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-
-    // Listen to changes in all fields for real-time validation
-    _emailController.addListener(_validateEmail);
-    _userController.addListener(_validateUsername);
-    _passwordController.addListener(_validatePassword);
-    _confirmPasswordController.addListener(_validateConfirmPassword);
+    _emailController.addListener(() => validateField('email'));
+    _userController.addListener(() => validateField('username'));
+    _passwordController.addListener(() => validateField('password'));
+    _confirmPasswordController.addListener(() => validateField('confirm'));
   }
 
   @override
   void dispose() {
-    // Dispose controllers
     _passwordController.dispose();
     _emailController.dispose();
     _userController.dispose();
@@ -71,58 +67,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  // Email validation
-  void _validateEmail() {
-    final email = _emailController.text.trim();
-    setState(() {
-      _emailError = email.isEmpty ? 'Email Tidak Boleh Kosong' : null;
-    });
-  }
-
-  // Username validation
-  void _validateUsername() {
-    final username = _userController.text.trim();
-    setState(() {
-      _usernameError = username.isEmpty ? 'Nama Tidak Boleh Kosong' : null;
-    });
-  }
-
-  // Password validation
-  void _validatePassword() {
-    final password = _passwordController.text;
-    final hasUpperCase = password.contains(RegExp(r'[A-Z]'));
-    final hasDigits = password.contains(RegExp(r'[0-9]'));
-    final isLengthValid = password.length >= 8;
-    setState(() {
-      _isPasswordValid = hasUpperCase && hasDigits && isLengthValid;
-      _passwordError = !_isPasswordValid && password.isNotEmpty
-          ? 'Password harus minimal 8 karakter, mengandung huruf besar dan angka'
-          : null;
-    });
-  }
-
-  // Confirm password validation
-  void _validateConfirmPassword() {
-    setState(() {
-      _isPasswordMismatch =
-          _passwordController.text != _confirmPasswordController.text;
-      _confirmPasswordError =
-          _isPasswordMismatch ? 'Password Tidak Cocok' : null;
-    });
-  }
-
   // Show message
   void _showMessage(String message, {Color backgroundColor = Colors.red}) {
-    Get.snackbar(
-      '',
-      message,
+    Get.rawSnackbar(
+      message: message,
       backgroundColor: backgroundColor,
-      colorText: Colors.white,
       duration: const Duration(seconds: 2),
       margin: const EdgeInsets.all(10),
       borderRadius: 10,
       snackStyle: SnackStyle.FLOATING,
-      titleText: Container(),
+      snackPosition: SnackPosition.TOP,
     );
   }
 
@@ -142,8 +96,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               Lottie.asset(
                 'assets/animations/loading.json',
-                width: 100,
-                height: 100,
+                width: 150,
+                height: 150,
                 fit: BoxFit.contain,
               ),
               const SizedBox(height: 16),
@@ -162,31 +116,95 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // Updated register method with loading state
+  // Unified validation method
+  void validateField(String field) {
+    setState(() {
+      switch (field) {
+        case 'email':
+          final email = _emailController.text.trim();
+          if (email.isEmpty) {
+            _emailError = 'Email tidak boleh kosong';
+          } else if (!_isValidEmail(email)) {
+            _emailError = 'Format email tidak valid';
+          } else {
+            _emailError = null;
+          }
+          break;
+
+        case 'username':
+          final username = _userController.text.trim();
+          if (username.isEmpty) {
+            _usernameError = 'Nama tidak boleh kosong';
+          } else if (username.length < 3) {
+            _usernameError = 'Nama minimal 3 karakter';
+          } else {
+            _usernameError = null;
+          }
+          break;
+
+        case 'password':
+          final password = _passwordController.text;
+          if (password.isEmpty) {
+            _passwordError = 'Password tidak boleh kosong';
+            _isPasswordValid = false;
+          } else if (password.length < 8) {
+            _passwordError = 'Password minimal 8 karakter';
+            _isPasswordValid = false;
+          } else if (!password.contains(RegExp(r'[A-Z]'))) {
+            _passwordError = 'Password harus mengandung huruf besar';
+            _isPasswordValid = false;
+          } else if (!password.contains(RegExp(r'[0-9]'))) {
+            _passwordError = 'Password harus mengandung angka';
+            _isPasswordValid = false;
+          } else {
+            _passwordError = null;
+            _isPasswordValid = true;
+          }
+          // Revalidate confirm password when password changes
+          if (_confirmPasswordController.text.isNotEmpty) {
+            validateField('confirm');
+          }
+          break;
+
+        case 'confirm':
+          final confirmPass = _confirmPasswordController.text;
+          if (confirmPass.isEmpty) {
+            _confirmPasswordError = 'Konfirmasi password tidak boleh kosong';
+            _isPasswordMismatch = true;
+          } else if (confirmPass != _passwordController.text) {
+            _confirmPasswordError = 'Password tidak cocok';
+            _isPasswordMismatch = true;
+          } else {
+            _confirmPasswordError = null;
+            _isPasswordMismatch = false;
+          }
+          break;
+      }
+    });
+  }
+
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+  }
+
+  // Validate all fields at once
+  bool _validateAll() {
+    validateField('email');
+    validateField('username');
+    validateField('password');
+    validateField('confirm');
+
+    return _emailError == null &&
+        _usernameError == null &&
+        _passwordError == null &&
+        _confirmPasswordError == null;
+  }
+
   Future<void> _register() async {
-    if (_isLoading.value) return; // Prevent multiple submissions
+    if (_isLoading.value) return;
 
-    _validatePassword();
-    _validateConfirmPassword();
-    _validateEmail();
-    _validateUsername();
-
-    final email = _emailController.text.trim();
-    final username = _userController.text.trim();
-    final password = _passwordController.text.trim();
-    final confirmPassword = _confirmPasswordController.text.trim();
-
-    if (email.isEmpty ||
-        username.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty) {
-      _showMessage('Isi semua dengan benar');
-      return;
-    }
-
-    if (!_isPasswordValid || _isPasswordMismatch) {
-      _showMessage(
-          'Password harus minimal 8 karakter, mengandung huruf besar dan angka, dan sesuai dengan konfirmasi');
+    if (!_validateAll()) {
+      _showMessage('Mohon perbaiki error yang ada');
       return;
     }
 
@@ -194,14 +212,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _isLoading.value = true;
       _showLoadingDialog();
 
-      // Add artificial delay to show loading animation (optional)
       await Future.delayed(const Duration(milliseconds: 1500));
 
       final result = await api.register(
-        email: email,
-        name: username,
-        password: password,
-        passwordConfirmation: confirmPassword,
+        email: _emailController.text.trim(),
+        name: _userController.text.trim(),
+        password: _passwordController.text,
+        passwordConfirmation: _confirmPasswordController.text,
       );
 
       Get.back(); // Close loading dialog
@@ -213,7 +230,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _showMessage(result['message'] ?? 'Registrasi gagal');
       }
     } catch (e) {
-      Get.back(); // Close loading dialog
+      Get.back();
       _showMessage('Terjadi kesalahan saat mendaftar');
     } finally {
       _isLoading.value = false;
@@ -299,6 +316,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -362,6 +380,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       controller: _emailController,
       hintText: 'Masukan Email',
       errorText: _emailError,
+      errorField: _emailError,
     );
   }
 
@@ -370,6 +389,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       controller: _userController,
       hintText: 'Masukan Nama Lengkap',
       errorText: _usernameError,
+      errorField: _usernameError,
     );
   }
 
@@ -379,6 +399,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       hintText: 'Masukan Password',
       obscureText: _obscureText,
       errorText: _passwordError,
+      errorField: _passwordError,
       suffixIcon: IconButton(
         icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
         onPressed: _togglePasswordVisibility,
@@ -392,6 +413,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       hintText: 'Konfirmasi Password',
       obscureText: _obscureText,
       errorText: _confirmPasswordError,
+      errorField: _confirmPasswordError,
       suffixIcon: IconButton(
         icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
         onPressed: _togglePasswordVisibility,
@@ -404,16 +426,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Obx(() => ElevatedButton(
           onPressed: _isLoading.value ? null : _register,
           style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue[800],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             padding: const EdgeInsets.symmetric(vertical: 20),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
           child: _isLoading.value
               ? const SizedBox(
                   height: 20,
                   width: 20,
                   child: CircularProgressIndicator(
-                    color: Color(blueTheme),
+                    color: Colors.white,
                     strokeWidth: 2,
                   ),
                 )
@@ -422,7 +446,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
-                    color: Color(blueTheme),
+                    color: Colors.white,
                   ),
                 ),
         ));
@@ -453,33 +477,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildTextField({
     required TextEditingController controller,
     required String hintText,
+    required var errorField,
     String? errorText,
     bool obscureText = false,
     Widget? suffixIcon,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          style: GoogleFonts.poppins(fontSize: 16),
-          controller: controller,
-          obscureText: obscureText,
-          decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-            hintText: hintText,
-            hintStyle: GoogleFonts.poppins(fontSize: 16),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: errorText != null ? Colors.red : Colors.blue,
-              ),
-            ),
-            errorText: errorText,
-            suffixIcon: suffixIcon,
+    return TextField(
+      onChanged: (value) {
+        if (errorField != null) {
+          setState(() {
+            errorField = null;
+          });
+        }
+      },
+      controller: controller,
+      obscureText: obscureText,
+      style: GoogleFonts.poppins(fontSize: 16),
+      decoration: InputDecoration(
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        hintText: hintText,
+        hintStyle: GoogleFonts.poppins(fontSize: 16),
+        errorText: errorText,
+        errorStyle: GoogleFonts.poppins(
+          color: Colors.red,
+          fontSize: 12,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: errorText != null ? Colors.red : Colors.grey.shade300,
+            width: 1,
           ),
         ),
-      ],
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: errorText != null ? Colors.red : Colors.blue,
+            width: 2,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red, width: 2),
+        ),
+        suffixIcon: suffixIcon,
+      ),
     );
   }
 
