@@ -200,31 +200,33 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _login() async {
     _emailFocusNode.unfocus();
     _passwordFocusNode.unfocus();
-    print("Focus cleared");
 
     if (_isLoading.value) return;
+
+    _isLoading.value = true;
 
     String email = _emailController.text;
     String password = _passwordController.text;
 
     if (email.isEmpty) {
       _showSnackBar('Email is required', Colors.red);
+      _isLoading.value = false;
       return;
     }
     if (password.isEmpty) {
       _showSnackBar('Password is required', Colors.red);
+      _isLoading.value = false;
       return;
     }
 
     try {
-      _isLoading.value = true;
       _showLoadingDialog();
 
       await Future.delayed(const Duration(milliseconds: 1000));
 
       final result = await Api().login(email: email, password: password);
 
-      Get.back();
+      Get.back(closeOverlays: true);
 
       if (result['status_code'] == 401) {
         _showSnackBar(result["message"] ?? 'Gagal melakukan login', Colors.red);
@@ -240,10 +242,11 @@ class _LoginPageState extends State<LoginPage> {
         _showSnackBar('Login successful', const Color(blueTheme));
         Navigator.pushReplacementNamed(context, '/home');
       } else {
+        Get.back(closeOverlays: true);
         _showSnackBar('Unexpected response from server', Colors.red);
       }
     } catch (e) {
-      Get.back();
+      Get.back(closeOverlays: true);
       _showSnackBar('An error occurred', Colors.red);
     } finally {
       _isLoading.value = false;
