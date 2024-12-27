@@ -40,6 +40,17 @@ class _LoginPageState extends State<LoginPage> {
   final RxBool _isLoading = false.obs;
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+  String? _emailError;
+  String? _passwordError;
+
+  bool _isValidEmail(String email) {
+    final emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+    return emailRegExp.hasMatch(email);
+  }
+
+  bool _isValidPassword(String password) {
+    return password.length >= 6;
+  }
 
   void _showLoadingDialog() {
     Get.dialog(
@@ -136,7 +147,15 @@ class _LoginPageState extends State<LoginPage> {
         labelStyle: GoogleFonts.poppins(),
         hintText: 'Masukkan Email',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        errorText: _emailError,
       ),
+      onChanged: (value) {
+        if (_emailError != null) {
+          setState(() {
+            _emailError = null;
+          });
+        }
+      },
     );
   }
 
@@ -150,6 +169,7 @@ class _LoginPageState extends State<LoginPage> {
         labelStyle: GoogleFonts.poppins(),
         hintText: 'Masukkan Password',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        errorText: _passwordError,
         suffixIcon: IconButton(
           icon: Icon(
             _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -161,6 +181,13 @@ class _LoginPageState extends State<LoginPage> {
           },
         ),
       ),
+      onChanged: (value) {
+        if (_passwordError != null) {
+          setState(() {
+            _passwordError = null;
+          });
+        }
+      },
     );
   }
 
@@ -208,16 +235,44 @@ class _LoginPageState extends State<LoginPage> {
     String email = _emailController.text;
     String password = _passwordController.text;
 
+    bool hasError = false;
+
+    setState(() {
+      _emailError = null;
+      _passwordError = null;
+    });
+
     if (email.isEmpty) {
-      _showSnackBar('Email is required', Colors.red);
-      _isLoading.value = false;
-      return;
+      setState(() {
+        _emailError = 'Email diperlukan';
+      });
+      hasError = true;
+    } else if (!_isValidEmail(email)) {
+      setState(() {
+        _emailError = 'Mohon masukkan email yang valid';
+      });
+      hasError = true;
     }
+
     if (password.isEmpty) {
-      _showSnackBar('Password is required', Colors.red);
+      setState(() {
+        _passwordError = 'Password diperlukan';
+      });
+      hasError = true;
+    } else if (!_isValidPassword(password)) {
+      setState(() {
+        _passwordError = 'Password minimal 6 karakter';
+      });
+      hasError = true;
+    }
+
+    if (hasError) {
       _isLoading.value = false;
+      _showSnackBar('Cek kembali input Anda', Colors.red);
       return;
     }
+
+    _isLoading.value = true;
 
     try {
       _showLoadingDialog();
