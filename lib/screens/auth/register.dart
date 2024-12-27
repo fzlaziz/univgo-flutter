@@ -423,32 +423,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   // Updated register button widget
   Widget _buildRegisterButton() {
-    return Obx(() => ElevatedButton(
-          onPressed: _isLoading.value ? null : _register,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue[800],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+    return Obx(() => SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: ElevatedButton(
+            onPressed: _isLoading.value ? null : _register,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue[800],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: _isLoading.value
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : Text(
+                    'Daftar',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
           ),
-          child: _isLoading.value
-              ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                )
-              : Text(
-                  'Daftar',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
         ));
   }
 
@@ -458,7 +461,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       children: <Widget>[
         Text(
           "Sudah punya akun? ",
-          style: GoogleFonts.poppins(),
+          style: GoogleFonts.poppins(fontSize: 17),
         ),
         GestureDetector(
           onTap: () {
@@ -467,7 +470,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Text(
             "Login",
             style: GoogleFonts.poppins(
-                color: Colors.blue, fontWeight: FontWeight.bold),
+                color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 17),
           ),
         ),
       ],

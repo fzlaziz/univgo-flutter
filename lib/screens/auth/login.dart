@@ -326,7 +326,7 @@ class _LoginPageState extends State<LoginPage> {
         Text(
           "Belum punya akun? ",
           style: GoogleFonts.poppins(
-            fontSize: 16,
+            fontSize: 17,
             color: Colors.black,
           ),
         ),
@@ -343,7 +343,7 @@ class _LoginPageState extends State<LoginPage> {
                 style: GoogleFonts.poppins(
                     color: Colors.blue,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16),
+                    fontSize: 17),
               ),
             ),
           ],

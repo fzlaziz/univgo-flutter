@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:univ_go/controller/search_result_controller.dart';
 import 'package:univ_go/main.dart';
 import 'package:univ_go/screens/auth/login.dart';
@@ -15,7 +16,19 @@ const String searchResultRoute = "/search_result";
 
 final TextEditingController searchController = TextEditingController();
 
-var routes = [
+class AuthMiddleware extends GetMiddleware {
+  @override
+  RouteSettings? redirect(String? route) {
+    final prefs = Get.find<SharedPreferences>();
+    final token = prefs.get("token");
+    if (token != null) {
+      return const RouteSettings(name: homeRoute);
+    }
+    return null;
+  }
+}
+
+final routes = [
   GetPage(
     name: searchRoute,
     page: () => SearchEntry(searchController: searchController),
@@ -31,15 +44,15 @@ var routes = [
   GetPage(
     name: '/login',
     page: () => const LoginPage(),
+    middlewares: [AuthMiddleware()],
   ),
   GetPage(
     name: '/register',
-    page: () =>
-        const RegisterScreen(),
+    page: () => const RegisterScreen(),
+    middlewares: [AuthMiddleware()],
   ),
   GetPage(
     name: '/splashscreen',
-    page: () =>
-        const SplashScreen(),
+    page: () => const SplashScreen(),
   ),
 ];

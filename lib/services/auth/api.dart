@@ -356,7 +356,7 @@ class Api {
       // Remove the token from SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('token');
-      print('LPOGOUT RESPONSE');
+      print('LOGOUT RESPONSE');
       print(response);
       return {
         'status_code': response.statusCode,

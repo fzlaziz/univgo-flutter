@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:univ_go/controller/home_controller.dart';
 import 'package:univ_go/routes/route.dart';
 import 'package:univ_go/components/appbar/custom_app_bar.dart';
@@ -11,6 +12,9 @@ import 'package:get/get.dart';
 import 'package:univ_go/const/theme_color.dart';
 
 Future main() async {
+WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  Get.put<SharedPreferences>(prefs, permanent: true);
   await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
