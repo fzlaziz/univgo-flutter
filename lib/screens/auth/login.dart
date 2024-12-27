@@ -38,6 +38,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
   final RxBool _isLoading = false.obs;
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
 
   void _showLoadingDialog() {
     Get.dialog(
@@ -128,6 +130,7 @@ class _LoginPageState extends State<LoginPage> {
   TextFormField _buildEmailField() {
     return TextFormField(
       controller: _emailController,
+      focusNode: _emailFocusNode,
       decoration: InputDecoration(
         labelText: 'Email',
         labelStyle: GoogleFonts.poppins(),
@@ -140,6 +143,7 @@ class _LoginPageState extends State<LoginPage> {
   TextFormField _buildPasswordField() {
     return TextFormField(
       controller: _passwordController,
+      focusNode: _passwordFocusNode,
       obscureText: !_isPasswordVisible,
       decoration: InputDecoration(
         labelText: 'Password',
@@ -194,6 +198,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
+    _emailFocusNode.unfocus();
+    _passwordFocusNode.unfocus();
+    print("Focus cleared");
+
     if (_isLoading.value) return;
 
     String email = _emailController.text;
@@ -230,7 +238,6 @@ class _LoginPageState extends State<LoginPage> {
         await prefs.setString('username', username);
 
         _showSnackBar('Login successful', const Color(blueTheme));
-        await Future.delayed(const Duration(seconds: 1));
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         _showSnackBar('Unexpected response from server', Colors.red);
