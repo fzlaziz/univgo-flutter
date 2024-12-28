@@ -17,7 +17,7 @@ class SearchResultPage extends GetView<SearchResultController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: GlobalKey<ScaffoldState>(),
+      // key: GlobalKey<ScaffoldState>(),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70.0),
         child: AppBar(
@@ -94,9 +94,9 @@ class SearchResultPage extends GetView<SearchResultController> {
                   padding: EdgeInsets.fromLTRB(16.0,
                       MediaQuery.of(context).padding.top + 16.0, 16.0, 16.0),
                   color: const Color(blueTheme),
-                  child: const Text(
+                  child: Text(
                     'Filter',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -117,8 +117,8 @@ class SearchResultPage extends GetView<SearchResultController> {
                           children: [
                             Text(
                               groupDisplayName,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                              style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 10),
                             Wrap(
@@ -162,10 +162,10 @@ class SearchResultPage extends GetView<SearchResultController> {
                                 color: Color.fromARGB(255, 33, 149, 243)),
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Reset Filter',
-                          style: TextStyle(
-                            color: Color(blueTheme),
+                          style: GoogleFonts.poppins(
+                            color: const Color(blueTheme),
                           ),
                         ),
                       ),
@@ -179,9 +179,9 @@ class SearchResultPage extends GetView<SearchResultController> {
                                 color: Color.fromARGB(255, 33, 149, 243)),
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Terapkan Filter',
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                           ),
                         ),
@@ -298,7 +298,7 @@ class SearchResultPage extends GetView<SearchResultController> {
                         children: [
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                                const EdgeInsets.symmetric(horizontal: 4.0),
                             child: Obx(() => SortButtonWidget(
                                   label: 'Terdekat',
                                   value: "closer",
@@ -311,7 +311,7 @@ class SearchResultPage extends GetView<SearchResultController> {
                           ),
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                                const EdgeInsets.symmetric(horizontal: 4.0),
                             child: Obx(() => SortButtonWidget(
                                   label: 'Terbaik',
                                   value: "rank_score",
@@ -325,7 +325,7 @@ class SearchResultPage extends GetView<SearchResultController> {
                           ),
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                                const EdgeInsets.symmetric(horizontal: 4.0),
                             child: Obx(() => SortButtonWidget(
                                   label: 'UKT Terendah',
                                   value: 'min_single_tuition',

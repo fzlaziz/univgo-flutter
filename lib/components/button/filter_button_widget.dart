@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FilterButtonWidget extends StatelessWidget {
   final String label;
@@ -26,7 +27,7 @@ class FilterButtonWidget extends StatelessWidget {
         child: Text(
           label,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: GoogleFonts.poppins(
             color: isSelected ? Colors.white : const Color(0xFF0059FF),
           ),
         ),
