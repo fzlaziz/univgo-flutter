@@ -15,7 +15,7 @@ dependencies:
   google_fonts: ^6.2.1
   http: ^1.2.2
   marquee: ^2.3.0
-  shared_preferences: ^2.3.2
+  shared_preferences: ^2.3.4
   smooth_page_indicator: ^1.2.0+3
   get: ^4.6.6
   flutter_launcher_icons: ^0.13.1
