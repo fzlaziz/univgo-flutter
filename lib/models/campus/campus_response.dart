@@ -6,7 +6,7 @@ class CampusResponse {
   final String name;
   final String description;
   final DateTime dateOfEstablishment;
-  String logoPath;
+  String? logoPath;
   final double addressLatitude;
   final double addressLongitude;
   final String webAddress;
@@ -33,7 +33,7 @@ class CampusResponse {
     required this.id,
     required this.name,
     required this.description,
-    required this.logoPath,
+    this.logoPath,
     required this.dateOfEstablishment,
     required this.addressLatitude,
     required this.addressLongitude,
@@ -58,35 +58,51 @@ class CampusResponse {
     this.distance,
   });
 
-  factory CampusResponse.fromJson(Map<String, dynamic> json) => CampusResponse(
-        id: json["id"],
-        name: json["name"],
-        description: json["description"],
-        dateOfEstablishment: DateTime.parse(json["date_of_establishment"]),
-        logoPath: json["logo_path"],
-        addressLatitude: json["address_latitude"]?.toDouble(),
-        addressLongitude: json["address_longitude"]?.toDouble(),
-        webAddress: json["web_address"],
-        phoneNumber: json["phone_number"],
-        rankScore: json["rank_score"] ?? 100,
-        numberOfGraduates: json["number_of_graduates"],
-        numberOfRegistrants: json["number_of_registrants"],
-        accreditationId: json["accreditation_id"],
-        minSingleTuition: json["min_single_tuition"],
-        maxSingleTuition: json["max_single_tuition"],
-        province: json["province"],
-        city: json["city"],
-        district: json["district"],
-        provinceId: json["province_id"],
-        cityId: json["city_id"],
-        districtId: json["district_id"],
-        campusTypeId: json["campus_type_id"],
-        villageId: json["village_id"],
-        degreeLevels: List<DegreeLevel>.from(
-            json["degree_levels"].map((x) => DegreeLevel.fromJson(x))),
-        accreditation: Accreditation.fromJson(json["accreditation"]),
-        distance: json['distance'] != null ? json['distance'].toDouble() : null,
-      );
+  factory CampusResponse.fromJson(Map<String, dynamic> json) {
+    List<DegreeLevel> parsedDegreeLevels = json["degree_levels"] != null &&
+            (json["degree_levels"] as List).isNotEmpty
+        ? List<DegreeLevel>.from(
+            json["degree_levels"].map((x) => DegreeLevel.fromJson(x)))
+        : [
+            DegreeLevel.fromJson({
+              "id": 9999,
+              "name": "Degree",
+            })
+          ];
+
+    return CampusResponse(
+      id: json["id"] ?? 0,
+      name: json["name"] ?? "Unknown",
+      description: json["description"] ?? "",
+      dateOfEstablishment: json["date_of_establishment"] != null
+          ? DateTime.parse(json["date_of_establishment"])
+          : DateTime.now(),
+      logoPath: json["logo_path"],
+      addressLatitude: json["address_latitude"]?.toDouble() ?? 0.0,
+      addressLongitude: json["address_longitude"]?.toDouble() ?? 0.0,
+      webAddress: json["web_address"] ?? "",
+      phoneNumber: json["phone_number"] ?? "",
+      rankScore: json["rank_score"] ?? 100,
+      numberOfGraduates: json["number_of_graduates"] ?? 0,
+      numberOfRegistrants: json["number_of_registrants"] ?? 0,
+      accreditationId: json["accreditation_id"] ?? 0,
+      minSingleTuition: json["min_single_tuition"] ?? 0,
+      maxSingleTuition: json["max_single_tuition"] ?? 0,
+      province: json["province"] ?? "",
+      city: json["city"] ?? "",
+      district: json["district"] ?? "",
+      provinceId: json["province_id"] ?? 0,
+      cityId: json["city_id"] ?? 0,
+      districtId: json["district_id"] ?? 0,
+      campusTypeId: json["campus_type_id"] ?? 0,
+      villageId: json["village_id"],
+      degreeLevels: parsedDegreeLevels,
+      accreditation: json["accreditation"] != null
+          ? Accreditation.fromJson(json["accreditation"])
+          : Accreditation.fromJson({"id": 9999, "name": "Unknown"}),
+      distance: json['distance']?.toDouble(),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "id": id,

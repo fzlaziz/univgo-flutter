@@ -8,7 +8,7 @@ class CampusList extends StatelessWidget {
   final Future<List<CampusResponse>> response;
   final bool showCampus;
   final AnimationController _animationController;
-  final VoidCallback onToggleView; 
+  final VoidCallback onToggleView;
 
   const CampusList({
     super.key,
@@ -100,7 +100,7 @@ class CampusList extends StatelessWidget {
                             const SizedBox(width: 8),
                             campus.logoPath != null
                                 ? Image.network(
-                                    campus.logoPath,
+                                    campus.logoPath!,
                                     width: 30,
                                     height: 40,
                                     fit: BoxFit.contain,
