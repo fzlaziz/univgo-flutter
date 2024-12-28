@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:univ_go/models/campus/campus_response.dart';
+import 'package:univ_go/models/news/news.dart';
+import 'package:univ_go/models/news/news_detail.dart';
 import 'package:univ_go/screens/news/news_detail.dart';
 import 'package:univ_go/services/api_data_provider.dart';
 import 'package:univ_go/services/home/top_campus_provider.dart';

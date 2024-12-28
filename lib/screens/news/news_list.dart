@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:univ_go/models/news/news.dart';
+import 'package:univ_go/models/news/news_detail.dart';
 import 'package:univ_go/screens/news/news_detail.dart';
 import 'package:univ_go/services/news/news_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

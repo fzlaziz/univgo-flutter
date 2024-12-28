@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:univ_go/models/news/news.dart';
 import 'package:univ_go/services/news/news_provider.dart';
 
 class NewsLatest {

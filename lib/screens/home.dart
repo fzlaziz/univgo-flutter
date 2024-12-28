@@ -399,10 +399,9 @@ class Home extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => const NewsList()),
                     );
                   },
-                  icon: const Text(
+                  icon: Text(
                     'Lihat semua',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
+                    style: GoogleFonts.poppins(
                       fontSize: 14,
                       color: Colors.black,
                     ),
@@ -415,14 +414,14 @@ class Home extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16.0), // Add spacing above the row
-            const Row(
+            Row(
               children: [
                 Expanded(
                   child: Text(
                     'Temukan berbagai berita kampus terkini',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
+                    style: GoogleFonts.poppins(
                       fontSize: 14,
+                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -492,9 +491,9 @@ class Home extends StatelessWidget {
                                 child: Text(
                                   DateFormat('dd MMMM yyyy - HH:mm')
                                       .format(news.createdAt),
-                                  style: const TextStyle(
-                                    color: Colors.grey,
+                                  style: GoogleFonts.poppins(
                                     fontSize: 13,
+                                    color: Colors.grey,
                                   ),
                                 ),
                               ),

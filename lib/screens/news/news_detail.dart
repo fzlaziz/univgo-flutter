@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:univ_go/const/theme_color.dart';
+import 'package:univ_go/models/news/news_comment.dart';
+import 'package:univ_go/models/news/news_detail.dart';
 import 'package:univ_go/services/news/news_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,9 +20,10 @@ class _NewsDetailState extends State<NewsDetail> {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
   String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
   final TextEditingController _commentController = TextEditingController();
-  bool _isCommentValid = false; //Variabel untuk memvalidasi komentar
+  bool _isCommentValid = false;
   late Future<List<Comment>> _comments;
-  int _commentsToShow = 3; // Awalnya hanya 3 komentar ditampilkan
+  int _commentsToShow = 5;
+  final FocusNode _commentFocus = FocusNode();
 
   @override
   void initState() {
@@ -62,21 +66,21 @@ class _NewsDetailState extends State<NewsDetail> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Komentar berhasil dikirim!')),
+          const SnackBar(content: Text('Komentar berhasil dikirim!')),
         );
 
         return true; // Menandakan pengiriman komentar berhasil
       } catch (e) {
         // Jika terjadi error
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal mengirim komentar, coba lagi.')),
+          const SnackBar(content: Text('Gagal mengirim komentar, coba lagi.')),
         );
         return false; // Menandakan pengiriman gagal
       }
     } else {
       // Jika komentar kosong
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Komentar tidak boleh kosong!')),
+        const SnackBar(content: Text('Komentar tidak boleh kosong!')),
       );
       return false;
     }
@@ -91,7 +95,7 @@ class _NewsDetailState extends State<NewsDetail> {
           style: GoogleFonts.poppins(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(blueTheme),
         centerTitle: true,
         iconTheme: const IconThemeData(
           color: Colors.white,
@@ -117,14 +121,14 @@ class _NewsDetailState extends State<NewsDetail> {
                     fontSize: 20, fontWeight: FontWeight.bold),
               ),
 
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               // Excerpt berita
               Text(
                 widget.berita.excerpt,
                 style: GoogleFonts.poppins(
                     fontSize: 16, fontStyle: FontStyle.normal),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Tanggal berita
               Text(
                 widget.berita.createdAt != null
@@ -134,7 +138,7 @@ class _NewsDetailState extends State<NewsDetail> {
                 style:
                     GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Menampilkan gambar berita jika ada
               Center(
                 child: Image.network(
@@ -149,13 +153,13 @@ class _NewsDetailState extends State<NewsDetail> {
                       height: 200, // Menyesuaikan tinggi container
                       width: double.infinity, // Menyesuaikan lebar container
                       color: Colors.grey.shade200, // Warna background opsional
-                      child: Icon(Icons.image_not_supported,
+                      child: const Icon(Icons.image_not_supported,
                           size: 100), // Ikon fallback
                     );
                   },
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               // Konten berita
               if (widget.berita.content != null &&
                   widget.berita.content!.isNotEmpty)
@@ -172,17 +176,17 @@ class _NewsDetailState extends State<NewsDetail> {
                       fontSize: 16, color: Colors.grey[700]),
                   textAlign: TextAlign.justify, // Menambahkan justify alignment
                 ),
-              SizedBox(
+              const SizedBox(
                   height:
                       16), // Menambahkan jarak antara konten berita dan komentar
 
-// Menampilkan daftar komentar di atas berita terkait
+              // Menampilkan daftar komentar di atas berita terkait
               Text(
                 'Komentar',
                 style: GoogleFonts.poppins(
                     fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(
+              const SizedBox(
                   height:
                       8), // Jarak antara judul "Komentar" dan daftar komentar
               FutureBuilder<List<Comment>>(
@@ -243,7 +247,7 @@ class _NewsDetailState extends State<NewsDetail> {
                                           fontSize: 14,
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                           height:
                                               4.0), // Jarak antara nama dan teks komentar
                                       // Teks komentar
@@ -254,7 +258,7 @@ class _NewsDetailState extends State<NewsDetail> {
                                             fontWeight: FontWeight.normal),
                                       ),
                                       // Menampilkan teks komentar
-                                      SizedBox(
+                                      const SizedBox(
                                           height:
                                               4.0), // Jarak antara teks komentar dan tanggal
                                     ],
@@ -285,7 +289,7 @@ class _NewsDetailState extends State<NewsDetail> {
                               onPressed: () {
                                 setState(() {
                                   _commentsToShow +=
-                                      3; // Tambahkan 3 komentar lagi
+                                      5; // Tambahkan 3 komentar lagi
                                 });
                               },
                               child: Row(
@@ -297,9 +301,9 @@ class _NewsDetailState extends State<NewsDetail> {
                                     style: GoogleFonts.poppins(
                                         color: Colors.black),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                       width: 4), // Jarak antara teks dan ikon
-                                  Icon(
+                                  const Icon(
                                     Icons.expand_more,
                                     color: Colors.black,
                                   ),
@@ -312,17 +316,25 @@ class _NewsDetailState extends State<NewsDetail> {
                   }
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Form untuk menambah komentar
               TextField(
+                focusNode: _commentFocus,
                 controller: _commentController,
                 decoration: InputDecoration(
                   labelText: 'Tulis komentar',
-                  border: OutlineInputBorder(),
+                  floatingLabelStyle: GoogleFonts.poppins(
+                      color: _commentFocus.hasFocus
+                          ? const Color(blueTheme)
+                          : Colors.black),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(blueTheme)),
+                  ),
                 ),
                 maxLines: 3,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity, // Tombol memenuhi lebar TextField
                 child: ElevatedButton(
@@ -337,7 +349,7 @@ class _NewsDetailState extends State<NewsDetail> {
                               builder: (BuildContext context) {
                                 return Center(
                                   child: Container(
-                                    padding: EdgeInsets.all(20),
+                                    padding: const EdgeInsets.all(20),
                                     decoration: BoxDecoration(
                                       color: Colors.blue,
                                       borderRadius: BorderRadius.circular(10),
@@ -345,28 +357,34 @@ class _NewsDetailState extends State<NewsDetail> {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.check_circle,
                                           color: Colors.white,
                                           size: 50,
                                         ),
-                                        SizedBox(height: 10),
-                                        Text(
-                                          'Berhasil mengirim komentar!',
-                                          style: GoogleFonts.poppins(
-                                              color: Colors.white,
-                                              fontSize: 16),
+                                        const SizedBox(height: 10),
+                                        Material(
+                                          color: Colors.transparent,
+                                          child: Text(
+                                            'Berhasil mengirim komentar!',
+                                            style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontSize: 16),
+                                          ),
                                         ),
-                                        SizedBox(height: 20),
+                                        const SizedBox(height: 20),
                                         ElevatedButton(
                                           onPressed: () {
                                             Navigator.of(context)
                                                 .pop(); // Menutup dialog
                                           },
-                                          child: Text('OK'),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.white,
                                             foregroundColor: Colors.blue,
+                                          ),
+                                          child: Text(
+                                            'OK',
+                                            style: GoogleFonts.poppins(),
                                           ),
                                         ),
                                       ],
@@ -387,7 +405,7 @@ class _NewsDetailState extends State<NewsDetail> {
                               builder: (BuildContext context) {
                                 return Center(
                                   child: Container(
-                                    padding: EdgeInsets.all(20),
+                                    padding: const EdgeInsets.all(20),
                                     decoration: BoxDecoration(
                                       color: Colors.red,
                                       borderRadius: BorderRadius.circular(5),
@@ -395,27 +413,30 @@ class _NewsDetailState extends State<NewsDetail> {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.error,
                                           color: Colors.white,
                                           size: 50,
                                         ),
-                                        SizedBox(height: 10),
+                                        const SizedBox(height: 10),
                                         Text(
                                           'Gagal mengirim komentar, coba lagi.',
                                           style: GoogleFonts.poppins(
                                               color: Colors.white,
                                               fontSize: 16),
                                         ),
-                                        SizedBox(height: 20),
+                                        const SizedBox(height: 20),
                                         ElevatedButton(
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },
-                                          child: Text('OK'),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.white,
                                             foregroundColor: Colors.red,
+                                          ),
+                                          child: Text(
+                                            'OK',
+                                            style: GoogleFonts.poppins(),
                                           ),
                                         ),
                                       ],
@@ -427,37 +448,30 @@ class _NewsDetailState extends State<NewsDetail> {
                           }
                         }
                       : null,
-                  child: Text('Kirim Komentar'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white, // Background putih
-                    foregroundColor: _isCommentValid
-                        ? Colors.blue
-                        : Colors.grey, // Warna teks biru/abu-abu
-                    side: BorderSide(
-                      color: _isCommentValid
-                          ? Colors.blue
-                          : Colors.grey, // Garis biru/abu-abu
-                    ),
+                    backgroundColor: const Color(blueTheme),
+                    foregroundColor:
+                        _isCommentValid ? Colors.white : Color(blueTheme),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          5), // Menghilangkan sudut melengkung (circular)
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
+                  child: Text('Kirim Komentar', style: GoogleFonts.poppins()),
                 ),
               ),
 
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               // Judul berita terkait
               Text(
                 'Berita Terkait',
                 style: GoogleFonts.poppins(
                     fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8),
-// Menampilkan berita terkait menggunakan ListView.builder
+              const SizedBox(height: 8),
+              // Menampilkan berita terkait menggunakan ListView.builder
               ListView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount:
                     widget.berita.relatedNews.length, // Jumlah berita terkait
                 itemBuilder: (context, index) {
@@ -493,7 +507,7 @@ class _NewsDetailState extends State<NewsDetail> {
                               width: 80, // Menyesuaikan lebar container
                               color: Colors
                                   .grey.shade200, // Warna background opsional
-                              child: Icon(Icons.image_not_supported,
+                              child: const Icon(Icons.image_not_supported,
                                   size: 30), // Ikon fallback
                             ); // Ikon fallback jika gagal
                           },
