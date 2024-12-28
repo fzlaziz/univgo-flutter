@@ -51,6 +51,7 @@ class _NewsDetailState extends State<NewsDetail> {
 
   //Fungsi untuk mengirim komentar
   Future<bool> _submitComment() async {
+    _commentFocus.unfocus();
     if (_commentController.text.isNotEmpty) {
       try {
         // Mengirimkan komentar dan username ke API
@@ -321,6 +322,9 @@ class _NewsDetailState extends State<NewsDetail> {
               TextField(
                 focusNode: _commentFocus,
                 controller: _commentController,
+                onTapOutside: (event) {
+                  _commentFocus.unfocus();
+                },
                 decoration: InputDecoration(
                   labelText: 'Tulis komentar',
                   floatingLabelStyle: GoogleFonts.poppins(
@@ -419,11 +423,14 @@ class _NewsDetailState extends State<NewsDetail> {
                                           size: 50,
                                         ),
                                         const SizedBox(height: 10),
-                                        Text(
-                                          'Gagal mengirim komentar, coba lagi.',
-                                          style: GoogleFonts.poppins(
-                                              color: Colors.white,
-                                              fontSize: 16),
+                                        Material(
+                                          color: Colors.transparent,
+                                          child: Text(
+                                            'Gagal mengirim komentar, coba lagi.',
+                                            style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontSize: 16),
+                                          ),
                                         ),
                                         const SizedBox(height: 20),
                                         ElevatedButton(
