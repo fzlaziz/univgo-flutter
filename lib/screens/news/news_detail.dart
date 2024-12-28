@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:univ_go/components/card/comment_placeholder.dart';
 import 'package:univ_go/const/theme_color.dart';
 import 'package:univ_go/models/news/news_comment.dart';
 import 'package:univ_go/models/news/news_detail.dart';
@@ -194,11 +195,11 @@ class _NewsDetailState extends State<NewsDetail> {
                 future: _comments,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const CommentPlaceholder();
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('Tidak ada komentar.'));
+                    return const Center(child: Text('Tidak ada komentar.'));
                   } else {
                     // Batasi komentar yang ditampilkan sesuai dengan _commentsToShow
                     final List<Comment> displayedComments =

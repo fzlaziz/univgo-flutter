@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:univ_go/controller/home_controller.dart';
 import 'package:univ_go/controller/search_result_controller.dart';
 import 'package:univ_go/main.dart';
 import 'package:univ_go/screens/auth/login.dart';
@@ -33,7 +34,13 @@ final routes = [
     name: searchRoute,
     page: () => SearchEntry(searchController: searchController),
   ),
-  GetPage(name: homeRoute, page: () => MainPage(), transition: Transition.fade),
+  GetPage(
+      name: homeRoute,
+      page: () => MainPage(),
+      binding: BindingsBuilder(() {
+        Get.put(HomeController());
+      }),
+      transition: Transition.fade),
   GetPage(
     name: '/search-result',
     page: () => const SearchResultPage(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:univ_go/controller/home_controller.dart';
 import 'package:univ_go/controller/search_result_controller.dart';
 import 'package:univ_go/presentation/univ_go_icon_icons.dart';
 import 'package:univ_go/models/filter/filter_model.dart';
@@ -25,7 +26,11 @@ class SearchResultPage extends GetView<SearchResultController> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              Get.offAllNamed('/home');
+              Get.offAllNamed('/home')?.then((_) {
+                if (!Get.isRegistered<HomeController>()) {
+                  Get.put(HomeController());
+                }
+              });
             },
           ),
           iconTheme: const IconThemeData(color: Colors.white),
