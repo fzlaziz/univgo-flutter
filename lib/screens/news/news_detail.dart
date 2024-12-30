@@ -144,23 +144,27 @@ class _NewsDetailState extends State<NewsDetail> {
               ),
               const SizedBox(height: 16),
               Center(
-                child: Image.network(
-                  widget.berita.attachment != null
-                      ? '$awsUrl/${widget.berita.attachment}'
-                      : 'https://via.placeholder.com/150', // URL gambar default
-                  height: 200, // Menyesuaikan tinggi gambar
-                  width: double.infinity, // Lebar gambar mengikuti lebar layar
-                  fit: BoxFit.cover, // Agar gambar tetap proporsional
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 200, // Menyesuaikan tinggi container
-                      width: double.infinity, // Menyesuaikan lebar container
-                      color: Colors.grey.shade200, // Warna background opsional
-                      child: const Icon(Icons.image_not_supported,
-                          size: 100), // Ikon fallback
-                    );
-                  },
-                ),
+                child: widget.berita.attachment != null
+                    ? Image.network(
+                        '$awsUrl/${widget.berita.attachment}',
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'images/news_placeholder.jpg',
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        'images/news_placeholder.jpg',
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
               ),
               const SizedBox(height: 24),
               // Konten berita
@@ -540,24 +544,27 @@ class _NewsDetailState extends State<NewsDetail> {
                               color:
                                   Colors.grey[600]), // Ringkasan berita terkait
                         ),
-                        trailing: Image.network(
-                          related.attachment != null
-                              ? '$awsUrl/${related.attachment}'
-                              : 'https://via.placeholder.com/150', // URL gambar default
-                          height: 60, // Menyesuaikan tinggi gambar
-                          width: 80, // Lebar gambar mengikuti lebar layar
-                          fit: BoxFit.cover, // Agar gambar tetap proporsional
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              height: 60, // Menyesuaikan tinggi container
-                              width: 80, // Menyesuaikan lebar container
-                              color: Colors
-                                  .grey.shade200, // Warna background opsional
-                              child: const Icon(Icons.image_not_supported,
-                                  size: 30), // Ikon fallback
-                            ); // Ikon fallback jika gagal
-                          },
-                        ),
+                        trailing: related.attachment != null
+                            ? Image.network(
+                                '$awsUrl/${related.attachment}',
+                                height: 60,
+                                width: 80,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'images/news_placeholder.jpg',
+                                    height: 60,
+                                    width: 80,
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              )
+                            : Image.asset(
+                                'images/news_placeholder.jpg',
+                                height: 60,
+                                width: 80,
+                                fit: BoxFit.cover,
+                              ),
                         onTap: () {
                           // Navigasi ke halaman DetailBeritaPage untuk berita terkait
                           final relatedBerita = DetailBerita(

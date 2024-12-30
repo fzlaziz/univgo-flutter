@@ -83,22 +83,27 @@ class _NewsListState extends State<NewsList> {
               style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
             ),
             trailing: ClipRRect(
-              child: Image.network(
-                berita.attachment != null
-                    ? '$awsUrl/${berita.attachment}'
-                    : 'https://via.placeholder.com/150',
-                width: 120,
-                height: 150,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    height: 60,
-                    width: 80,
-                    color: Colors.grey.shade200,
-                    child: Icon(Icons.image_not_supported, size: 30),
-                  );
-                },
-              ),
+              child: berita.attachment != null
+                  ? Image.network(
+                      '$awsUrl/${berita.attachment}',
+                      width: 120,
+                      height: 150,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'images/news_placeholder.jpg',
+                          width: 120,
+                          height: 150,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    )
+                  : Image.asset(
+                      'images/news_placeholder.jpg',
+                      width: 120,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
             ),
             onTap: () async {
               // Jika belum ada navigasi yang sedang berlangsung

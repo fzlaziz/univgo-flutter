@@ -60,18 +60,22 @@ class Home extends StatelessWidget {
                                 Colors.black.withOpacity(0.5),
                                 BlendMode.darken,
                               ),
-                              child: Image.network(
-                                campus.logoPath ??
-                                    'https://dummyimage.com/400x600/000/fff',
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(
-                                    Icons.broken_image,
-                                    size: 50,
-                                    color: Colors.grey,
-                                  );
-                                },
-                              ),
+                              child: campus.logoPath != null
+                                  ? Image.network(
+                                      campus.logoPath!,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Image.asset(
+                                          'images/campus_placeholder.jpg',
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    )
+                                  : Image.asset(
+                                      'images/campus_placeholder.jpg',
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
                           ),
                           Positioned(
@@ -166,22 +170,28 @@ class Home extends StatelessWidget {
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(15.0),
-                                      child: Image.network(
-                                        campus.logoPath ??
-                                            'https://dummyimage.com/400x600/000/fff',
-                                        height:
-                                            80, // Adjust the size of the logo
-                                        width: 80,
-                                        fit: BoxFit.contain,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return const Icon(
-                                            Icons.broken_image,
-                                            size: 50,
-                                            color: Colors.grey,
-                                          );
-                                        },
-                                      ),
+                                      child: campus.logoPath != null
+                                          ? Image.network(
+                                              campus.logoPath!,
+                                              height: 80,
+                                              width: 80,
+                                              fit: BoxFit.contain,
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return Image.asset(
+                                                  height: 50,
+                                                  width: 50,
+                                                  fit: BoxFit.contain,
+                                                  'images/campus_placeholder.jpg',
+                                                );
+                                              },
+                                            )
+                                          : Image.asset(
+                                              'images/campus_placeholder.jpg',
+                                              height: 50,
+                                              width: 50,
+                                              fit: BoxFit.contain,
+                                            ),
                                     ),
                                     const SizedBox(height: 8.0),
                                     Text(
@@ -251,22 +261,28 @@ class Home extends StatelessWidget {
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(15.0),
-                                      child: Image.network(
-                                        campus.logoPath ??
-                                            'https://dummyimage.com/400x600/000/fff',
-                                        height:
-                                            80, // Adjust the size of the logo
-                                        width: 80,
-                                        fit: BoxFit.contain,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return const Icon(
-                                            Icons.broken_image,
-                                            size: 50,
-                                            color: Colors.grey,
-                                          );
-                                        },
-                                      ),
+                                      child: campus.logoPath != null
+                                          ? Image.network(
+                                              campus.logoPath!,
+                                              height: 80,
+                                              width: 80,
+                                              fit: BoxFit.contain,
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return Image.asset(
+                                                  height: 50,
+                                                  width: 50,
+                                                  fit: BoxFit.contain,
+                                                  'images/campus_placeholder.jpg',
+                                                );
+                                              },
+                                            )
+                                          : Image.asset(
+                                              'images/campus_placeholder.jpg',
+                                              height: 50,
+                                              width: 50,
+                                              fit: BoxFit.contain,
+                                            ),
                                     ),
                                     const SizedBox(height: 8.0),
                                     Text(
@@ -336,22 +352,28 @@ class Home extends StatelessWidget {
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(15.0),
-                                      child: Image.network(
-                                        campus.logoPath ??
-                                            'https://dummyimage.com/400x600/000/fff',
-                                        height:
-                                            80, // Adjust the size of the logo
-                                        width: 80,
-                                        fit: BoxFit.contain,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return const Icon(
-                                            Icons.broken_image,
-                                            size: 50,
-                                            color: Colors.grey,
-                                          );
-                                        },
-                                      ),
+                                      child: campus.logoPath != null
+                                          ? Image.network(
+                                              campus.logoPath!,
+                                              height: 80,
+                                              width: 80,
+                                              fit: BoxFit.contain,
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return Image.asset(
+                                                  height: 50,
+                                                  width: 50,
+                                                  fit: BoxFit.contain,
+                                                  'images/campus_placeholder.jpg',
+                                                );
+                                              },
+                                            )
+                                          : Image.asset(
+                                              'images/campus_placeholder.jpg',
+                                              height: 50,
+                                              width: 50,
+                                              fit: BoxFit.contain,
+                                            ),
                                     ),
                                     const SizedBox(height: 8.0),
                                     Text(
@@ -456,21 +478,28 @@ class Home extends StatelessWidget {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(15.0),
-                                child: Image.network(
-                                  news.attachment ??
-                                      'https://dummyimage.com/400x600/000/fff', // Default jika attachment null
-                                  fit: BoxFit.cover,
-                                  height:
-                                      150, // Set a fixed height for the image
-                                  width: double.infinity,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return const Icon(
-                                      Icons.broken_image,
-                                      size: 50,
-                                      color: Colors.grey,
-                                    );
-                                  },
-                                ),
+                                child: news.attachment != null
+                                    ? Image.network(
+                                        news.attachment!,
+                                        fit: BoxFit.cover,
+                                        height: 150,
+                                        width: double.infinity,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Image.asset(
+                                            'images/news_placeholder.jpg',
+                                            fit: BoxFit.cover,
+                                            height: 150,
+                                            width: double.infinity,
+                                          );
+                                        },
+                                      )
+                                    : Image.asset(
+                                        'images/news_placeholder.jpg',
+                                        fit: BoxFit.cover,
+                                        height: 150,
+                                        width: double.infinity,
+                                      ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),

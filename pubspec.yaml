@@ -44,6 +44,9 @@ flutter:
      fonts:
       - asset: fonts/UnivGoIcon.ttf
   assets:
+    - assets/images/campus_placeholder.jpg
+    - assets/images/campus_placeholder_dimmed.jpg
+    - assets/images/news_placeholder.jpg
     - assets/animations/loading.json
     - assets/animations/success.json
     - assets/images/iisma.png
