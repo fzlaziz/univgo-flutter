@@ -1,6 +1,5 @@
 import 'dart:convert';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:univ_go/functions/date_util.dart';
 
 List<Berita> beritaFromJson(String str) =>
     List<Berita>.from(json.decode(str).map((x) => Berita.fromJson(x)));
@@ -24,31 +23,12 @@ class Berita {
   });
 
   factory Berita.fromJson(Map<String, dynamic> json) {
-    tz.initializeTimeZones();
-
-    final jakarta = tz.getLocation('Asia/Jakarta');
-
-    DateTime convertToJakartaTime(String dateString) {
-      final utcTime = DateTime.parse(dateString);
-      final jakartaDateTime = tz.TZDateTime.from(utcTime, jakarta);
-      return DateTime(
-        jakartaDateTime.year,
-        jakartaDateTime.month,
-        jakartaDateTime.day,
-        jakartaDateTime.hour,
-        jakartaDateTime.minute,
-        jakartaDateTime.second,
-        jakartaDateTime.millisecond,
-        jakartaDateTime.microsecond,
-      );
-    }
-
     return Berita(
       id: json["id"],
       title: json["title"],
       excerpt: json["excerpt"],
       attachment: json["attachment"],
-      createdAt: convertToJakartaTime(json["created_at"]),
+      createdAt: DateUtil.toJakartaTimeWithDefault(json["created_at"]),
     );
   }
 

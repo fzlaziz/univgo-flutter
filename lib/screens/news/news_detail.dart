@@ -135,7 +135,7 @@ class _NewsDetailState extends State<NewsDetail> {
               // Tanggal berita
               Text(
                 widget.berita.createdAt != null
-                    ? DateFormat('dd MMMM yyyy - HH:mm:ss')
+                    ? DateFormat('dd MMMM yyyy - HH:mm')
                         .format(widget.berita.createdAt)
                     : 'No Date',
                 style:
@@ -511,7 +511,7 @@ class _NewsDetailState extends State<NewsDetail> {
                         ),
                         subtitle: Text(
                           related.createdAt != null
-                              ? DateFormat('dd MMMM yyyy - HH:mm:ss')
+                              ? DateFormat('dd MMMM yyyy - HH:mm')
                                   .format(related.createdAt)
                               : 'No Date', // Menampilkan tanggal atau 'No Date'
                           style: GoogleFonts.poppins(

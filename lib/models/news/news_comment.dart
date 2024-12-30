@@ -1,5 +1,4 @@
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:univ_go/functions/date_util.dart';
 import 'package:univ_go/models/user/user.dart';
 
 class Comment {
@@ -20,31 +19,12 @@ class Comment {
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) {
-    tz.initializeTimeZones();
-    final jakarta = tz.getLocation('Asia/Jakarta');
-
-    DateTime? jakartaTime;
-    if (json['created_at'] != null) {
-      final utcTime = DateTime.parse(json['created_at']);
-      final jakartaDateTime = tz.TZDateTime.from(utcTime, jakarta);
-      jakartaTime = DateTime(
-        jakartaDateTime.year,
-        jakartaDateTime.month,
-        jakartaDateTime.day,
-        jakartaDateTime.hour,
-        jakartaDateTime.minute,
-        jakartaDateTime.second,
-        jakartaDateTime.millisecond,
-        jakartaDateTime.microsecond,
-      );
-    }
-
     return Comment(
       id: json['id'],
       text: json['text'],
       newsId: json['news_id'],
       userId: json['user_id'],
-      createdAt: jakartaTime,
+      createdAt: DateUtil.toJakartaTime(json['created_at']),
       user: User.fromJson(json['user']),
     );
   }

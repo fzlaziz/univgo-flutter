@@ -1,5 +1,4 @@
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:univ_go/functions/date_util.dart';
 
 class BeritaTerkait {
   int id;
@@ -27,26 +26,6 @@ class BeritaTerkait {
   });
 
   factory BeritaTerkait.fromJson(Map<String, dynamic> json) {
-    tz.initializeTimeZones();
-
-    final jakarta = tz.getLocation('Asia/Jakarta');
-
-    DateTime? convertToJakartaTime(String? dateString) {
-      if (dateString == null) return null;
-      final utcTime = DateTime.parse(dateString);
-      final jakartaDateTime = tz.TZDateTime.from(utcTime, jakarta);
-      return DateTime(
-        jakartaDateTime.year,
-        jakartaDateTime.month,
-        jakartaDateTime.day,
-        jakartaDateTime.hour,
-        jakartaDateTime.minute,
-        jakartaDateTime.second,
-        jakartaDateTime.millisecond,
-        jakartaDateTime.microsecond,
-      );
-    }
-
     return BeritaTerkait(
       id: json["id"],
       title: json["title"],
@@ -55,9 +34,9 @@ class BeritaTerkait {
       content: json["content"],
       attachment: json["attachment"],
       campusId: json["campus_id"],
-      deletedAt: convertToJakartaTime(json["deleted_at"]),
-      createdAt: convertToJakartaTime(json["created_at"]) ?? DateTime.now(),
-      updatedAt: convertToJakartaTime(json["updated_at"]),
+      deletedAt: DateUtil.toJakartaTime(json["deleted_at"]),
+      createdAt: DateUtil.toJakartaTimeWithDefault(json["created_at"]),
+      updatedAt: DateUtil.toJakartaTime(json["updated_at"]),
     );
   }
 
