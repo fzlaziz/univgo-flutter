@@ -99,17 +99,19 @@ class CampusList extends StatelessWidget {
                                   height: 40,
                                   fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) {
-                                    return const Icon(
-                                      Icons.image_not_supported,
-                                      color: Colors.black,
-                                      size: 30,
+                                    return Image.asset(
+                                      'assets/images/campus_placeholder_circle2.png',
+                                      width: 30,
+                                      height: 40,
+                                      fit: BoxFit.contain,
                                     );
                                   },
                                 )
-                              : const Icon(
-                                  Icons.image_not_supported,
-                                  color: Colors.black,
-                                  size: 30,
+                              : Image.asset(
+                                  'assets/images/campus_placeholder_circle2.png',
+                                  width: 30,
+                                  height: 40,
+                                  fit: BoxFit.contain,
                                 ),
                           const SizedBox(width: 5),
                         ],

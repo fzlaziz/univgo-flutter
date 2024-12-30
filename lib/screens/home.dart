@@ -67,13 +67,13 @@ class Home extends StatelessWidget {
                                       errorBuilder:
                                           (context, error, stackTrace) {
                                         return Image.asset(
-                                          'images/campus_placeholder.jpg',
+                                          'assets/images/campus_placeholder.jpg',
                                           fit: BoxFit.cover,
                                         );
                                       },
                                     )
                                   : Image.asset(
-                                      'images/campus_placeholder.jpg',
+                                      'assets/images/campus_placeholder.jpg',
                                       fit: BoxFit.cover,
                                     ),
                             ),
@@ -182,12 +182,12 @@ class Home extends StatelessWidget {
                                                   height: 50,
                                                   width: 50,
                                                   fit: BoxFit.contain,
-                                                  'images/campus_placeholder.jpg',
+                                                  'assets/images/campus_placeholder.jpg',
                                                 );
                                               },
                                             )
                                           : Image.asset(
-                                              'images/campus_placeholder.jpg',
+                                              'assets/images/campus_placeholder.jpg',
                                               height: 50,
                                               width: 50,
                                               fit: BoxFit.contain,
@@ -273,12 +273,12 @@ class Home extends StatelessWidget {
                                                   height: 50,
                                                   width: 50,
                                                   fit: BoxFit.contain,
-                                                  'images/campus_placeholder.jpg',
+                                                  'assets/images/campus_placeholder.jpg',
                                                 );
                                               },
                                             )
                                           : Image.asset(
-                                              'images/campus_placeholder.jpg',
+                                              'assets/images/campus_placeholder.jpg',
                                               height: 50,
                                               width: 50,
                                               fit: BoxFit.contain,
@@ -364,12 +364,12 @@ class Home extends StatelessWidget {
                                                   height: 50,
                                                   width: 50,
                                                   fit: BoxFit.contain,
-                                                  'images/campus_placeholder.jpg',
+                                                  'assets/images/campus_placeholder.jpg',
                                                 );
                                               },
                                             )
                                           : Image.asset(
-                                              'images/campus_placeholder.jpg',
+                                              'assets/images/campus_placeholder.jpg',
                                               height: 50,
                                               width: 50,
                                               fit: BoxFit.contain,
@@ -487,7 +487,7 @@ class Home extends StatelessWidget {
                                         errorBuilder:
                                             (context, error, stackTrace) {
                                           return Image.asset(
-                                            'images/news_placeholder.jpg',
+                                            'assets/images/news_placeholder.jpg',
                                             fit: BoxFit.cover,
                                             height: 150,
                                             width: double.infinity,
@@ -495,7 +495,7 @@ class Home extends StatelessWidget {
                                         },
                                       )
                                     : Image.asset(
-                                        'images/news_placeholder.jpg',
+                                        'assets/images/news_placeholder.jpg',
                                         fit: BoxFit.cover,
                                         height: 150,
                                         width: double.infinity,

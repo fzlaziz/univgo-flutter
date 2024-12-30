@@ -91,7 +91,7 @@ class _NewsListState extends State<NewsList> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Image.asset(
-                          'images/news_placeholder.jpg',
+                          'assets/images/news_placeholder.jpg',
                           width: 120,
                           height: 150,
                           fit: BoxFit.cover,
@@ -99,7 +99,7 @@ class _NewsListState extends State<NewsList> {
                       },
                     )
                   : Image.asset(
-                      'images/news_placeholder.jpg',
+                      'assets/images/news_placeholder.jpg',
                       width: 120,
                       height: 150,
                       fit: BoxFit.cover,

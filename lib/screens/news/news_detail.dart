@@ -152,7 +152,7 @@ class _NewsDetailState extends State<NewsDetail> {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
-                            'images/news_placeholder.jpg',
+                            'assets/images/news_placeholder.jpg',
                             height: 200,
                             width: double.infinity,
                             fit: BoxFit.cover,
@@ -160,7 +160,7 @@ class _NewsDetailState extends State<NewsDetail> {
                         },
                       )
                     : Image.asset(
-                        'images/news_placeholder.jpg',
+                        'assets/images/news_placeholder.jpg',
                         height: 200,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -552,7 +552,7 @@ class _NewsDetailState extends State<NewsDetail> {
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Image.asset(
-                                    'images/news_placeholder.jpg',
+                                    'assets/images/news_placeholder.jpg',
                                     height: 60,
                                     width: 80,
                                     fit: BoxFit.cover,
@@ -560,7 +560,7 @@ class _NewsDetailState extends State<NewsDetail> {
                                 },
                               )
                             : Image.asset(
-                                'images/news_placeholder.jpg',
+                                'assets/images/news_placeholder.jpg',
                                 height: 60,
                                 width: 80,
                                 fit: BoxFit.cover,
