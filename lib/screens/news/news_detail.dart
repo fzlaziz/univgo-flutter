@@ -24,64 +24,68 @@ class _NewsDetailState extends State<NewsDetail> {
   bool _isCommentValid = false;
   late Future<List<Comment>> _comments;
   int _commentsToShow = 5;
-  int _defaultCommentsToShow = 5;
+  final int _defaultCommentsToShow = 5;
+  bool _isSubmittingComment = false;
   final FocusNode _commentFocus = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _comments = NewsProvider().fetchComments(widget.berita.id);
-    // Tambahkan listener untuk memperbarui validitas komentar
     _commentController.addListener(_validateComment);
   }
 
   @override
   void dispose() {
     _commentController.dispose();
-    // Jangan lupa untuk menghapus listener saat halaman dihapus
     _commentController.removeListener(_validateComment);
     super.dispose();
   }
 
-  // Fungsi untuk mengecek apakah komentar valid
   void _validateComment() {
     setState(() {
-      // Memvalidasi apakah kolom komentar tidak kosong
       _isCommentValid = _commentController.text.isNotEmpty;
     });
   }
 
-  //Fungsi untuk mengirim komentar
   Future<bool> _submitComment() async {
+    if (_isSubmittingComment) return false;
+
+    setState(() {
+      _isSubmittingComment = true;
+    });
     _commentFocus.unfocus();
     if (_commentController.text.isNotEmpty) {
       try {
-        // Mengirimkan komentar dan username ke API
         await NewsProvider().addComment(
           widget.berita.id,
           _commentController.text,
         );
 
-        // Mengambil komentar lagi setelah menambah komentar
         setState(() {
           _comments = NewsProvider().fetchComments(widget.berita.id);
-          _commentController.clear(); // Menghapus teks input komentar
+          _commentController.clear();
+          _isSubmittingComment = false;
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Komentar berhasil dikirim!')),
         );
 
-        return true; // Menandakan pengiriman komentar berhasil
+        return true;
       } catch (e) {
-        // Jika terjadi error
+        setState(() {
+          _isSubmittingComment = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Gagal mengirim komentar, coba lagi.')),
         );
-        return false; // Menandakan pengiriman gagal
+        return false;
       }
     } else {
-      // Jika komentar kosong
+      setState(() {
+        _isSubmittingComment = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Komentar tidak boleh kosong!')),
       );
@@ -117,7 +121,6 @@ class _NewsDetailState extends State<NewsDetail> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title berita
               Text(
                 widget.berita.title,
                 style: GoogleFonts.poppins(
@@ -125,14 +128,12 @@ class _NewsDetailState extends State<NewsDetail> {
               ),
 
               const SizedBox(height: 8),
-              // Excerpt berita
               Text(
                 widget.berita.excerpt,
                 style: GoogleFonts.poppins(
                     fontSize: 16, fontStyle: FontStyle.normal),
               ),
               const SizedBox(height: 16),
-              // Tanggal berita
               Text(
                 widget.berita.createdAt != null
                     ? DateFormat('dd MMMM yyyy - HH:mm')
@@ -142,7 +143,6 @@ class _NewsDetailState extends State<NewsDetail> {
                     GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
               ),
               const SizedBox(height: 16),
-              // Menampilkan gambar berita jika ada
               Center(
                 child: Image.network(
                   widget.berita.attachment != null
@@ -358,9 +358,9 @@ class _NewsDetailState extends State<NewsDetail> {
               ),
               const SizedBox(height: 8),
               SizedBox(
-                width: double.infinity, // Tombol memenuhi lebar TextField
+                width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _isCommentValid
+                  onPressed: (_isCommentValid && !_isSubmittingComment)
                       ? () async {
                           bool isSuccess = await _submitComment();
                           if (isSuccess) {
@@ -475,13 +475,34 @@ class _NewsDetailState extends State<NewsDetail> {
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(blueTheme),
-                    foregroundColor:
-                        _isCommentValid ? Colors.white : Color(blueTheme),
+                    foregroundColor: (_isCommentValid && !_isSubmittingComment)
+                        ? Colors.white
+                        : const Color(blueTheme),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
                   ),
-                  child: Text('Kirim Komentar', style: GoogleFonts.poppins()),
+                  child: _isSubmittingComment
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  (_isCommentValid && !_isSubmittingComment)
+                                      ? Colors.white
+                                      : const Color(blueTheme),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text('Mengirim...', style: GoogleFonts.poppins()),
+                          ],
+                        )
+                      : Text('Kirim Komentar', style: GoogleFonts.poppins()),
                 ),
               ),
 
