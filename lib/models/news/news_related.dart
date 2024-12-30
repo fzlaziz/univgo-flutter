@@ -1,3 +1,5 @@
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 class BeritaTerkait {
   int id;
@@ -24,22 +26,40 @@ class BeritaTerkait {
     this.updatedAt,
   });
 
-  factory BeritaTerkait.fromJson(Map<String, dynamic> json) => BeritaTerkait(
-        id: json["id"],
-        title: json["title"],
-        slug: json["slug"],
-        excerpt: json["excerpt"],
-        content: json["content"],
-        attachment: json["attachment"],
-        campusId: json["campus_id"],
-        deletedAt: json["deleted_at"] != null
-            ? DateTime.parse(json["deleted_at"])
-            : null,
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] != null
-            ? DateTime.parse(json["updated_at"])
-            : null,
+  factory BeritaTerkait.fromJson(Map<String, dynamic> json) {
+    tz.initializeTimeZones();
+
+    final jakarta = tz.getLocation('Asia/Jakarta');
+
+    DateTime? convertToJakartaTime(String? dateString) {
+      if (dateString == null) return null;
+      final utcTime = DateTime.parse(dateString);
+      final jakartaDateTime = tz.TZDateTime.from(utcTime, jakarta);
+      return DateTime(
+        jakartaDateTime.year,
+        jakartaDateTime.month,
+        jakartaDateTime.day,
+        jakartaDateTime.hour,
+        jakartaDateTime.minute,
+        jakartaDateTime.second,
+        jakartaDateTime.millisecond,
+        jakartaDateTime.microsecond,
       );
+    }
+
+    return BeritaTerkait(
+      id: json["id"],
+      title: json["title"],
+      slug: json["slug"],
+      excerpt: json["excerpt"],
+      content: json["content"],
+      attachment: json["attachment"],
+      campusId: json["campus_id"],
+      deletedAt: convertToJakartaTime(json["deleted_at"]),
+      createdAt: convertToJakartaTime(json["created_at"]) ?? DateTime.now(),
+      updatedAt: convertToJakartaTime(json["updated_at"]),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "id": id,

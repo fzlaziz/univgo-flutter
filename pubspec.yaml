@@ -24,6 +24,7 @@ dependencies:
   cached_network_image: ^3.4.1
   lottie: ^3.2.0
   shimmer: ^3.0.0
+  timezone: ^0.10.0
 
 dev_dependencies:
   test: ^1.25.7

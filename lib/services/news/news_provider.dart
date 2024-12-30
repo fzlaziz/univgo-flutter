@@ -58,7 +58,13 @@ class NewsProvider {
 
     if (response.statusCode == 200) {
       final List<dynamic> commentJson = json.decode(response.body);
-      return commentJson.map((json) => Comment.fromJson(json)).toList();
+
+      List<Comment> comments =
+          commentJson.map((json) => Comment.fromJson(json)).toList();
+
+      comments.sort((a, b) => (b.createdAt ?? DateTime.now())
+          .compareTo(a.createdAt ?? DateTime.now()));
+      return comments;
     } else {
       throw Exception('Gagal mengambil komentar');
     }

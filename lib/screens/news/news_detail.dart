@@ -24,6 +24,7 @@ class _NewsDetailState extends State<NewsDetail> {
   bool _isCommentValid = false;
   late Future<List<Comment>> _comments;
   int _commentsToShow = 5;
+  int _defaultCommentsToShow = 5;
   final FocusNode _commentFocus = FocusNode();
 
   @override
@@ -201,83 +202,69 @@ class _NewsDetailState extends State<NewsDetail> {
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(child: Text('Tidak ada komentar.'));
                   } else {
-                    // Batasi komentar yang ditampilkan sesuai dengan _commentsToShow
                     final List<Comment> displayedComments =
                         snapshot.data!.take(_commentsToShow).toList();
                     final bool hasMoreComments =
                         snapshot.data!.length > _commentsToShow;
+                    final bool canShowLess =
+                        _commentsToShow > _defaultCommentsToShow;
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Tampilkan komentar tanpa bubble, tetapi dengan batas garis
                         ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: displayedComments
-                              .length, // Gunakan displayedComments
+                          itemCount: displayedComments.length,
                           itemBuilder: (context, index) {
-                            final comment = displayedComments[
-                                index]; // Ambil komentar berdasarkan index
-
+                            final comment = displayedComments[index];
+                            // ... (keep existing comment display code)
                             return Container(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 4.0), // Jarak antar komentar
-                              padding: const EdgeInsets.all(
-                                  12.0), // Padding di dalam komentar
+                              margin: const EdgeInsets.symmetric(vertical: 4.0),
+                              padding: const EdgeInsets.all(12.0),
                               decoration: BoxDecoration(
                                 border: Border(
                                   bottom: BorderSide(
-                                    color:
-                                        Colors.grey[300]!, // Warna garis bawah
-                                    width: 1.0, // Ketebalan garis bawah
+                                    color: Colors.grey[300]!,
+                                    width: 1.0,
                                   ),
                                 ),
                               ),
                               child: Stack(
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start, // Konten rata kiri
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      // Nama pengguna
                                       Text(
-                                        comment.user
-                                            .name, // Menampilkan nama pengguna
+                                        comment.user.name,
                                         style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
                                           fontSize: 14,
                                         ),
                                       ),
-                                      const SizedBox(
-                                          height:
-                                              4.0), // Jarak antara nama dan teks komentar
-                                      // Teks komentar
+                                      const SizedBox(height: 4.0),
                                       Text(
                                         comment.text,
                                         style: GoogleFonts.poppins(
                                             fontSize: 14,
                                             fontWeight: FontWeight.normal),
                                       ),
-                                      // Menampilkan teks komentar
-                                      const SizedBox(
-                                          height:
-                                              4.0), // Jarak antara teks komentar dan tanggal
+                                      const SizedBox(height: 4.0),
                                     ],
                                   ),
                                   Positioned(
-                                    bottom: 0, // Posisikan tanggal di bawah
-                                    right: 0, // Posisikan tanggal di kanan
+                                    bottom: 0,
+                                    right: 0,
                                     child: Text(
                                       comment.createdAt != null
                                           ? DateFormat('dd MMM yyyy, HH:mm')
-                                              .format(comment
-                                                  .createdAt!) // Format tanggal
+                                              .format(comment.createdAt!)
                                           : 'No Date',
                                       style: GoogleFonts.poppins(
                                           fontSize: 12,
-                                          color: Colors
-                                              .grey[600]), // Warna teks tanggal
+                                          color: Colors.grey[600]),
                                     ),
                                   ),
                                 ],
@@ -285,32 +272,62 @@ class _NewsDetailState extends State<NewsDetail> {
                             );
                           },
                         ),
-                        if (hasMoreComments) // Jika masih ada komentar yang belum ditampilkan
+                        if (hasMoreComments || canShowLess)
                           Center(
-                            child: TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  _commentsToShow +=
-                                      5; // Tambahkan 3 komentar lagi
-                                });
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize
-                                    .min, // Agar Row tidak mengambil ruang penuh
-                                children: [
-                                  Text(
-                                    'View More',
-                                    style: GoogleFonts.poppins(
-                                        color: Colors.black),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (canShowLess)
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _commentsToShow =
+                                            _defaultCommentsToShow;
+                                      });
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          'View Less',
+                                          style: GoogleFonts.poppins(
+                                              color: Colors.black),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        const Icon(
+                                          Icons.expand_less,
+                                          color: Colors.black,
+                                        ),
+                                      ],
+                                    ),
                                   ),
+                                if (hasMoreComments && canShowLess)
                                   const SizedBox(
-                                      width: 4), // Jarak antara teks dan ikon
-                                  const Icon(
-                                    Icons.expand_more,
-                                    color: Colors.black,
+                                      width: 16), // Spacing between buttons
+                                if (hasMoreComments)
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _commentsToShow += 5;
+                                      });
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          'View More',
+                                          style: GoogleFonts.poppins(
+                                              color: Colors.black),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        const Icon(
+                                          Icons.expand_more,
+                                          color: Colors.black,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
+                              ],
                             ),
                           ),
                       ],

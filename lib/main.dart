@@ -10,9 +10,11 @@ import 'package:univ_go/screens/home.dart';
 import 'package:univ_go/services/api_data_provider.dart';
 import 'package:get/get.dart';
 import 'package:univ_go/const/theme_color.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 Future main() async {
-WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
   final prefs = await SharedPreferences.getInstance();
   Get.put<SharedPreferences>(prefs, permanent: true);
   await dotenv.load(fileName: ".env");

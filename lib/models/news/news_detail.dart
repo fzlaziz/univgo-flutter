@@ -1,3 +1,5 @@
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 import 'package:univ_go/models/news/news_related.dart';
 
 class DetailBerita {
@@ -27,25 +29,44 @@ class DetailBerita {
     required this.relatedNews,
   });
 
-  factory DetailBerita.fromJson(Map<String, dynamic> json) => DetailBerita(
-        id: json["news_detail"]["id"],
-        title: json["news_detail"]["title"],
-        slug: json["news_detail"]["slug"],
-        excerpt: json["news_detail"]["excerpt"],
-        content: json["news_detail"]["content"],
-        attachment: json["news_detail"]["attachment"],
-        campusId: json["news_detail"]["campus_id"],
-        deletedAt: json["news_detail"]["deleted_at"] != null
-            ? DateTime.parse(json["news_detail"]["deleted_at"])
-            : null,
-        createdAt: DateTime.parse(json["news_detail"]["created_at"]),
-        updatedAt: json["news_detail"]["updated_at"] != null
-            ? DateTime.parse(json["news_detail"]["updated_at"])
-            : null,
-        relatedNews: List<BeritaTerkait>.from(
-          json["related_news"].map((x) => BeritaTerkait.fromJson(x)),
-        ),
+  factory DetailBerita.fromJson(Map<String, dynamic> json) {
+    tz.initializeTimeZones();
+
+    final jakarta = tz.getLocation('Asia/Jakarta');
+
+    DateTime? convertToJakartaTime(String? dateString) {
+      if (dateString == null) return null;
+      final utcTime = DateTime.parse(dateString);
+      final jakartaDateTime = tz.TZDateTime.from(utcTime, jakarta);
+      return DateTime(
+        jakartaDateTime.year,
+        jakartaDateTime.month,
+        jakartaDateTime.day,
+        jakartaDateTime.hour,
+        jakartaDateTime.minute,
+        jakartaDateTime.second,
+        jakartaDateTime.millisecond,
+        jakartaDateTime.microsecond,
       );
+    }
+
+    return DetailBerita(
+      id: json["news_detail"]["id"],
+      title: json["news_detail"]["title"],
+      slug: json["news_detail"]["slug"],
+      excerpt: json["news_detail"]["excerpt"],
+      content: json["news_detail"]["content"],
+      attachment: json["news_detail"]["attachment"],
+      campusId: json["news_detail"]["campus_id"],
+      deletedAt: convertToJakartaTime(json["news_detail"]["deleted_at"]),
+      createdAt: convertToJakartaTime(json["news_detail"]["created_at"]) ??
+          DateTime.now(),
+      updatedAt: convertToJakartaTime(json["news_detail"]["updated_at"]),
+      relatedNews: List<BeritaTerkait>.from(
+        json["related_news"].map((x) => BeritaTerkait.fromJson(x)),
+      ),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "news_detail": {
@@ -63,4 +84,3 @@ class DetailBerita {
         "related_news": List<dynamic>.from(relatedNews.map((x) => x.toJson())),
       };
 }
-
