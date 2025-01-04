@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class PlaceholderCard extends StatelessWidget {
   final AnimationController animationController;
 
-  const PlaceholderCard({Key? key, required this.animationController}) : super(key: key);
+  const PlaceholderCard({Key? key, required this.animationController})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +19,10 @@ class PlaceholderCard extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Card(
+            elevation: 2,
+            color: Colors.grey[50],
             shape: RoundedRectangleBorder(
-              side: BorderSide(color: const Color.fromARGB(255, 198, 197, 197)),
+              side: const BorderSide(color: Color.fromARGB(255, 198, 197, 197)),
               borderRadius: BorderRadius.circular(10),
             ),
             child: ListTile(

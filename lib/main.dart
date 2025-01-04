@@ -104,6 +104,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFAFAFA),
       appBar: CustomAppBar(
         selectedIndex: _selectedIndex,
         backgroundColor: const Color(blueTheme),
@@ -114,10 +115,25 @@ class _MainPageState extends State<MainPage> {
           ? null
           : SizedBox(
               height: 65,
-              child: BottomNavBar(
-                  selectedIndex: _selectedIndex, onItemTapped: _onItemTapped),
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 10,
+                      offset: const Offset(0, -5),
+                    ),
+                  ],
+                ),
+                child: Theme(
+                  data: Theme.of(context).copyWith(canvasColor: Colors.white),
+                  child: BottomNavBar(
+                      selectedIndex: _selectedIndex,
+                      onItemTapped: _onItemTapped),
+                ),
+              ),
             ),
-      // body: index[_selectedIndex],
       body: IndexedStack(
         index: _selectedIndex,
         children: index.map((widget) {

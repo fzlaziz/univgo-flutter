@@ -160,17 +160,14 @@ class Api {
   Future<Map<String, dynamic>> changePassword({
     required String currentPassword,
     required String newPassword,
-    required String
-        confirmPassword, // Tambahkan parameter untuk konfirmasi password
+    required String confirmPassword,
   }) async {
-    // Memastikan token telah dimuat
     await loadToken();
     if (_token == null) {
       return {'message': 'User is not logged in.', 'status_code': 401};
     }
 
     try {
-      // Request ke endpoint API untuk mengganti password
       final response = await http
           .post(
             Uri.parse('$baseUrl/api/change-password'),
@@ -181,17 +178,14 @@ class Api {
             body: jsonEncode({
               'current_password': currentPassword,
               'new_password': newPassword,
-              'new_password_confirmation':
-                  confirmPassword, // Kirim data confirm_password
+              'new_password_confirmation': confirmPassword,
             }),
           )
-          .timeout(const Duration(seconds: 10)); // Timeout setelah 10 detik
+          .timeout(const Duration(seconds: 10));
 
-      // Debug response (opsional, untuk mempermudah debugging)
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
 
-      // Menggunakan fungsi _handleResponse untuk parsing
       return _handleResponse(response);
     } on TimeoutException {
       return {
@@ -220,7 +214,6 @@ class Api {
       final payload = {
         'name': name,
         'email': email,
-        // Include additional fields if provided
         ...?additionalFields,
       };
 
@@ -343,17 +336,14 @@ class Api {
   Future<Map<String, dynamic>> logout() async {
     await loadToken();
     try {
-      // Make a call to your backend logout endpoint
       final response = await http.post(
-        Uri.parse(
-            '$baseUrl/api/logout'), // Replace with your actual logout endpoint
+        Uri.parse('$baseUrl/api/logout'),
         headers: {
-          'Authorization': 'Bearer $_token', // Assuming you store the token
+          'Authorization': 'Bearer $_token',
           'Content-Type': 'application/json',
         },
       );
 
-      // Remove the token from SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('token');
       print('LOGOUT RESPONSE');

@@ -82,6 +82,8 @@ class CampusList extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Card(
+                    elevation: 2,
+                    color: Colors.grey[50],
                     shape: RoundedRectangleBorder(
                       side: const BorderSide(
                           color: Color.fromARGB(255, 198, 197, 197)),

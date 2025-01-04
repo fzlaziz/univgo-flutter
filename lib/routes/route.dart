@@ -52,11 +52,13 @@ final routes = [
     name: '/login',
     page: () => const LoginPage(),
     middlewares: [AuthMiddleware()],
+    transition: Transition.noTransition,
   ),
   GetPage(
     name: '/register',
     page: () => const RegisterScreen(),
     middlewares: [AuthMiddleware()],
+    transition: Transition.noTransition,
   ),
   GetPage(
     name: '/splashscreen',

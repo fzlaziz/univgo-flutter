@@ -15,6 +15,7 @@ class SearchEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     searchController.text = '';
     return Scaffold(
+      backgroundColor: const Color(0xFFFAFAFA),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70.0),
         child: AppBar(

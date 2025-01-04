@@ -46,6 +46,7 @@ class _RecommendedCampusesPlaceholderState
             ).evaluate(_animationController)!;
 
             return Card(
+              color: Colors.grey[45],
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
               ),

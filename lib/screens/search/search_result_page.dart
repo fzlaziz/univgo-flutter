@@ -18,6 +18,7 @@ class SearchResultPage extends GetView<SearchResultController> {
   Widget build(BuildContext context) {
     return Scaffold(
       // key: GlobalKey<ScaffoldState>(),
+      backgroundColor: const Color(0xFFFAFAFA),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70.0),
         child: AppBar(

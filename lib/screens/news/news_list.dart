@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:univ_go/const/theme_color.dart';
 import 'package:univ_go/models/news/news.dart';
 import 'package:univ_go/models/news/news_detail.dart';
 import 'package:univ_go/screens/news/news_detail.dart';
@@ -332,12 +333,12 @@ class _NewsListState extends State<NewsList> {
           'Berita',
           style: GoogleFonts.poppins(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
             fontSize: 18,
           ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(blueTheme),
         centerTitle: true,
       ),
       body: Padding(

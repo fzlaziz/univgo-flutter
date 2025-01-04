@@ -20,8 +20,10 @@ class PlaceholderCardStudyProgram extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Card(
+            elevation: 2,
+            color: Colors.grey[50],
             shape: RoundedRectangleBorder(
-              side: BorderSide(color: const Color.fromARGB(255, 198, 197, 197)),
+              side: const BorderSide(color: Color.fromARGB(255, 198, 197, 197)),
               borderRadius: BorderRadius.circular(10),
             ),
             child: ListTile(

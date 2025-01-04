@@ -38,6 +38,7 @@ class _CampusPlaceholderListState extends State<CampusPlaceholderList>
             width: MediaQuery.of(context).size.width / 2,
             margin: const EdgeInsets.all(8.0),
             child: Card(
+              color: Colors.grey[45],
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
               ),

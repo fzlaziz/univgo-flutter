@@ -31,6 +31,17 @@ class Home extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 5.0),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Kampus Terdekat Dari Lokasi Anda',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+              ),
+            ),
             const SizedBox(height: 16),
             GetX<HomeController>(
               init: HomeController(),
@@ -56,8 +67,8 @@ class Home extends StatelessWidget {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(15.0),
                             child: ColorFiltered(
-                              colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.5),
+                              colorFilter: const ColorFilter.mode(
+                                Colors.black45,
                                 BlendMode.darken,
                               ),
                               child: campus.logoPath != null
@@ -139,6 +150,17 @@ class Home extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 5.0),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'PTN terbaik di Indonesia',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+              ),
+            ),
             GetX<HomeController>(
               init: HomeController(), // Inisialisasi HomeController
               builder: (controller) {
@@ -154,10 +176,11 @@ class Home extends StatelessWidget {
                         final campus = controller.ptnList[index];
                         return Container(
                           width: MediaQuery.of(context).size.width / 2,
-                          margin: const EdgeInsets.all(8.0),
+                          margin: const EdgeInsets.fromLTRB(0, 8, 8, 8),
                           child: GestureDetector(
                             onTap: () {},
                             child: Card(
+                              color: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15.0),
                               ),
@@ -230,6 +253,17 @@ class Home extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 5.0),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Politeknik Terbaik di Indonesia',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+              ),
+            ),
             GetX<HomeController>(
               init: HomeController(), // Inisialisasi HomeController
               builder: (controller) {
@@ -245,10 +279,11 @@ class Home extends StatelessWidget {
                         final campus = controller.politeknikList[index];
                         return Container(
                           width: MediaQuery.of(context).size.width / 2,
-                          margin: const EdgeInsets.all(8.0),
+                          margin: const EdgeInsets.fromLTRB(0, 8, 8, 8),
                           child: GestureDetector(
                             onTap: () {},
                             child: Card(
+                              color: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15.0),
                               ),
@@ -321,6 +356,17 @@ class Home extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 5.0),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Kampus Swasta Terbaik di Indonesia',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+              ),
+            ),
             GetX<HomeController>(
               init: HomeController(), // Inisialisasi HomeController
               builder: (controller) {
@@ -336,10 +382,11 @@ class Home extends StatelessWidget {
                         final campus = controller.swastaList[index];
                         return Container(
                           width: MediaQuery.of(context).size.width / 2,
-                          margin: const EdgeInsets.all(8.0),
+                          margin: const EdgeInsets.fromLTRB(0, 8, 8, 8),
                           child: GestureDetector(
                             onTap: () {},
                             child: Card(
+                              color: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15.0),
                               ),
@@ -435,7 +482,7 @@ class Home extends StatelessWidget {
                 )
               ],
             ),
-            const SizedBox(height: 16.0), // Add spacing above the row
+            const SizedBox(height: 8.0), // Add spacing above the row
             Row(
               children: [
                 Expanded(
@@ -470,36 +517,47 @@ class Home extends StatelessWidget {
                           homeController.navigateToDetail(news.id);
                         },
                         child: Card(
+                          elevation: 5,
+                          color: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(15.0),
-                                child: news.attachment != null
-                                    ? Image.network(
-                                        news.attachment!,
-                                        fit: BoxFit.cover,
-                                        height: 150,
-                                        width: double.infinity,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Image.asset(
-                                            'assets/images/news_placeholder.jpg',
-                                            fit: BoxFit.cover,
-                                            height: 150,
-                                            width: double.infinity,
-                                          );
-                                        },
-                                      )
-                                    : Image.asset(
-                                        'assets/images/news_placeholder.jpg',
-                                        fit: BoxFit.cover,
-                                        height: 150,
-                                        width: double.infinity,
-                                      ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 0.1,
+                                  ),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: news.attachment != null
+                                      ? Image.network(
+                                          news.attachment!,
+                                          fit: BoxFit.cover,
+                                          height: 150,
+                                          width: double.infinity,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Image.asset(
+                                              'assets/images/news_placeholder.jpg',
+                                              fit: BoxFit.cover,
+                                              height: 150,
+                                              width: double.infinity,
+                                            );
+                                          },
+                                        )
+                                      : Image.asset(
+                                          'assets/images/news_placeholder.jpg',
+                                          fit: BoxFit.cover,
+                                          height: 150,
+                                          width: double.infinity,
+                                        ),
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),

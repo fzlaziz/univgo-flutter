@@ -324,6 +324,7 @@ class ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
+                    elevation: 3,
                     backgroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     minimumSize: const Size.fromHeight(50),
@@ -344,6 +345,7 @@ class ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
+                    elevation: 3,
                     backgroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     minimumSize: const Size.fromHeight(50),
@@ -397,7 +399,7 @@ class ProfilePageState extends State<ProfilePage> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF7FF),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12.0),
             border: Border.all(color: Colors.grey, width: 1.0),
           ),
