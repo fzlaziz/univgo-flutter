@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:univ_go/models/campus/campus_response.dart';
+import 'package:univ_go/models/campus/nearest_campus_response.dart';
 import 'package:univ_go/models/news/news.dart';
 import 'package:univ_go/models/news/news_detail.dart';
 import 'package:univ_go/screens/news/news_detail.dart';
@@ -16,7 +16,8 @@ class HomeController extends GetxController {
   var politeknikList = <Ptn>[].obs;
   var swastaList = <Ptn>[].obs;
   var latestNews = <Berita>[].obs;
-  final RxList<CampusResponse> recommendedCampuses = <CampusResponse>[].obs;
+  final RxList<NearestCampusResponse> recommendedCampuses =
+      <NearestCampusResponse>[].obs;
   final locationService = LocationService(Get.context!);
   final RxBool isLocationReady = false.obs;
   final RxBool isLocationDenied = false.obs;
@@ -47,8 +48,9 @@ class HomeController extends GetxController {
       final cachedRecommended = prefs.getString('recommendedCampuses');
       if (cachedRecommended != null) {
         List<dynamic> jsonList = jsonDecode(cachedRecommended);
-        recommendedCampuses.value =
-            jsonList.map((json) => CampusResponse.fromJson(json)).toList();
+        recommendedCampuses.value = jsonList
+            .map((json) => NearestCampusResponse.fromJson(json))
+            .toList();
       }
     }
 

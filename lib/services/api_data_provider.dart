@@ -2,6 +2,7 @@ import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:univ_go/functions/calculate_distance.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:univ_go/models/campus/nearest_campus_response.dart';
 import 'package:univ_go/models/study_program/study_programs_response.dart';
 import 'package:univ_go/models/campus/campus_response.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -235,7 +236,7 @@ class ApiDataProvider {
     return filters;
   }
 
-  Future<List<CampusResponse>> getCampusesNearby(
+  Future<List<NearestCampusResponse>> getCampusesNearby(
       {required double latitude, required double longitude}) async {
     var headers = <String, String>{};
     Client client = Client();
@@ -249,7 +250,7 @@ class ApiDataProvider {
     if (response.statusCode == 200) {
       var jsonList = jsonDecode(response.body) as List;
       var campuses =
-          jsonList.map((json) => CampusResponse.fromJson(json)).toList();
+          jsonList.map((json) => NearestCampusResponse.fromJson(json)).toList();
 
       // Process logo paths
       for (var campus in campuses) {

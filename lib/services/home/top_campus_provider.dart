@@ -8,9 +8,9 @@ TopCampusList topCampusListFromJson(String str) =>
 String topCampusListToJson(TopCampusList data) => json.encode(data.toJson());
 
 class TopCampusList {
-  List<Ptn> ptn;
-  List<Ptn> politeknik;
-  List<Ptn> swasta;
+  final List<Ptn> ptn;
+  final List<Ptn> politeknik;
+  final List<Ptn> swasta;
 
   TopCampusList({
     required this.ptn,
@@ -33,99 +33,59 @@ class TopCampusList {
 }
 
 class Ptn {
-  int id;
-  String name;
+  final int id;
+  final String name;
   String? logoPath;
-  double addressLatitude;
-  double addressLongitude;
-  int rankScore;
-  int accreditationId;
-  String district;
-  int districtId;
-  String city;
-  int cityId;
-  String province;
-  int provinceId;
-  int campusTypeId;
-  String campusType;
-  Accreditation accreditation;
+  final int rankScore;
+  final int campusTypeId;
+  final CampusType campusType;
 
   Ptn({
     required this.id,
     required this.name,
-    required this.logoPath,
-    required this.addressLatitude,
-    required this.addressLongitude,
+    this.logoPath,
     required this.rankScore,
-    required this.accreditationId,
-    required this.district,
-    required this.districtId,
-    required this.city,
-    required this.cityId,
-    required this.province,
-    required this.provinceId,
     required this.campusTypeId,
     required this.campusType,
-    required this.accreditation,
   });
 
   factory Ptn.fromJson(Map<String, dynamic> json) => Ptn(
         id: json["id"],
         name: json["name"],
         logoPath: json["logo_path"],
-        addressLatitude: json["address_latitude"]?.toDouble(),
-        addressLongitude: json["address_longitude"]?.toDouble(),
         rankScore: json["rank_score"],
-        accreditationId: json["accreditation_id"],
-        district: json["district"],
-        districtId: json["district_id"],
-        city: json["city"],
-        cityId: json["city_id"],
-        province: json["province"],
-        provinceId: json["province_id"],
         campusTypeId: json["campus_type_id"],
-        campusType: json["campus_type"],
-        accreditation: Accreditation.fromJson(json["accreditation"]),
+        campusType: campusTypeValues.map[json["campus_type"]]!,
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "logo_path": logoPath,
-        "address_latitude": addressLatitude,
-        "address_longitude": addressLongitude,
         "rank_score": rankScore,
-        "accreditation_id": accreditationId,
-        "district": district,
-        "district_id": districtId,
-        "city": city,
-        "city_id": cityId,
-        "province": province,
-        "province_id": provinceId,
         "campus_type_id": campusTypeId,
-        "campus_type": campusType,
-        "accreditation": accreditation.toJson(),
+        "campus_type": campusTypeValues.reverse[campusType],
       };
 }
 
-class Accreditation {
-  int id;
-  String name;
+enum CampusType { POLITEKNIK, PTN, SWASTA }
 
-  Accreditation({
-    required this.id,
-    required this.name,
-  });
+final campusTypeValues = EnumValues({
+  "Politeknik": CampusType.POLITEKNIK,
+  "PTN": CampusType.PTN,
+  "Swasta": CampusType.SWASTA
+});
 
-  factory Accreditation.fromJson(Map<String, dynamic> json) => Accreditation(
-        id: json["id"],
-        name: json["name"],
-      );
+class EnumValues<T> {
+  Map<String, T> map;
+  late Map<T, String> reverseMap;
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-      };
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    reverseMap = map.map((k, v) => MapEntry(v, k));
+    return reverseMap;
+  }
 }
 
 class TopCampusProvider {
