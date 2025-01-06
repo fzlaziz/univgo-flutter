@@ -50,5 +50,6 @@ flutter:
       - asset: fonts/UnivGoIcon.ttf
   assets:
     - assets/animations/
+    - assets/fonts/Poppins/
     - assets/images/
     - .env

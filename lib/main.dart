@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:univ_go/controller/home_controller.dart';
 import 'package:univ_go/routes/route.dart';
@@ -13,6 +16,11 @@ import 'package:univ_go/const/theme_color.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 Future main() async {
+  GoogleFonts.config.allowRuntimeFetching = false;
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('assets/fonts/Poppins/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['assets/fonts/Poppins'], license);
+  });
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
   final prefs = await SharedPreferences.getInstance();
