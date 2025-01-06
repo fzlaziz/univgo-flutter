@@ -64,10 +64,8 @@ class CampusResponse {
         ? List<DegreeLevel>.from(
             json["degree_levels"].map((x) => DegreeLevel.fromJson(x)))
         : [
-            DegreeLevel.fromJson({
-              "id": 9999,
-              "name": "Degree",
-            })
+            DegreeLevel.fromJson(
+                {"id": 9999, "name": "Degree", "duration": 9999})
           ];
 
     return CampusResponse(

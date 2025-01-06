@@ -25,6 +25,11 @@ dependencies:
   lottie: ^3.2.0
   shimmer: ^3.0.0
   timezone: ^0.10.0
+  font_awesome_flutter: ^10.8.0
+  fl_chart: ^0.69.2
+  latlong2: ^0.9.1
+  url_launcher: ^6.3.1
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   test: ^1.25.7
@@ -44,22 +49,6 @@ flutter:
      fonts:
       - asset: fonts/UnivGoIcon.ttf
   assets:
-    - assets/images/campus_placeholder.jpg
-    - assets/images/campus_placeholder_circle1.png
-    - assets/images/campus_placeholder_circle2.png
-    - assets/images/campus_placeholder_dimmed.jpg
-    - assets/images/news_placeholder.jpg
-    - assets/animations/loading.json
-    - assets/animations/success.json
-    - assets/images/iisma.png
-    - assets/images/iisma_detail.png
-    - assets/images/polines1.jpg
-    - assets/images/polines2.jpg
-    - assets/images/polines3.jpg
-    - assets/images/polines4.jpg
-    - assets/images/logo.png
-    - assets/images/logo_polines.png
-    - assets/images/logo_undip.png
-    - assets/images/logo_polkesmar.png
-    - assets/images/logo_unnes.png
+    - assets/animations/
+    - assets/images/
     - .env

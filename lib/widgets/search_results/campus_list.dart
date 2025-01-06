@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/components/card/placeholder_card.dart';
 import 'package:univ_go/models/campus/campus_response.dart';
 import 'package:univ_go/const/theme_color.dart';
+import 'package:univ_go/screens/campus/profile_campus.dart';
 
 class CampusList extends StatelessWidget {
   final Future<List<CampusResponse>> response;
@@ -81,54 +82,65 @@ class CampusList extends StatelessWidget {
                 var campus = snapshot.data![index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Card(
-                    elevation: 2,
-                    color: Colors.grey[50],
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                          color: Color.fromARGB(255, 198, 197, 197)),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: ListTile(
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(width: 8),
-                          campus.logoPath != null
-                              ? Image.network(
-                                  campus.logoPath!,
-                                  width: 30,
-                                  height: 40,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      'assets/images/campus_placeholder_circle2.png',
-                                      width: 30,
-                                      height: 40,
-                                      fit: BoxFit.contain,
-                                    );
-                                  },
-                                )
-                              : Image.asset(
-                                  'assets/images/campus_placeholder_circle2.png',
-                                  width: 30,
-                                  height: 40,
-                                  fit: BoxFit.contain,
-                                ),
-                          const SizedBox(width: 5),
-                        ],
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProfileCampus(campusId: campus.id),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      elevation: 2,
+                      color: Colors.grey[50],
+                      shape: RoundedRectangleBorder(
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 198, 197, 197)),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      title: Text(campus.name,
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          )),
-                      subtitle: Text(campus.description,
-                          style: GoogleFonts.poppins(
-                            fontSize: 11,
-                            color: Colors.black,
-                          )),
+                      child: ListTile(
+                        leading: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(width: 8),
+                            campus.logoPath != null
+                                ? Image.network(
+                                    campus.logoPath!,
+                                    width: 30,
+                                    height: 40,
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        'assets/images/campus_placeholder_circle2.png',
+                                        width: 30,
+                                        height: 40,
+                                        fit: BoxFit.contain,
+                                      );
+                                    },
+                                  )
+                                : Image.asset(
+                                    'assets/images/campus_placeholder_circle2.png',
+                                    width: 30,
+                                    height: 40,
+                                    fit: BoxFit.contain,
+                                  ),
+                            const SizedBox(width: 5),
+                          ],
+                        ),
+                        title: Text(campus.name,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            )),
+                        subtitle: Text(campus.description,
+                            style: GoogleFonts.poppins(
+                              fontSize: 11,
+                              color: Colors.black,
+                            )),
+                      ),
                     ),
                   ),
                 );

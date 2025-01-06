@@ -114,13 +114,13 @@ class Home extends StatelessWidget {
                                 padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
                               ),
                               onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         ProfileCampus(campusId: campus.id),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProfileCampus(campusId: campus.id),
+                                  ),
+                                );
                               },
                               child: const Icon(
                                 Icons.arrow_outward,
@@ -178,7 +178,15 @@ class Home extends StatelessWidget {
                           width: MediaQuery.of(context).size.width / 2,
                           margin: const EdgeInsets.fromLTRB(0, 8, 8, 8),
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfileCampus(campusId: campus.id),
+                                ),
+                              );
+                            },
                             child: Card(
                               color: Colors.white,
                               shape: RoundedRectangleBorder(
@@ -281,7 +289,15 @@ class Home extends StatelessWidget {
                           width: MediaQuery.of(context).size.width / 2,
                           margin: const EdgeInsets.fromLTRB(0, 8, 8, 8),
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfileCampus(campusId: campus.id),
+                                ),
+                              );
+                            },
                             child: Card(
                               color: Colors.white,
                               shape: RoundedRectangleBorder(
@@ -384,7 +400,15 @@ class Home extends StatelessWidget {
                           width: MediaQuery.of(context).size.width / 2,
                           margin: const EdgeInsets.fromLTRB(0, 8, 8, 8),
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfileCampus(campusId: campus.id),
+                                ),
+                              );
+                            },
                             child: Card(
                               color: Colors.white,
                               shape: RoundedRectangleBorder(

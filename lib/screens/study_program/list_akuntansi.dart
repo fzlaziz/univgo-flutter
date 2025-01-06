@@ -144,7 +144,7 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => MainPage(),
+      // '/': (context) => MainPage(),
       '/list_akuntansi': (context) => ListAkuntansi(),
     },
   ));
