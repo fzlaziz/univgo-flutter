@@ -151,6 +151,14 @@ class _ProfileCampusState extends State<ProfileCampus> {
                               width: MediaQuery.of(context).size.width / 9,
                               height: MediaQuery.of(context).size.width / 9,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  'assets/images/campus_placeholder_circle2.png',
+                                  fit: BoxFit.cover,
+                                  width: MediaQuery.of(context).size.width / 9,
+                                  height: MediaQuery.of(context).size.width / 9,
+                                );
+                              },
                             ),
                           ),
                           Positioned(
