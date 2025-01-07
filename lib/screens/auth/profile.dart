@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:univ_go/screens/auth/const/profile_page_style.dart';
 import 'package:univ_go/screens/auth/shimmer/profile_shimmer_loading.dart';
 import 'package:univ_go/services/auth/api.dart';
 
@@ -35,10 +36,7 @@ class ProfilePageState extends State<ProfilePage> {
 
     if (profileData != null && !profileData.containsKey('message')) {
       setState(() {
-        // Extract and store profile image URL
         _profileImageUrl = profileData['profile_image'];
-        print('$_profileImageUrl');
-        // Pre-fill controllers
         nameController.text = profileData['name'] ?? '';
         emailController.text = profileData['email'] ?? '';
       });
@@ -53,6 +51,7 @@ class ProfilePageState extends State<ProfilePage> {
       source: ImageSource.gallery,
       maxWidth: 1800,
       maxHeight: 1800,
+      imageQuality: 70,
     );
 
     if (pickedFile != null) {
@@ -62,7 +61,6 @@ class ProfilePageState extends State<ProfilePage> {
         _localProfileImage = imageFile;
       });
 
-      // Upload image to server
       await _uploadProfileImage(imageFile);
     }
   }
@@ -75,7 +73,6 @@ class ProfilePageState extends State<ProfilePage> {
         SnackBar(content: Text(response['message'] ?? 'Upload berhasil')),
       );
 
-      // Refresh user profile to get the new image URL
       setState(() {
         userProfile = _fetchUserProfile();
       });
@@ -104,48 +101,28 @@ class ProfilePageState extends State<ProfilePage> {
         child: CachedNetworkImage(
           fadeInDuration: Duration.zero,
           fadeOutDuration: Duration.zero,
-          imageUrl: '${_profileImageUrl!}',
+          imageUrl: _profileImageUrl!,
           imageBuilder: (context, imageProvider) => CircleAvatar(
             radius: 50,
             backgroundImage: imageProvider,
           ),
-          placeholder: (context, url) => CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.grey[300],
-            child: Icon(
-              Icons.person,
-              size: 50,
-              color: Colors.grey[700],
-            ),
+          placeholder: (context, url) => ProfilePageStyle.buildCircleAvatar(
+            Icons.person,
           ),
-          errorWidget: (context, url, error) => CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.grey[300],
-            child: Icon(
-              Icons.error,
-              size: 50,
-              color: Colors.grey[700],
-            ),
+          errorWidget: (context, url, error) =>
+              ProfilePageStyle.buildCircleAvatar(
+            Icons.error,
           ),
         ),
       );
     }
 
     // Default placeholder
-    return CircleAvatar(
-      radius: 50,
-      backgroundColor: Colors.grey[300],
-      child: Icon(
-        Icons.person,
-        size: 50,
-        color: Colors.grey[700],
-      ),
-    );
+    return ProfilePageStyle.buildCircleAvatar(Icons.person);
   }
 
   Future<void> _logout(BuildContext context) async {
     try {
-      // Show a confirmation dialog
       final shouldLogout = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
@@ -171,7 +148,7 @@ class ProfilePageState extends State<ProfilePage> {
               const EdgeInsets.only(bottom: 10, left: 10, right: 10),
           actions: [
             ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(false), // Cancel
+              onPressed: () => Navigator.of(context).pop(false),
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,
                 backgroundColor: Colors.grey[300],
@@ -190,7 +167,7 @@ class ProfilePageState extends State<ProfilePage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(true), // Confirm
+              onPressed: () => Navigator.of(context).pop(true),
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
                 backgroundColor: Colors.redAccent,
@@ -212,14 +189,11 @@ class ProfilePageState extends State<ProfilePage> {
       );
 
       if (shouldLogout == true) {
-        // Call API logout method
         final response = await Api().logout();
 
         if (response['status_code'] == 200) {
-          // Navigate to login screen and remove all previous routes
           Navigator.of(context).pushReplacementNamed('/login');
         } else {
-          // Show error message
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(response['message'] ?? 'Logout failed'),
@@ -229,7 +203,6 @@ class ProfilePageState extends State<ProfilePage> {
         }
       }
     } catch (e) {
-      // Handle any unexpected errors
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('An error occurred: ${e.toString()}'),
@@ -289,17 +262,11 @@ class ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 6),
                 Text(
                   userData['name'] ?? '',
-                  style: GoogleFonts.poppins(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: ProfilePageStyle.profileDetailTextStyle,
                 ),
                 Text(
                   userData['email'] ?? '',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                  ),
+                  style: ProfilePageStyle.profileDetailFieldTextStyle,
                 ),
                 const SizedBox(height: 30),
                 profileDetail('Nama Lengkap', nameController, isEditing),
@@ -318,20 +285,9 @@ class ProfilePageState extends State<ProfilePage> {
                   icon: const Icon(Icons.edit, color: Colors.black),
                   label: Text(
                     isEditing ? 'Save Profile' : 'Edit Profile',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                    style: ProfilePageStyle.normalButtonTextStyle,
                   ),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 3,
-                    backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                  style: ProfilePageStyle.buttonStyle,
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton.icon(
@@ -339,20 +295,9 @@ class ProfilePageState extends State<ProfilePage> {
                   icon: const Icon(Icons.lock, color: Colors.black),
                   label: Text(
                     'Ganti Password',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                    style: ProfilePageStyle.normalButtonTextStyle,
                   ),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 3,
-                    backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                  style: ProfilePageStyle.buttonStyle,
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton.icon(
@@ -360,19 +305,9 @@ class ProfilePageState extends State<ProfilePage> {
                   icon: const Icon(Icons.logout, color: Colors.white),
                   label: Text(
                     'Logout',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    style: ProfilePageStyle.whiteButtonTextStyle,
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                  style: ProfilePageStyle.logoutButtonStyle,
                 ),
               ],
             ),
@@ -389,10 +324,7 @@ class ProfilePageState extends State<ProfilePage> {
       children: [
         Text(
           title,
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.normal,
-          ),
+          style: ProfilePageStyle.profileDetailTextStyle,
         ),
         const SizedBox(height: 4),
         Container(
@@ -406,17 +338,11 @@ class ProfilePageState extends State<ProfilePage> {
           child: isEditing
               ? TextField(
                   controller: controller,
-                  style: GoogleFonts.poppins(
-                    fontSize: 16.0,
-                    color: Colors.black87,
-                  ),
+                  style: ProfilePageStyle.profileDetailFieldTextStyle,
                 )
               : Text(
                   controller.text,
-                  style: GoogleFonts.poppins(
-                    fontSize: 16.0,
-                    color: Colors.black87,
-                  ),
+                  style: ProfilePageStyle.profileDetailFieldTextStyle,
                 ),
         ),
       ],
@@ -442,16 +368,14 @@ class ProfilePageState extends State<ProfilePage> {
     }
 
     if (response['status_code'] == 200) {
-      // Perform asynchronous work outside of setState
       final newProfile = await Api().getProfile();
 
       if (newProfile != null && !newProfile.containsKey('message')) {
         setState(() {
-          // Update the state synchronously
           nameController.text = newProfile['name'] ?? '';
           emailController.text = newProfile['email'] ?? '';
-          userProfile = Future.value(newProfile); // Update FutureBuilder
-          isEditing = false; // Exit editing mode
+          userProfile = Future.value(newProfile);
+          isEditing = false;
         });
       }
     }
@@ -572,7 +496,7 @@ class ProfilePageState extends State<ProfilePage> {
           borderSide: BorderSide(color: Colors.grey.shade400),
         ),
         filled: true,
-        fillColor: Colors.grey.shade100,
+        fillColor: Colors.white,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
