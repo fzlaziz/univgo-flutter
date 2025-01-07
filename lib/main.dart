@@ -9,7 +9,7 @@ import 'package:univ_go/routes/route.dart';
 import 'package:univ_go/components/appbar/custom_app_bar.dart';
 import 'package:univ_go/components/navbar/bottom_navbar.dart';
 import 'package:univ_go/screens/auth/profile.dart';
-import 'package:univ_go/screens/home.dart';
+import 'package:univ_go/screens/home/home.dart';
 import 'package:univ_go/services/api_data_provider.dart';
 import 'package:get/get.dart';
 import 'package:univ_go/const/theme_color.dart';

@@ -223,7 +223,7 @@ class AboutSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 12, top: 6),
+            padding: const EdgeInsets.only(left: 12, top: 6, bottom: 6),
             child: Text('About', style: AboutStyles.titleTextStyle),
           ),
           _buildContactInfo(),

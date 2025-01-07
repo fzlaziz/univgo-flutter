@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:univ_go/components/card/latest_news_placeholder.dart';
 import 'package:univ_go/components/card/top_campus_placeholder.dart';
 import 'package:univ_go/components/card/recommended_campus_placeholder.dart';
+import 'package:univ_go/screens/home/const/home_style.dart';
 import 'package:univ_go/screens/news/news_list.dart';
 import 'package:univ_go/screens/campus/profile_campus.dart';
 import 'package:univ_go/const/theme_color.dart';
@@ -24,11 +24,7 @@ class Home extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 'Rekomendasi Kampus Terdekat',
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: HomeStyle.titleTextStyle,
               ),
             ),
             const SizedBox(height: 5.0),
@@ -36,10 +32,7 @@ class Home extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 'Kampus Terdekat Dari Lokasi Anda',
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
+                style: HomeStyle.subtitleTextStyle,
               ),
             ),
             const SizedBox(height: 16),
@@ -95,11 +88,7 @@ class Home extends StatelessWidget {
                             right: 16,
                             child: Text(
                               campus.name,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: HomeStyle.reccomendedCampusTextStyle,
                               overflow: TextOverflow.visible,
                             ),
                           ),
@@ -135,7 +124,6 @@ class Home extends StatelessWidget {
                 );
               },
             ),
-
             const SizedBox(
               height: 16,
             ),
@@ -143,11 +131,7 @@ class Home extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 'Top 10 PTN',
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: HomeStyle.titleTextStyle,
               ),
             ),
             const SizedBox(height: 5.0),
@@ -155,14 +139,11 @@ class Home extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 'PTN terbaik di Indonesia',
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
+                style: HomeStyle.subtitleTextStyle,
               ),
             ),
             GetX<HomeController>(
-              init: HomeController(), // Inisialisasi HomeController
+              init: HomeController(),
               builder: (controller) {
                 if (controller.ptnList.isEmpty) {
                   return const CampusPlaceholderList();
@@ -227,11 +208,7 @@ class Home extends StatelessWidget {
                                     const SizedBox(height: 8.0),
                                     Text(
                                       campus.name,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
-                                      ),
+                                      style: HomeStyle.topCampusTextStyle,
                                       textAlign: TextAlign.center,
                                     ),
                                   ],
@@ -246,7 +223,6 @@ class Home extends StatelessWidget {
                 }
               },
             ),
-
             const SizedBox(
               height: 16,
             ),
@@ -254,11 +230,7 @@ class Home extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 'Top 10 Politeknik',
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: HomeStyle.titleTextStyle,
               ),
             ),
             const SizedBox(height: 5.0),
@@ -266,14 +238,11 @@ class Home extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 'Politeknik Terbaik di Indonesia',
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
+                style: HomeStyle.subtitleTextStyle,
               ),
             ),
             GetX<HomeController>(
-              init: HomeController(), // Inisialisasi HomeController
+              init: HomeController(),
               builder: (controller) {
                 if (controller.politeknikList.isEmpty) {
                   return const CampusPlaceholderList();
@@ -338,11 +307,7 @@ class Home extends StatelessWidget {
                                     const SizedBox(height: 8.0),
                                     Text(
                                       campus.name,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
-                                      ),
+                                      style: HomeStyle.topCampusTextStyle,
                                       textAlign: TextAlign.center,
                                     ),
                                   ],
@@ -357,7 +322,6 @@ class Home extends StatelessWidget {
                 }
               },
             ),
-
             const SizedBox(
               height: 16,
             ),
@@ -365,11 +329,7 @@ class Home extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 'Top 10 Kampus Swasta',
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: HomeStyle.titleTextStyle,
               ),
             ),
             const SizedBox(height: 5.0),
@@ -377,14 +337,11 @@ class Home extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 'Kampus Swasta Terbaik di Indonesia',
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
+                style: HomeStyle.subtitleTextStyle,
               ),
             ),
             GetX<HomeController>(
-              init: HomeController(), // Inisialisasi HomeController
+              init: HomeController(),
               builder: (controller) {
                 if (controller.swastaList.isEmpty) {
                   return const CampusPlaceholderList();
@@ -449,11 +406,7 @@ class Home extends StatelessWidget {
                                     const SizedBox(height: 8.0),
                                     Text(
                                       campus.name,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
-                                      ),
+                                      style: HomeStyle.topCampusTextStyle,
                                       textAlign: TextAlign.center,
                                     ),
                                   ],
@@ -468,8 +421,7 @@ class Home extends StatelessWidget {
                 }
               },
             ),
-
-            const SizedBox(height: 16.0), // Add spacing below the row
+            const SizedBox(height: 16.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -477,28 +429,17 @@ class Home extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Berita Terkini',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: HomeStyle.titleTextStyle,
                   ),
                 ),
                 TextButton.icon(
                   onPressed: () {
-                    // Navigate to all news page
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const NewsList()),
                     );
                   },
-                  icon: Text(
-                    'Lihat semua',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.black,
-                    ),
-                  ),
+                  icon: Text('Lihat semua', style: HomeStyle.subtitleTextStyle),
                   label: const Icon(
                     Icons.arrow_forward,
                     color: Color(greyTheme),
@@ -506,23 +447,17 @@ class Home extends StatelessWidget {
                 )
               ],
             ),
-            const SizedBox(height: 8.0), // Add spacing above the row
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Temukan berbagai berita kampus terkini',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
+            const SizedBox(height: 8.0),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Temukan berbagai berita kampus terkini',
+                style: HomeStyle.subtitleTextStyle,
+              ),
             ),
-            const SizedBox(height: 16.0), // Add spacing below the row
+            const SizedBox(height: 16.0),
             GetX<HomeController>(
-              init: HomeController(), // Inisialisasi HomeController
+              init: HomeController(),
               builder: (controller) {
                 if (controller.latestNews.isEmpty) {
                   return const NewsPlaceholder();
@@ -587,13 +522,9 @@ class Home extends StatelessWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   news.title,
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  style: HomeStyle.newsTitleTextStyle,
                                   overflow: TextOverflow.ellipsis,
-                                  maxLines: 2, // Menampilkan maksimal 2 baris
+                                  maxLines: 2,
                                 ),
                               ),
                               Padding(
@@ -602,10 +533,7 @@ class Home extends StatelessWidget {
                                 child: Text(
                                   DateFormat('dd MMMM yyyy - HH:mm')
                                       .format(news.createdAt),
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 13,
-                                    color: Colors.grey,
-                                  ),
+                                  style: HomeStyle.newsDateTextStyle,
                                 ),
                               ),
                             ],
