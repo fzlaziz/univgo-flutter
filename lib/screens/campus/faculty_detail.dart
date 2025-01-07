@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:univ_go/models/study_program/study_program.dart';
-import 'package:univ_go/services/api_data_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/const/theme_color.dart';
+import 'package:univ_go/services/profile_campus/profile_campus_provider.dart';
 
 class FacultyDetail extends StatefulWidget {
   final int facultyId;
@@ -17,7 +17,7 @@ class FacultyDetail extends StatefulWidget {
 }
 
 class _FacultyDetailState extends State<FacultyDetail> {
-  final ApiDataProvider apiDataProvider = ApiDataProvider();
+  final ProfileCampusProvider apiDataProvider = ProfileCampusProvider();
 
   @override
   Widget build(BuildContext context) {

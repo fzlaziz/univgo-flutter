@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:univ_go/services/api_data_provider.dart';
+import 'package:univ_go/services/search/search_data_provider.dart';
 import 'package:univ_go/services/location_service.dart';
 import 'package:univ_go/models/filter/filter_model.dart';
 import 'package:univ_go/models/campus/campus_response.dart';
@@ -8,7 +8,7 @@ import 'package:univ_go/models/study_program/study_programs_response.dart';
 
 class SearchResultController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  final ApiDataProvider apiDataProvider = ApiDataProvider();
+  final SearchDataProvider apiDataProvider = SearchDataProvider();
   final locationService = LocationService(Get.context!);
   final RxString searchQuery = ''.obs;
   final RxBool showCampus = true.obs;

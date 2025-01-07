@@ -10,7 +10,7 @@ import 'package:univ_go/components/appbar/custom_app_bar.dart';
 import 'package:univ_go/components/navbar/bottom_navbar.dart';
 import 'package:univ_go/screens/auth/profile.dart';
 import 'package:univ_go/screens/home/home.dart';
-import 'package:univ_go/services/api_data_provider.dart';
+import 'package:univ_go/services/search/search_data_provider.dart';
 import 'package:get/get.dart';
 import 'package:univ_go/const/theme_color.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -50,7 +50,7 @@ class _MainPageState extends State<MainPage> {
   final TextEditingController _searchController = TextEditingController();
   int _selectedIndex = 0;
   bool _isSearchMode = false;
-  ApiDataProvider apiDataProvider = ApiDataProvider();
+  SearchDataProvider apiDataProvider = SearchDataProvider();
 
   void _onItemTapped(int index) {
     setState(() {

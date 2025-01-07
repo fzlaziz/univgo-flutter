@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:univ_go/services/api_data_provider.dart';
+import 'package:univ_go/services/search/search_data_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,7 +8,8 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
 
@@ -24,7 +25,7 @@ void main() async {
       'userLongitude': 110.4347715,
     });
 
-    final provider = ApiDataProvider();
+    final provider = SearchDataProvider();
     var result = await provider.getCampus("");
 
     for (var campus in result) {

@@ -11,7 +11,7 @@ import 'package:univ_go/screens/campus/widgets/campus_news_section.dart';
 import 'package:univ_go/screens/campus/widgets/carousel_container.dart';
 import 'package:univ_go/screens/campus/widgets/info_section.dart';
 import 'package:univ_go/screens/campus/widgets/review_section.dart';
-import 'package:univ_go/services/api_data_provider.dart';
+import 'package:univ_go/services/profile_campus/profile_campus_provider.dart';
 
 class ProfileCampus extends StatefulWidget {
   final int campusId;
@@ -50,7 +50,7 @@ class _ProfileCampusState extends State<ProfileCampus> {
     });
   }
 
-  ApiDataProvider api = ApiDataProvider();
+  final ProfileCampusProvider api = ProfileCampusProvider();
 
   double get avgRating {
     if (ulasan.isEmpty) {

@@ -2,16 +2,13 @@ import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:univ_go/functions/calculate_distance.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:univ_go/models/campus/nearest_campus_response.dart';
-import 'package:univ_go/models/campus_detail/campus_detail.dart';
 import 'package:univ_go/models/study_program/study_programs_response.dart';
 import 'package:univ_go/models/campus/campus_response.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:univ_go/models/filter/filter_model.dart';
 import 'package:univ_go/services/location_service.dart';
-import 'package:univ_go/models/study_program/study_program.dart';
 
-class ApiDataProvider {
+class SearchDataProvider {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
   String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
   LocationService locationService = LocationService();
@@ -103,58 +100,6 @@ class ApiDataProvider {
       return campuses;
     } else {
       throw Exception("Oops! Something went wrong");
-    }
-  }
-
-  Future<CampusDetailResponse> getCampusDetail(int campusId) async {
-    var headers = <String, String>{
-      "Content-Type": 'application/json; charset=UTF-8',
-    };
-
-    Client client = Client();
-
-    try {
-      final response = await client
-          .get(Uri.parse('$baseUrl/api/campus/$campusId'), headers: headers);
-
-      if (response.statusCode == 200) {
-        print('Response Body: ${response.body}'); // Debugging respons
-
-        final campusDetailResponse =
-            campusDetailResponseFromJson(response.body);
-
-        return campusDetailResponse;
-      } else {
-        print('Error Status Code: ${response.statusCode}');
-        print('Error Response Body: ${response.body}');
-        throw Exception("Failed to load campus details");
-      }
-    } catch (e) {
-      print('Exception Occurred: $e');
-      throw Exception("Oops! Something went wrong");
-    }
-  }
-
-  Future<StudyProgramList> getStudyPrograms(int facultyId) async {
-    var headers = <String, String>{};
-    Client client = Client();
-
-    headers["Content-Type"] = 'application/json; charset=UTF-8';
-
-    final response = await client.get(
-      Uri.parse('$baseUrl/api/faculties/$facultyId/study_programs'),
-      headers: headers,
-    );
-
-    if (response.statusCode == 200) {
-      final studyProgramList = studyProgramListFromJson(response.body);
-
-      // for (var program in studyProgramList.studyPrograms) {
-      // }
-
-      return studyProgramList;
-    } else {
-      throw Exception("Failed to load study programs.");
     }
   }
 
@@ -288,34 +233,5 @@ class ApiDataProvider {
 
     filters = loadedFilters;
     return filters;
-  }
-
-  Future<List<NearestCampusResponse>> getCampusesNearby(
-      {required double latitude, required double longitude}) async {
-    var headers = <String, String>{};
-    Client client = Client();
-    headers["Content-Type"] = 'application/json; charset=UTF-8';
-
-    final response = await client.get(
-        Uri.parse(
-            "$baseUrl/api/campuses-nearest?latitude=$latitude&longitude=$longitude"),
-        headers: headers);
-
-    if (response.statusCode == 200) {
-      var jsonList = jsonDecode(response.body) as List;
-      var campuses =
-          jsonList.map((json) => NearestCampusResponse.fromJson(json)).toList();
-
-      // Process logo paths
-      for (var campus in campuses) {
-        if (campus.logoPath != null && campus.logoPath!.isNotEmpty) {
-          campus.logoPath = "$awsUrl/${campus.logoPath!}";
-        }
-      }
-
-      return campuses;
-    } else {
-      throw Exception("Oops! Something went wrong");
-    }
   }
 }

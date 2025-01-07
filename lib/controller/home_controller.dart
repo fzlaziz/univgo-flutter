@@ -5,7 +5,8 @@ import 'package:univ_go/models/campus/nearest_campus_response.dart';
 import 'package:univ_go/models/news/news.dart';
 import 'package:univ_go/models/news/news_detail.dart';
 import 'package:univ_go/screens/news/news_detail.dart';
-import 'package:univ_go/services/api_data_provider.dart';
+import 'package:univ_go/services/search/search_data_provider.dart';
+import 'package:univ_go/services/home/nearest_campus_provider.dart';
 import 'package:univ_go/services/home/top_campus_provider.dart';
 import 'package:univ_go/services/home/news_latest.dart';
 import 'package:univ_go/services/location_service.dart';
@@ -192,7 +193,7 @@ class HomeController extends GetxController {
         return;
       }
 
-      var campusService = ApiDataProvider();
+      var campusService = NearestCampusProvider();
       var campuses = await campusService.getCampusesNearby(
           latitude: userLatitude, longitude: userLongitude);
 
@@ -213,7 +214,7 @@ class HomeController extends GetxController {
     try {
       double userLatitude = -7.051834727886331;
       double userLongitude = 110.4410954478625;
-      var campusService = ApiDataProvider();
+      var campusService = NearestCampusProvider();
       var campuses = await campusService.getCampusesNearby(
           latitude: userLatitude, longitude: userLongitude);
 
