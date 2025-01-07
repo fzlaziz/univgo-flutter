@@ -1,5 +1,6 @@
 import 'package:http/http.dart';
 import 'package:univ_go/models/campus_detail/campus_detail.dart';
+import 'package:univ_go/models/campus_review/campus_review.dart';
 import 'package:univ_go/models/study_program/study_program.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -53,6 +54,25 @@ class ProfileCampusProvider {
       return studyProgramList;
     } else {
       throw Exception("Failed to load study programs.");
+    }
+  }
+
+  Future<CampusReviews> getCampusReviews(int campusId) async {
+    var headers = <String, String>{};
+    Client client = Client();
+
+    headers["Content-Type"] = 'application/json; charset=UTF-8';
+
+    final response = await client.get(
+      Uri.parse('$baseUrl/api/campus/$campusId/reviews'),
+      headers: headers,
+    );
+    if (response.statusCode == 200) {
+      final campusReviewsList = campusReviewsFromJson(response.body);
+
+      return campusReviewsList;
+    } else {
+      throw Exception("Failed to load campus reviews.");
     }
   }
 }

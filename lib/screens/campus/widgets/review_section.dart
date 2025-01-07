@@ -1,21 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:univ_go/const/theme_color.dart';
-import 'package:univ_go/screens/campus/campus_review.dart';
+import 'package:univ_go/models/campus_review/campus_review.dart';
 
 class ReviewSection extends StatelessWidget {
-  final List<Map<String, dynamic>> ulasan;
-  final List<Map<String, dynamic>> ulasanSaya;
-  final void Function(String nama, int rating, String ulasanBaru) tambahUlasan;
-  final double avgRating;
+  final List<Review> reviews;
+  final int totalReviews;
+  final num averageRating;
 
   const ReviewSection({
     Key? key,
-    required this.ulasan,
-    required this.ulasanSaya,
-    required this.tambahUlasan,
-    required this.avgRating,
+    required this.reviews,
+    required this.totalReviews,
+    required this.averageRating,
   }) : super(key: key);
+
+  Widget _buildDefaultAvatar() {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.blue,
+      ),
+      child: const Icon(
+        Icons.person,
+        size: 30,
+        color: Colors.white,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +82,7 @@ class ReviewSection extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  avgRating.toStringAsFixed(1),
+                  averageRating.toDouble().toStringAsFixed(1),
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -91,7 +101,7 @@ class ReviewSection extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  '${ulasan.length} ulasan',
+                  '${reviews.length} ulasan',
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.black,
@@ -101,23 +111,46 @@ class ReviewSection extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
+            if (reviews.isEmpty)
+              Text(
+                'Belum ada ulasan',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black54,
+                ),
+              ),
             SingleChildScrollView(
               child: Column(
-                children: List.generate(ulasan.length, (index) {
-                  final ulasanItem = ulasan[index];
+                children: List.generate(reviews.length, (index) {
+                  final ulasanItem = reviews[index];
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const CircleAvatar(
-                            backgroundColor: Colors.blue,
-                            radius: 20,
-                            child: Icon(
-                              Icons.person,
-                              size: 30,
-                              color: Colors.white,
+                          ClipOval(
+                            child: SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: ulasanItem.userProfileImage != null
+                                  ? Image.network(
+                                      ulasanItem.userProfileImage!,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return _buildDefaultAvatar();
+                                      },
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null) {
+                                          return child;
+                                        }
+                                        return _buildDefaultAvatar();
+                                      },
+                                    )
+                                  : _buildDefaultAvatar(),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -125,19 +158,19 @@ class ReviewSection extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                ulasanItem['nama'],
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
+                                ulasanItem.user,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                               Row(
                                 children: List.generate(
-                                  ulasanItem['rating'],
+                                  ulasanItem.rating,
                                   (index) => const Icon(
                                     Icons.star,
                                     color: Colors.amber,
-                                    size: 12,
+                                    size: 13,
                                   ),
                                 ),
                               ),
@@ -147,8 +180,8 @@ class ReviewSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        ulasanItem['ulasan'],
-                        style: const TextStyle(
+                        ulasanItem.review,
+                        style: GoogleFonts.poppins(
                           fontSize: 13,
                           color: Colors.black,
                         ),
