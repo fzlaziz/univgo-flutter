@@ -11,6 +11,7 @@ class Api {
   String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
 
   String? _token;
+  int? _userId;
 
   Future<void> setToken(String token) async {
     _token = token;
@@ -27,6 +28,23 @@ class Api {
     _token = null;
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
+  }
+
+  Future<void> setUserId(int userId) async {
+    _userId = userId;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('user_id', userId);
+  }
+
+  Future<void> loadUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    _userId = prefs.getInt('user_id');
+  }
+
+  Future<void> clearUserId() async {
+    _userId = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_id');
   }
 
   Future<Map<String, dynamic>> register({
@@ -75,6 +93,7 @@ class Api {
 
       final result = _handleLoginResponse(response);
       if (result.containsKey('token')) {
+        await setUserId(result['user']['id']);
         await setToken(result['token']);
       }
       return result;
@@ -346,8 +365,9 @@ class Api {
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('token');
-      print('LOGOUT RESPONSE');
-      print(response);
+      await prefs.remove('user_id');
+      // print('LOGOUT RESPONSE');
+      // print(response);
       return {
         'status_code': response.statusCode,
         'message': 'Logged out successfully',

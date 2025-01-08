@@ -9,7 +9,6 @@ import 'package:univ_go/services/news/news_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class NewsList extends StatefulWidget {
-  static const String routeName = '/berita_page';
   const NewsList({super.key});
 
   @override
@@ -61,18 +60,18 @@ class _NewsListState extends State<NewsList> {
                 Text(
                   berita.title,
                   style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold, fontSize: 16),
+                      fontWeight: FontWeight.bold, fontSize: 14),
                 ),
                 // Excerpt (Add this line)
                 if (berita.excerpt != null && berita.excerpt.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 4.0),
                     child: Text(
-                      berita.excerpt.length > 70
-                          ? '${berita.excerpt.substring(0, 70)}...'
+                      berita.excerpt.length > 80
+                          ? '${berita.excerpt.substring(0, 80)}...'
                           : berita.excerpt, // Display excerpt with overflow
                       style: GoogleFonts.poppins(
-                          fontSize: 14, color: Colors.black),
+                          fontSize: 12, color: Colors.black),
                     ),
                   ),
               ],
@@ -81,7 +80,7 @@ class _NewsListState extends State<NewsList> {
               berita.createdAt != null
                   ? DateFormat('dd MMMM yyyy - HH:mm').format(berita.createdAt)
                   : 'No Date',
-              style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
+              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
             ),
             trailing: ClipRRect(
               child: berita.attachment != null

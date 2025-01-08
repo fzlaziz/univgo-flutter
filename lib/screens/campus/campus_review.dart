@@ -1,316 +1,212 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:univ_go/const/theme_color.dart';
+import 'package:univ_go/models/campus_review/campus_review.dart';
+import 'package:univ_go/services/profile_campus/profile_campus_provider.dart';
 
-class BuatUlasanPage extends StatefulWidget {
-  final Function(String, int, String) tambahUlasan;
-  final Map<String, dynamic>? initialData;
+class CampusReviewsPageStyle {
+  static final TextStyle titleStyle = GoogleFonts.poppins(
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+    color: Colors.black,
+  );
 
-  const BuatUlasanPage({
+  static final TextStyle nameReviewStyle = GoogleFonts.poppins(
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+  );
+
+  static final TextStyle textReviewsStyle = GoogleFonts.poppins(
+    fontSize: 13,
+    color: Colors.black,
+  );
+}
+
+class CampusReviewsPage extends StatefulWidget {
+  final int campusId;
+
+  const CampusReviewsPage({
     super.key,
-    required this.tambahUlasan,
-    this.initialData,
+    required this.campusId,
   });
 
   @override
-  _BuatUlasanPageState createState() => _BuatUlasanPageState();
+  _CampusReviewsPageState createState() => _CampusReviewsPageState();
 }
 
-class _BuatUlasanPageState extends State<BuatUlasanPage> {
-  late TextEditingController _ulasanController;
-  late int _rating;
+class _CampusReviewsPageState extends State<CampusReviewsPage> {
+  List<Review> _reviews = [];
+  bool _isLoading = true;
+  int? _userId;
+  num _averageRating = 0;
+  int _totalReviews = 0;
+  final ProfileCampusProvider _api = ProfileCampusProvider();
 
   @override
   void initState() {
     super.initState();
-    _ulasanController =
-        TextEditingController(text: widget.initialData?['ulasan'] ?? '');
-    _rating = widget.initialData?['rating'] ?? 0;
+    _loadData();
   }
 
-  void _kirimUlasan() {
-    if (_ulasanController.text.isNotEmpty && _rating > 0) {
-      widget.tambahUlasan('Nama Anda', _rating, _ulasanController.text);
-      Navigator.pop(context);
-    } else {
+  Future<void> _loadData() async {
+    setState(() => _isLoading = true);
+
+    final prefs = await SharedPreferences.getInstance();
+    _userId = prefs.getInt('user_id');
+    print(_userId);
+    try {
+      final campusReviews = await _api.getCampusReviews(widget.campusId);
+      setState(() {
+        _reviews = campusReviews.data.reviews ?? [];
+        _averageRating = campusReviews.data.averageRating;
+        _totalReviews = campusReviews.data.totalReviews;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Harap isi ulasan dan pilih rating!'),
-        ),
+        const SnackBar(content: Text('Failed to load reviews')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // final otherReviews =
+    //     _reviews.where((review) => review.id != _userId).toList();
+    final userReviews =
+        _reviews.where((review) => review.userId == _userId).toList();
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 60,
+        backgroundColor: const Color(blueTheme),
         centerTitle: true,
         title: Text(
-          widget.initialData != null ? 'Ubah Ulasan' : 'Buat Ulasan',
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
+          "Ulasan Kampus",
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xffffffff),
           ),
         ),
-        backgroundColor: const Color(0xFF0059FF),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          color: Colors.white,
-        ),
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Get.back()),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile Picture dan Nama Pengguna
-            const Row(
-              children: [
-                CircleAvatar(
-                  radius: 25,
-                  backgroundImage: NetworkImage(
-                    'https://www.example.com/path/to/your/profile-image.jpg',
-                  ),
-                ),
-                SizedBox(width: 12),
-                Text(
-                  'fufufafa', // Ganti dengan nama pengguna yang sesungguhnya
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Teks mengenai ulasan public
-            const Text(
-              'Ulasan Anda akan bersifat public beserta dengan nama akun Anda',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Rating Section
-            const Text(
-              'Rating Anda',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: List.generate(
-                5,
-                (index) => IconButton(
-                  icon: Icon(
-                    Icons.star,
-                    color: _rating > index ? Colors.yellow : Colors.grey,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _rating = index + 1;
-                    });
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // TextField untuk menulis ulasan
-            const Text(
-              'Tulis Ulasan',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _ulasanController,
-              maxLines: 5,
-              maxLength: 250,
-              decoration: const InputDecoration(
-                hintText: 'Tulis ulasan Anda di sini...',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Tombol Post
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _kirimUlasan,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0059FF),
-                ),
-                child:
-                    const Text('Post', style: TextStyle(color: Colors.white)),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SemuaUlasanPage extends StatefulWidget {
-  final List<Map<String, dynamic>> ulasan;
-  final List<Map<String, dynamic>> ulasanSaya;
-  final Function(String, int, String) tambahUlasan;
-
-  const SemuaUlasanPage({
-    super.key,
-    required this.ulasan,
-    required this.ulasanSaya,
-    required this.tambahUlasan,
-  });
-
-  @override
-  _SemuaUlasanPageState createState() => _SemuaUlasanPageState();
-}
-
-class _SemuaUlasanPageState extends State<SemuaUlasanPage> {
-  @override
-  Widget build(BuildContext context) {
-    double avgRating = widget.ulasan
-            .fold(0, (sum, item) => sum + item['rating'] as int)
-            .toDouble() /
-        widget.ulasan.length;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Semua Ulasan'),
-        backgroundColor: const Color(0xFF0059FF),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (widget.ulasanSaya.isNotEmpty) ...[
-              const Text(
-                'Ulasan Kamu',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: widget.ulasanSaya.length,
-                itemBuilder: (context, index) {
-                  final ulasanItem = widget.ulasanSaya[index];
-                  return _buildUlasanItem(ulasanItem);
-                },
-              ),
-              const SizedBox(height: 16),
-            ],
-            if (widget.ulasan.isNotEmpty) ...[
-              const Text(
-                'Ulasan',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Row(
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    avgRating.toStringAsFixed(1),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
+                  // User Reviews Section
+                  if (userReviews.isNotEmpty) ...[
+                    Text(
+                      'Ulasan Kamu',
+                      style: CampusReviewsPageStyle.titleStyle,
                     ),
-                  ),
-                  const Icon(Icons.star, color: Colors.yellow, size: 14),
-                  const SizedBox(width: 8),
-                  Text(
-                    '${widget.ulasan.length} ulasan',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
+                    const SizedBox(height: 16),
+                    ...userReviews.map((review) => _buildReviewItem(review)),
+                    const SizedBox(height: 16),
+                  ],
+
+                  // Other Reviews Section
+                  if (_reviews.isNotEmpty)
+                    Text(
+                      'Semua Ulasan',
+                      style: CampusReviewsPageStyle.titleStyle,
                     ),
-                  ),
+                  const SizedBox(height: 10),
+                  if (_reviews.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Center(
+                        child: Text('Belum ada ulasan'),
+                      ),
+                    )
+                  else ...[
+                    Row(
+                      children: [
+                        Text(
+                          _averageRating.toStringAsFixed(1),
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const Icon(Icons.star, color: Colors.amber, size: 14),
+                        const SizedBox(width: 8),
+                        Text(
+                          '$_totalReviews ulasan',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    ..._reviews.map((review) => _buildReviewItem(review)),
+                  ],
                 ],
               ),
-              const SizedBox(height: 8),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: widget.ulasan.length,
-                itemBuilder: (context, index) {
-                  final ulasanItem = widget.ulasan[index];
-                  return _buildUlasanItem(ulasanItem);
-                },
-              ),
-            ],
-          ],
-        ),
-      ),
+            ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          final isUlasanSayaNotEmpty = widget.ulasanSaya.isNotEmpty;
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BuatUlasanPage(
-                tambahUlasan: (nama, rating, ulasanBaru) {
-                  if (isUlasanSayaNotEmpty) {
-                    final lastIndexSaya = widget.ulasanSaya.length - 1;
-
-                    if (lastIndexSaya >= 0) {
-                      // Cari indeks ulasan di list `ulasan` berdasarkan konten
-                      final lastUlasanSaya = widget.ulasanSaya[lastIndexSaya];
-                      final indexInUlasan = widget.ulasan.indexWhere((item) =>
-                          item['nama'] == lastUlasanSaya['nama'] &&
-                          item['rating'] == lastUlasanSaya['rating'] &&
-                          item['ulasan'] == lastUlasanSaya['ulasan']);
-
-                      if (indexInUlasan != -1) {
-                        setState(() {
-                          widget.ulasanSaya[lastIndexSaya] = {
-                            'nama': nama,
-                            'rating': rating,
-                            'ulasan': ulasanBaru,
-                          };
-                          widget.ulasan[indexInUlasan] =
-                              widget.ulasanSaya[lastIndexSaya];
-                        });
-                      }
-                    }
-                  } else {
-                    widget.tambahUlasan(nama, rating, ulasanBaru);
-                  }
-                },
-                initialData:
-                    isUlasanSayaNotEmpty ? widget.ulasanSaya.last : null,
-              ),
-            ),
-          );
+          // Navigator.push(
+          //   // context,
+          //   // MaterialPageRoute(
+          //   //   builder: (context) => BuatUlasanPage(
+          //   //     tambahUlasan: (nama, rating, ulasan) {
+          //   //       // We'll implement this later with the API
+          //   //     },
+          //   //     initialData: userReviews.isNotEmpty ? userReviews.first : null,
+          //   //   ),
+          //   // ),
+          // ).then((_) => _loadData()); // Refresh after adding/editing review
         },
         backgroundColor: const Color(0xFF0059FF),
         icon: const Icon(Icons.edit, color: Colors.white),
         label: Text(
-          widget.ulasanSaya.isNotEmpty ? 'Ubah Ulasan' : 'Buat Ulasan',
+          userReviews.isNotEmpty ? 'Ubah Ulasan' : 'Buat Ulasan',
           style: const TextStyle(color: Colors.white),
         ),
       ),
     );
   }
 
-  Widget _buildUlasanItem(Map<String, dynamic> ulasanItem) {
+  Widget _buildReviewItem(Review review) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircleAvatar(
-              radius: 25,
-              child: Icon(Icons.person, size: 35),
+            ClipOval(
+              child: SizedBox(
+                width: 40,
+                height: 40,
+                child: review.userProfileImage != null
+                    ? Image.network(
+                        review.userProfileImage!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return _buildDefaultAvatar();
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return _buildDefaultAvatar();
+                        },
+                      )
+                    : _buildDefaultAvatar(),
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -318,21 +214,29 @@ class _SemuaUlasanPageState extends State<SemuaUlasanPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    ulasanItem['nama'],
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.normal,
-                    ),
+                    review.user,
+                    style: CampusReviewsPageStyle.nameReviewStyle,
                   ),
+                  const SizedBox(height: 4),
                   Row(
-                    children: List.generate(
-                      ulasanItem['rating'],
-                      (index) => const Icon(
-                        Icons.star,
-                        color: Colors.yellow,
-                        size: 13,
+                    children: [
+                      ...List.generate(
+                        review.rating,
+                        (index) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 13,
+                        ),
                       ),
-                    ),
+                      ...List.generate(
+                        5 - review.rating,
+                        (index) => const Icon(
+                          Icons.star_border,
+                          color: Colors.amber,
+                          size: 13,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -341,13 +245,26 @@ class _SemuaUlasanPageState extends State<SemuaUlasanPage> {
         ),
         const SizedBox(height: 8),
         Text(
-          ulasanItem['ulasan'],
-          style: const TextStyle(fontSize: 12, color: Colors.black),
+          review.review,
+          style: CampusReviewsPageStyle.textReviewsStyle,
         ),
         const SizedBox(height: 5),
         const Divider(thickness: 1, color: Colors.grey),
         const SizedBox(height: 16),
       ],
+    );
+  }
+
+  Widget _buildDefaultAvatar() {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.blue,
+      ),
+      child: const Icon(
+        Icons.person,
+        size: 30,
+        color: Colors.white,
+      ),
     );
   }
 }

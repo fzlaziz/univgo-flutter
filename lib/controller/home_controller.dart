@@ -5,7 +5,6 @@ import 'package:univ_go/models/campus/nearest_campus_response.dart';
 import 'package:univ_go/models/news/news.dart';
 import 'package:univ_go/models/news/news_detail.dart';
 import 'package:univ_go/screens/news/news_detail.dart';
-import 'package:univ_go/services/search/search_data_provider.dart';
 import 'package:univ_go/services/home/nearest_campus_provider.dart';
 import 'package:univ_go/services/home/top_campus_provider.dart';
 import 'package:univ_go/services/home/news_latest.dart';

@@ -56,6 +56,7 @@ class Data {
 class Review {
   final int id;
   final String user;
+  final int userId;
   String? userProfileImage;
   final int rating;
   final String review;
@@ -64,6 +65,7 @@ class Review {
   Review({
     required this.id,
     required this.user,
+    required this.userId,
     this.userProfileImage,
     required this.rating,
     required this.review,
@@ -73,6 +75,7 @@ class Review {
   factory Review.fromJson(Map<String, dynamic> json) => Review(
         id: json["id"],
         user: json["user"],
+        userId: json["user_id"],
         userProfileImage: json["user_profile_image"],
         rating: json["rating"],
         review: json["review"],
@@ -82,6 +85,7 @@ class Review {
   Map<String, dynamic> toJson() => {
         "id": id,
         "user": user,
+        "user_id": userId,
         "user_profile_image": userProfileImage,
         "rating": rating,
         "review": review,

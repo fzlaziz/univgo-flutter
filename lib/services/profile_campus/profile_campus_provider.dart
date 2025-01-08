@@ -20,15 +20,15 @@ class ProfileCampusProvider {
           .get(Uri.parse('$baseUrl/api/campus/$campusId'), headers: headers);
 
       if (response.statusCode == 200) {
-        print('Response Body: ${response.body}'); // Debugging respons
+        // print('Response Body: ${response.body}'); // Debugging respons
 
         final campusDetailResponse =
             campusDetailResponseFromJson(response.body);
 
         return campusDetailResponse;
       } else {
-        print('Error Status Code: ${response.statusCode}');
-        print('Error Response Body: ${response.body}');
+        // print('Error Status Code: ${response.statusCode}');
+        // print('Error Response Body: ${response.body}');
         throw Exception("Failed to load campus details");
       }
     } catch (e) {

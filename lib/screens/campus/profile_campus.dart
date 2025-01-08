@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/const/theme_color.dart';
 import 'package:univ_go/screens/campus/widgets/about_section.dart';
-import 'package:univ_go/screens/campus/widgets/bar_chart_container.dart';
+import 'package:univ_go/screens/campus/widgets/bar_chart_section.dart';
 import 'package:univ_go/screens/campus/widgets/campus_news_section.dart';
+import 'package:univ_go/screens/campus/widgets/campus_profile_carousel.dart';
 import 'package:univ_go/screens/campus/widgets/carousel_container.dart';
 import 'package:univ_go/screens/campus/widgets/info_section.dart';
 import 'package:univ_go/screens/campus/widgets/review_section.dart';
@@ -31,7 +30,7 @@ class _ProfileCampusState extends State<ProfileCampus> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 70,
+        toolbarHeight: 60,
         backgroundColor: const Color(blueTheme),
         centerTitle: true,
         title: Text(
@@ -66,90 +65,8 @@ class _ProfileCampusState extends State<ProfileCampus> {
 
                 return Column(
                   children: [
-                    Stack(
-                      children: [
-                        if (campusDetail.facilities == null ||
-                            campusDetail.facilities!.isEmpty)
-                          CarouselSlider(
-                            items: [
-                              Image.asset(
-                                'assets/images/campus_placeholder.jpg',
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              ),
-                            ],
-                            options: CarouselOptions(
-                              height: 180.0,
-                              autoPlay: false,
-                              enlargeCenterPage: true,
-                              viewportFraction: 1.0,
-                            ),
-                          )
-                        else
-                          CarouselSlider(
-                            items: campusDetail.facilities!
-                                .map<Widget>((facility) {
-                              return Builder(
-                                builder: (BuildContext context) {
-                                  return Image.network(
-                                    '$awsUrl${facility.fileLocation}',
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return const Center(
-                                        child: Icon(Icons.error),
-                                      );
-                                    },
-                                  );
-                                },
-                              );
-                            }).toList(),
-                            options: CarouselOptions(
-                              height: 180.0,
-                              autoPlay: true,
-                              autoPlayInterval: const Duration(seconds: 5),
-                              enlargeCenterPage: true,
-                              viewportFraction: 1.0,
-                            ),
-                          ),
-                        Positioned(
-                          top: 4,
-                          right: 4,
-                          child: Image.network(
-                            '$awsUrl${campusDetail.logoPath}',
-                            width: MediaQuery.of(context).size.width / 9,
-                            height: MediaQuery.of(context).size.width / 9,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                'assets/images/campus_placeholder_circle2.png',
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width / 9,
-                                height: MediaQuery.of(context).size.width / 9,
-                              );
-                            },
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            color: Colors.black.withOpacity(0.6),
-                            padding: const EdgeInsets.only(top: 8, bottom: 8),
-                            child: Text(
-                              campusDetail.name,
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    CampusProfileCarousel(
+                        campusDetail: campusDetail, awsUrl: awsUrl),
                     LocationInfoCard(
                         snapshot: AsyncSnapshot.withData(
                             ConnectionState.done, campusDetail)),
@@ -157,51 +74,7 @@ class _ProfileCampusState extends State<ProfileCampus> {
                         snapshot: AsyncSnapshot.withData(
                             ConnectionState.done, campusDetail),
                         campusId: widget.campusId),
-                    BarChartContainer(
-                      title: 'Jumlah Mahasiswa 5 Tahun Terakhir',
-                      barGroups: [
-                        BarChartGroupData(x: 20, barRods: [
-                          BarChartRodData(
-                              fromY: 0,
-                              toY: 2120,
-                              width: 10,
-                              color: const Color(blueTheme),
-                              borderRadius: BorderRadius.zero),
-                        ]),
-                        BarChartGroupData(x: 21, barRods: [
-                          BarChartRodData(
-                              fromY: 0,
-                              toY: 1990,
-                              width: 10,
-                              color: const Color(blueTheme),
-                              borderRadius: BorderRadius.zero),
-                        ]),
-                        BarChartGroupData(x: 22, barRods: [
-                          BarChartRodData(
-                              fromY: 0,
-                              toY: 2260,
-                              width: 10,
-                              color: const Color(blueTheme),
-                              borderRadius: BorderRadius.zero),
-                        ]),
-                        BarChartGroupData(x: 23, barRods: [
-                          BarChartRodData(
-                              fromY: 0,
-                              toY: 2320,
-                              width: 10,
-                              color: const Color(blueTheme),
-                              borderRadius: BorderRadius.zero),
-                        ]),
-                        BarChartGroupData(x: 24, barRods: [
-                          BarChartRodData(
-                              fromY: 0,
-                              toY: 2402,
-                              width: 10,
-                              color: const Color(blueTheme),
-                              borderRadius: BorderRadius.zero),
-                        ]),
-                      ],
-                    ),
+                    const BarChartSection(),
                     ImageCarouselContainer(
                       title: 'Fasilitas',
                       imageUrls: (campusDetail.facilities ?? [])
@@ -225,6 +98,7 @@ class _ProfileCampusState extends State<ProfileCampus> {
                       reviews: campusReviews.data.reviews ?? [],
                       totalReviews: campusReviews.data.totalReviews,
                       averageRating: campusReviews.data.averageRating,
+                      campusId: widget.campusId, // Add this line
                     )
                   ],
                 );
