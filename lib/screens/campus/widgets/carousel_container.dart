@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:univ_go/screens/campus/const/card_style.dart';
 
 // in case i will use this later, so i just comment it
 // class ImageCarouselContainer extends StatelessWidget {
@@ -107,11 +108,7 @@ class ImageCarouselContainer extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue,
-                  ),
+                  style: CardStyle.cardTextStyle,
                 ),
               ],
             ),

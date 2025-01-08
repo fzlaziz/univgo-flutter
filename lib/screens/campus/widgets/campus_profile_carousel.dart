@@ -16,8 +16,7 @@ class CampusProfileCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (campusDetail.facilities == null ||
-            campusDetail.facilities!.isEmpty)
+        if (campusDetail.facilities == null || campusDetail.facilities!.isEmpty)
           CarouselSlider(
             items: [
               Image.asset(
@@ -35,8 +34,7 @@ class CampusProfileCarousel extends StatelessWidget {
           )
         else
           CarouselSlider(
-            items: campusDetail.facilities!
-                .map<Widget>((facility) {
+            items: campusDetail.facilities!.map<Widget>((facility) {
               return Builder(
                 builder: (BuildContext context) {
                   return Image.network(

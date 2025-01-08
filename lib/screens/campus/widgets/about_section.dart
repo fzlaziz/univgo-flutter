@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:univ_go/screens/campus/const/card_style.dart';
 import 'package:univ_go/screens/campus/faculty_list.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,7 +15,7 @@ class AboutStyles {
   );
 
   static final titleTextStyle = GoogleFonts.poppins(
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: FontWeight.w600,
     color: Colors.blue,
   );
@@ -223,8 +224,11 @@ class AboutSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 12, top: 6, bottom: 6),
-            child: Text('About', style: AboutStyles.titleTextStyle),
+            padding: const EdgeInsets.only(left: 12, top: 10, bottom: 10),
+            child: Text(
+              'About',
+              style: CardStyle.cardTextStyle,
+            ),
           ),
           _buildContactInfo(),
           const CustomDivider(),

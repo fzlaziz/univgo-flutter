@@ -89,7 +89,9 @@ class _AddCampusReviewState extends State<AddCampusReview> {
       );
       return;
     }
-
+    String ulasanTruncated = _ulasanController.text
+        .replaceAll(RegExp(r'^\s+', multiLine: true), '')
+        .replaceAll(RegExp(r'\n\s*\n'), '\n');
     try {
       setState(() => _isLoading = true);
 
@@ -99,14 +101,14 @@ class _AddCampusReviewState extends State<AddCampusReview> {
         result = await _api.updateCampusReview(
           widget.initialData!['id'],
           _rating,
-          _ulasanController.text,
+          ulasanTruncated.trim(),
         );
       } else {
         // Add new review
         result = await _api.addCampusReview(
           widget.campusId,
           _rating,
-          _ulasanController.text,
+          ulasanTruncated.trim(),
         );
       }
 
@@ -197,7 +199,7 @@ class _AddCampusReviewState extends State<AddCampusReview> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Ulasan Anda akan bersifat public beserta dengan nama akun Anda',
+                  'Ulasan Anda akan bersifat publik beserta dengan nama akun Anda',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Colors.grey,

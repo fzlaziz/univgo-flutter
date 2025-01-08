@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/models/campus_review/campus_review.dart';
+import 'package:univ_go/screens/campus/const/card_style.dart';
+import 'package:univ_go/screens/campus/widgets/expandable_text.dart';
 
 class ReviewSection extends StatelessWidget {
   final List<Review> reviews;
@@ -52,11 +54,7 @@ class ReviewSection extends StatelessWidget {
               children: [
                 Text(
                   'Ulasan',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue,
-                  ),
+                  style: CardStyle.cardTextStyle,
                 ),
                 TextButton(
                   onPressed: onNavigateToReviews,
@@ -76,7 +74,7 @@ class ReviewSection extends StatelessWidget {
               children: [
                 Text(
                   averageRating.toDouble().toStringAsFixed(1),
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: Colors.black,
@@ -84,9 +82,9 @@ class ReviewSection extends StatelessWidget {
                 ),
                 const Icon(Icons.star, color: Colors.amber, size: 14),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   '|',
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
@@ -95,7 +93,7 @@ class ReviewSection extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   '${reviews.length} ulasan',
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
@@ -172,12 +170,8 @@ class ReviewSection extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        ulasanItem.review,
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          color: Colors.black,
-                        ),
+                      ExpandableText(
+                        text: ulasanItem.review,
                       ),
                       const SizedBox(height: 5),
                       const Divider(thickness: 1, color: Colors.grey),

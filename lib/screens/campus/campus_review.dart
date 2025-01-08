@@ -6,6 +6,7 @@ import 'package:univ_go/const/theme_color.dart';
 import 'package:univ_go/models/campus_review/campus_review.dart';
 import 'package:univ_go/screens/campus/add_campus_review.dart';
 import 'package:univ_go/screens/campus/const/campus_reviews_page_style.dart';
+import 'package:univ_go/screens/campus/widgets/expandable_text.dart';
 import 'package:univ_go/services/profile_campus/profile_campus_provider.dart';
 
 class CampusReviewsPage extends StatefulWidget {
@@ -125,6 +126,15 @@ class _CampusReviewsPageState extends State<CampusReviewsPage> {
                         const Icon(Icons.star, color: Colors.amber, size: 14),
                         const SizedBox(width: 8),
                         Text(
+                          '|',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
                           '$_totalReviews ulasan',
                           style: GoogleFonts.poppins(
                             fontSize: 14,
@@ -235,8 +245,8 @@ class _CampusReviewsPageState extends State<CampusReviewsPage> {
           ],
         ),
         const SizedBox(height: 8),
-        Text(
-          review.review,
+        ExpandableText(
+          text: review.review,
           style: CampusReviewsPageStyle.textReviewsStyle,
         ),
         const SizedBox(height: 5),

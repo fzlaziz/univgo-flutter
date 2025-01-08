@@ -30,7 +30,7 @@ class CampusNewsContainer extends StatelessWidget {
             Text(
               'Berita Kampus',
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: Colors.blue,
               ),

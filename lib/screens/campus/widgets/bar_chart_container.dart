@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:univ_go/screens/campus/const/card_style.dart';
 
 class BarChartContainer extends StatelessWidget {
   final String title;
@@ -35,11 +35,7 @@ class BarChartContainer extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue,
-                  ),
+                  style: CardStyle.cardTextStyle,
                 ),
               ],
             ),
