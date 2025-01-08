@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:univ_go/models/campus_review/campus_review.dart';
-import 'package:univ_go/screens/campus/campus_review.dart';
 
 class ReviewSection extends StatelessWidget {
   final List<Review> reviews;
   final int totalReviews;
   final num averageRating;
   final int campusId;
+  final VoidCallback onNavigateToReviews;
 
   const ReviewSection({
     super.key,
@@ -15,6 +15,7 @@ class ReviewSection extends StatelessWidget {
     required this.totalReviews,
     required this.averageRating,
     required this.campusId,
+    required this.onNavigateToReviews,
   });
 
   Widget _buildDefaultAvatar() {
@@ -58,16 +59,7 @@ class ReviewSection extends StatelessWidget {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CampusReviewsPage(
-                          campusId: campusId, // Pass campusId
-                        ),
-                      ),
-                    );
-                  },
+                  onPressed: onNavigateToReviews,
                   child: Text(
                     'Lebih Banyak',
                     style: GoogleFonts.poppins(

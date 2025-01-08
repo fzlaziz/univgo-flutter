@@ -4,25 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:univ_go/const/theme_color.dart';
 import 'package:univ_go/models/campus_review/campus_review.dart';
+import 'package:univ_go/screens/campus/add_campus_review.dart';
+import 'package:univ_go/screens/campus/const/campus_reviews_page_style.dart';
 import 'package:univ_go/services/profile_campus/profile_campus_provider.dart';
-
-class CampusReviewsPageStyle {
-  static final TextStyle titleStyle = GoogleFonts.poppins(
-    fontSize: 15,
-    fontWeight: FontWeight.w700,
-    color: Colors.black,
-  );
-
-  static final TextStyle nameReviewStyle = GoogleFonts.poppins(
-    fontSize: 13,
-    fontWeight: FontWeight.w500,
-  );
-
-  static final TextStyle textReviewsStyle = GoogleFonts.poppins(
-    fontSize: 13,
-    color: Colors.black,
-  );
-}
 
 class CampusReviewsPage extends StatefulWidget {
   final int campusId;
@@ -158,17 +142,24 @@ class _CampusReviewsPageState extends State<CampusReviewsPage> {
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Navigator.push(
-          //   // context,
-          //   // MaterialPageRoute(
-          //   //   builder: (context) => BuatUlasanPage(
-          //   //     tambahUlasan: (nama, rating, ulasan) {
-          //   //       // We'll implement this later with the API
-          //   //     },
-          //   //     initialData: userReviews.isNotEmpty ? userReviews.first : null,
-          //   //   ),
-          //   // ),
-          // ).then((_) => _loadData()); // Refresh after adding/editing review
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddCampusReview(
+                campusId: widget.campusId,
+                initialData: userReviews.isNotEmpty
+                    ? {
+                        'id': userReviews.first.id,
+                        'rating': userReviews.first.rating,
+                        'ulasan': userReviews.first.review,
+                      }
+                    : null,
+                onReviewSubmitted: () {
+                  _loadData(); // Refresh the reviews list
+                },
+              ),
+            ),
+          );
         },
         backgroundColor: const Color(0xFF0059FF),
         icon: const Icon(Icons.edit, color: Colors.white),
