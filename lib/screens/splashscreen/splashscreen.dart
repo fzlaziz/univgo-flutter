@@ -20,7 +20,6 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // Animation for logo (Scaling effect)
     _logoController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
@@ -32,12 +31,11 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    // Animation for text (Fade in effect)
     _textController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 500),
     );
-    _textAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _textAnimation = Tween<double>(begin: 0.0, end: 1).animate(
       CurvedAnimation(
         parent: _textController,
         curve: Curves.easeIn,
@@ -48,8 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
       _textController.forward();
     });
 
-    // Timer to navigate to the next screen after 3 seconds
-    Timer(const Duration(seconds: 4), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacementNamed('/login');
     });
   }
@@ -67,7 +64,6 @@ class _SplashScreenState extends State<SplashScreen>
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Dekorasi lingkaran di latar belakang
           Positioned(
             top: -60,
             left: -60,
@@ -114,16 +110,14 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Animated Logo with ScaleTransition
                 ScaleTransition(
                   scale: _logoAnimation,
                   child: Image.asset(
-                    'assets/images/logo.png', // Path ke logo UnivGO Anda
+                    'assets/images/logo.png',
                     height: 150,
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Animated Text with FadeIn effect
                 FadeTransition(
                   opacity: _textAnimation,
                   child: Column(
