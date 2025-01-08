@@ -12,7 +12,7 @@ import 'package:univ_go/widgets/search_results/study_program_list.dart';
 import 'package:univ_go/const/theme_color.dart';
 
 class SearchResultPage extends GetView<SearchResultController> {
-  const SearchResultPage({Key? key}) : super(key: key);
+  const SearchResultPage({super.key});
 
   @override
   Widget build(BuildContext context) {

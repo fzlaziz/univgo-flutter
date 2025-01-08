@@ -36,7 +36,7 @@ class AboutStyles {
 }
 
 class CustomDivider extends StatelessWidget {
-  const CustomDivider({Key? key}) : super(key: key);
+  const CustomDivider({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,12 +57,12 @@ class ContactInfoItem extends StatelessWidget {
   final bool isLink;
 
   const ContactInfoItem({
-    Key? key,
+    super.key,
     required this.icon,
     required this.text,
     this.onTap,
     this.isLink = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -95,10 +95,10 @@ class StatsItem extends StatelessWidget {
   final String value;
 
   const StatsItem({
-    Key? key,
+    super.key,
     required this.title,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -130,10 +130,10 @@ class StatsItem2 extends StatelessWidget {
   final String value;
 
   const StatsItem2({
-    Key? key,
+    super.key,
     required this.title,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -178,10 +178,10 @@ class ExpandableSection extends StatelessWidget {
   final List<Widget> children;
 
   const ExpandableSection({
-    Key? key,
+    super.key,
     required this.title,
     required this.children,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -211,8 +211,8 @@ class AboutSection extends StatelessWidget {
   final AsyncSnapshot<dynamic> snapshot;
   final int campusId;
 
-  const AboutSection({Key? key, required this.snapshot, required this.campusId})
-      : super(key: key);
+  const AboutSection(
+      {super.key, required this.snapshot, required this.campusId});
 
   @override
   Widget build(BuildContext context) {

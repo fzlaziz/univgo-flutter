@@ -9,8 +9,7 @@ class FacultyDetail extends StatefulWidget {
   final String facultyName;
 
   const FacultyDetail(
-      {Key? key, required this.facultyId, required this.facultyName})
-      : super(key: key);
+      {super.key, required this.facultyId, required this.facultyName});
 
   @override
   _FacultyDetailState createState() => _FacultyDetailState();
@@ -69,13 +68,13 @@ class _FacultyDetailState extends State<FacultyDetail> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 20.0),
-                    padding: EdgeInsets.only(
+                    margin: const EdgeInsets.only(top: 20.0),
+                    padding: const EdgeInsets.only(
                         top: 10, right: 10, left: 10, bottom: 10),
                     width: MediaQuery.of(context).size.width / 1.1,
                     decoration: BoxDecoration(
-                        color: Color(blueTheme),
-                        borderRadius: BorderRadius.only(
+                        color: const Color(blueTheme),
+                        borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(8.0),
                             topRight: Radius.circular(8.0)),
                         border: Border.all(

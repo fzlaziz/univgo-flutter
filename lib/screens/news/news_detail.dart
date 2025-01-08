@@ -11,7 +11,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class NewsDetail extends StatefulWidget {
   final DetailBerita berita;
 
-  const NewsDetail({required this.berita});
+  const NewsDetail({super.key, required this.berita});
 
   @override
   _NewsDetailState createState() => _NewsDetailState();
@@ -173,7 +173,7 @@ class _NewsDetailState extends State<NewsDetail> {
                 Text(
                   widget.berita.content!,
                   style: GoogleFonts.poppins(fontSize: 16),
-                  textAlign: TextAlign.justify, // Menambahkan justify alignment
+                  textAlign: TextAlign.justify,
                 ),
               if (widget.berita.content == null ||
                   widget.berita.content!.isEmpty)
@@ -181,21 +181,15 @@ class _NewsDetailState extends State<NewsDetail> {
                   'Konten berita tidak tersedia.',
                   style: GoogleFonts.poppins(
                       fontSize: 16, color: Colors.grey[700]),
-                  textAlign: TextAlign.justify, // Menambahkan justify alignment
+                  textAlign: TextAlign.justify,
                 ),
-              const SizedBox(
-                  height:
-                      16), // Menambahkan jarak antara konten berita dan komentar
-
-              // Menampilkan daftar komentar di atas berita terkait
+              const SizedBox(height: 16),
               Text(
                 'Komentar',
                 style: GoogleFonts.poppins(
                     fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(
-                  height:
-                      8), // Jarak antara judul "Komentar" dan daftar komentar
+              const SizedBox(height: 8),
               FutureBuilder<List<Comment>>(
                 future: _comments,
                 builder: (context, snapshot) {
@@ -218,7 +212,7 @@ class _NewsDetailState extends State<NewsDetail> {
                       children: [
                         ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: displayedComments.length,
                           itemBuilder: (context, index) {
                             final comment = displayedComments[index];

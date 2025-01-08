@@ -8,11 +8,11 @@ class ReviewSection extends StatelessWidget {
   final num averageRating;
 
   const ReviewSection({
-    Key? key,
+    super.key,
     required this.reviews,
     required this.totalReviews,
     required this.averageRating,
-  }) : super(key: key);
+  });
 
   Widget _buildDefaultAvatar() {
     return Container(

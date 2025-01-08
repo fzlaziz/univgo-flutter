@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CampusPlaceholderList extends StatefulWidget {
-  const CampusPlaceholderList({Key? key}) : super(key: key);
+  const CampusPlaceholderList({super.key});
 
   @override
   State<CampusPlaceholderList> createState() => _CampusPlaceholderListState();

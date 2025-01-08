@@ -79,11 +79,11 @@ class ImageCarouselContainer extends StatelessWidget {
   final double height;
 
   const ImageCarouselContainer({
-    Key? key,
+    super.key,
     required this.title,
     required this.imageUrls,
     this.height = 250.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

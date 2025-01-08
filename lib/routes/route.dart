@@ -36,7 +36,7 @@ final routes = [
   ),
   GetPage(
       name: homeRoute,
-      page: () => MainPage(),
+      page: () => const MainPage(),
       binding: BindingsBuilder(() {
         Get.put(HomeController());
       }),

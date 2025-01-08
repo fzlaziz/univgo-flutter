@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 class PlaceholderCard extends StatelessWidget {
   final AnimationController animationController;
 
-  const PlaceholderCard({Key? key, required this.animationController})
-      : super(key: key);
+  const PlaceholderCard({super.key, required this.animationController});
 
   @override
   Widget build(BuildContext context) {

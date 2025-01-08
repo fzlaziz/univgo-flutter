@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NewsPlaceholder extends StatefulWidget {
-  const NewsPlaceholder({Key? key}) : super(key: key);
+  const NewsPlaceholder({super.key});
 
   @override
   State<NewsPlaceholder> createState() => _NewsPlaceholderState();

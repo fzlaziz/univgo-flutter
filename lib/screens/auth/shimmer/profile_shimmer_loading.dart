@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ProfileShimmerLoading extends StatelessWidget {
-  const ProfileShimmerLoading({Key? key}) : super(key: key);
+  const ProfileShimmerLoading({super.key});
 
   @override
   Widget build(BuildContext context) {

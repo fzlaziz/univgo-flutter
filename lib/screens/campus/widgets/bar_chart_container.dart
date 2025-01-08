@@ -8,11 +8,11 @@ class BarChartContainer extends StatelessWidget {
   final double aspectRatio;
 
   const BarChartContainer({
-    Key? key,
+    super.key,
     required this.title,
     required this.barGroups,
     this.aspectRatio = 1.5,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

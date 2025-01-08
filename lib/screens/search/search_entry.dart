@@ -9,7 +9,7 @@ const greyTheme = 0xff808080;
 class SearchEntry extends StatelessWidget {
   final TextEditingController searchController;
 
-  const SearchEntry({required this.searchController});
+  const SearchEntry({super.key, required this.searchController});
 
   @override
   Widget build(BuildContext context) {

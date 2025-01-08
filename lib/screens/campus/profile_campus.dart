@@ -16,7 +16,7 @@ import 'package:univ_go/services/profile_campus/profile_campus_provider.dart';
 class ProfileCampus extends StatefulWidget {
   final int campusId;
 
-  const ProfileCampus({Key? key, required this.campusId}) : super(key: key);
+  const ProfileCampus({super.key, required this.campusId});
 
   @override
   _ProfileCampusState createState() => _ProfileCampusState();

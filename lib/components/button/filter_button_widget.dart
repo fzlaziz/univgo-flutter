@@ -10,14 +10,14 @@ class FilterButtonWidget extends StatelessWidget {
   final double? width;
 
   const FilterButtonWidget({
-    Key? key,
+    super.key,
     required this.label,
     required this.id,
     required this.group,
     required this.isSelected,
     required this.onToggle,
     this.width,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

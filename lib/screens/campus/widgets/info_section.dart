@@ -22,10 +22,10 @@ class InfoRow extends StatelessWidget {
   final Widget child;
 
   const InfoRow({
-    Key? key,
+    super.key,
     required this.icon,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +48,10 @@ class MapThumbnail extends StatelessWidget {
   final double longitude;
 
   const MapThumbnail({
-    Key? key,
+    super.key,
     required this.latitude,
     required this.longitude,
-  }) : super(key: key);
+  });
 
   Future<void> _openMap() async {
     final googleMapsUrl =
@@ -90,9 +90,9 @@ class LocationInfoCard extends StatelessWidget {
   final AsyncSnapshot<dynamic> snapshot;
 
   const LocationInfoCard({
-    Key? key,
+    super.key,
     required this.snapshot,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

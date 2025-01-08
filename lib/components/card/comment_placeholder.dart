@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CommentPlaceholder extends StatefulWidget {
-  const CommentPlaceholder({Key? key}) : super(key: key);
+  const CommentPlaceholder({super.key});
 
   @override
   State<CommentPlaceholder> createState() => _CommentPlaceholderState();

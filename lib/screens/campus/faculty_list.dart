@@ -7,7 +7,7 @@ import 'package:univ_go/services/profile_campus/profile_campus_provider.dart';
 class ListFaculty extends StatefulWidget {
   final int campusId;
 
-  const ListFaculty({Key? key, required this.campusId}) : super(key: key);
+  const ListFaculty({super.key, required this.campusId});
 
   @override
   State<ListFaculty> createState() => _ListFacultyState();

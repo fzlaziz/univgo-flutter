@@ -6,9 +6,9 @@ class CampusNewsContainer extends StatelessWidget {
   final AsyncSnapshot<dynamic> snapshot;
 
   const CampusNewsContainer({
-    Key? key,
+    super.key,
     required this.snapshot,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +81,10 @@ class NewsListItem extends StatelessWidget {
   final String? imageUrl;
 
   const NewsListItem({
-    Key? key,
+    super.key,
     required this.news,
     this.imageUrl,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

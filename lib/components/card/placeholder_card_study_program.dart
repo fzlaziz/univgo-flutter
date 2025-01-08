@@ -4,8 +4,7 @@ class PlaceholderCardStudyProgram extends StatelessWidget {
   final AnimationController animationController;
 
   const PlaceholderCardStudyProgram(
-      {Key? key, required this.animationController})
-      : super(key: key);
+      {super.key, required this.animationController});
 
   @override
   Widget build(BuildContext context) {
