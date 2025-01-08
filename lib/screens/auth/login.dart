@@ -139,6 +139,7 @@ class _LoginPageState extends State<LoginPage> {
 
   TextFormField _buildEmailField() {
     return TextFormField(
+      keyboardType: TextInputType.emailAddress,
       controller: _emailController,
       focusNode: _emailFocusNode,
       decoration: InputDecoration(
