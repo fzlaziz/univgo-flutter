@@ -54,12 +54,19 @@ class MapThumbnail extends StatelessWidget {
   });
 
   Future<void> _openMap() async {
-    final googleMapsUrl =
-        'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-    if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
-      await launchUrl(Uri.parse(googleMapsUrl));
+    final Uri googleMapsUri =
+        Uri.parse('geo:$latitude,$longitude?q=$latitude,$longitude');
+
+    if (await canLaunchUrl(googleMapsUri)) {
+      await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
     } else {
-      throw 'Could not open the map.';
+      final Uri webUri = Uri.parse(
+          'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude');
+      if (await canLaunchUrl(webUri)) {
+        await launchUrl(webUri, mode: LaunchMode.externalApplication);
+      } else {
+        throw 'Could not open the map.';
+      }
     }
   }
 

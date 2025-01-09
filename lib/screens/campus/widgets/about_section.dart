@@ -65,6 +65,23 @@ class ContactInfoItem extends StatelessWidget {
     this.isLink = false,
   });
 
+  Future<void> _handleTap() async {
+    if (icon == Icons.phone) {
+      final Uri uri =
+          Uri.parse('tel:${text.replaceAll(RegExp(r'[^\d+]'), '')}');
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      }
+    } else if (icon == Icons.email) {
+      final Uri uri = Uri.parse('mailto:$text');
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      }
+    } else if (onTap != null) {
+      onTap!();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final textWidget = Text(
@@ -81,9 +98,10 @@ class ContactInfoItem extends StatelessWidget {
           Icon(icon, size: AboutStyles.iconSize),
           const SizedBox(width: 8),
           Expanded(
-            child: onTap != null
-                ? GestureDetector(onTap: onTap, child: textWidget)
-                : textWidget,
+            child: GestureDetector(
+              onTap: (text.isNotEmpty) ? _handleTap : null,
+              child: textWidget,
+            ),
           ),
         ],
       ),
@@ -252,32 +270,38 @@ class AboutSection extends StatelessWidget {
       padding: AboutStyles.defaultPadding,
       child: Column(
         children: [
-          ContactInfoItem(
-            icon: Icons.phone,
-            text: snapshot.data!.phoneNumber,
-          ),
-          ContactInfoItem(
-            icon: Icons.email,
-            text: snapshot.data!.email,
-          ),
-          ContactInfoItem(
-            icon: Icons.public,
-            text: snapshot.data!.webAddress,
-            onTap: () => _launchUrl(snapshot.data!.webAddress),
-            isLink: true,
-          ),
-          ContactInfoItem(
-            icon: FontAwesomeIcons.instagram,
-            text: snapshot.data!.instagram,
-            onTap: () => _launchUrl(snapshot.data!.instagram),
-            isLink: true,
-          ),
-          ContactInfoItem(
-            icon: FontAwesomeIcons.youtube,
-            text: snapshot.data!.youtube,
-            onTap: () => _launchUrl(snapshot.data!.youtube),
-            isLink: true,
-          ),
+          if (snapshot.data!.phoneNumber.isNotEmpty)
+            ContactInfoItem(
+              icon: Icons.phone,
+              text: snapshot.data!.phoneNumber,
+            ),
+          if (snapshot.data!.email.isNotEmpty)
+            ContactInfoItem(
+              icon: Icons.email,
+              text: snapshot.data!.email,
+            ),
+          if (snapshot.data!.webAddress.isNotEmpty)
+            ContactInfoItem(
+              icon: Icons.public,
+              text: snapshot.data!.webAddress,
+              onTap: () => _launchUrl(snapshot.data!.webAddress),
+              isLink: true,
+            ),
+          if (snapshot.data!.instagram.isNotEmpty)
+            ContactInfoItem(
+              icon: FontAwesomeIcons.instagram,
+              text: snapshot.data!.instagram,
+              onTap: () =>
+                  _launchUrl(snapshot.data!.instagram, isInstagram: true),
+              isLink: true,
+            ),
+          if (snapshot.data!.youtube.isNotEmpty)
+            ContactInfoItem(
+              icon: FontAwesomeIcons.youtube,
+              text: snapshot.data!.youtube,
+              onTap: () => _launchUrl(snapshot.data!.youtube, isYoutube: true),
+              isLink: true,
+            ),
         ],
       ),
     );
@@ -421,12 +445,38 @@ class AboutSection extends StatelessWidget {
     );
   }
 
-  Future<void> _launchUrl(String urlString) async {
-    final url = Uri.parse(urlString);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      throw 'Could not launch $urlString';
+  Future<void> _launchUrl(String url,
+      {bool isYoutube = false, bool isInstagram = false}) async {
+    try {
+      final Uri uri = Uri.parse(url);
+
+      if (isYoutube || isInstagram) {
+        try {
+          final bool launched = await launchUrl(
+            uri,
+            mode: LaunchMode.externalNonBrowserApplication,
+          );
+
+          if (!launched) {
+            await launchUrl(
+              uri,
+              mode: LaunchMode.externalApplication,
+            );
+          }
+        } catch (e) {
+          await launchUrl(
+            uri,
+            mode: LaunchMode.externalApplication,
+          );
+        }
+      } else {
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
+      }
+    } catch (e) {
+      debugPrint('Error launching URL: $e');
     }
   }
 }
