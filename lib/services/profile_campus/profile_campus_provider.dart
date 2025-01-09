@@ -179,4 +179,49 @@ class ProfileCampusProvider {
       throw Exception('Gagal memperbarui ulasan: $e');
     }
   }
+
+  Future<Map<String, dynamic>> deleteCampusReview(int reviewId) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception('User not authenticated');
+    }
+
+    var headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
+    };
+
+    try {
+      final response = await http
+          .delete(
+            Uri.parse('$baseUrl/api/campus_reviews/$reviewId'),
+            headers: headers,
+          )
+          .timeout(const Duration(seconds: 10));
+
+      final responseData = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'message': responseData['message'],
+        };
+      } else if (response.statusCode == 403) {
+        return {
+          'success': false,
+          'message': 'Anda tidak memiliki akses untuk menghapus ulasan ini.',
+        };
+      } else {
+        throw Exception(responseData['message'] ?? 'Failed to delete review');
+      }
+    } on SocketException {
+      throw Exception('Tidak ada koneksi internet. Periksa jaringan Anda.');
+    } on TimeoutException {
+      throw Exception('Permintaan ke server timeout. Coba lagi nanti.');
+    } catch (e) {
+      throw Exception('Gagal menghapus ulasan: $e');
+    }
+  }
 }

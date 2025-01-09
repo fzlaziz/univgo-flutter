@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:univ_go/const/theme_color.dart';
 import 'package:univ_go/models/campus_review/campus_review.dart';
@@ -28,6 +29,7 @@ class _CampusReviewsPageState extends State<CampusReviewsPage> {
   num _averageRating = 0;
   int _totalReviews = 0;
   final ProfileCampusProvider _api = ProfileCampusProvider();
+  bool _isDeleting = false;
 
   @override
   void initState() {
@@ -87,11 +89,28 @@ class _CampusReviewsPageState extends State<CampusReviewsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // User Reviews Section
                   if (userReviews.isNotEmpty) ...[
-                    Text(
-                      'Ulasan Kamu',
-                      style: CampusReviewsPageStyle.titleStyle,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Ulasan Kamu',
+                          style: CampusReviewsPageStyle.titleStyle,
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.delete,
+                            size: 18,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            if (userReviews.isNotEmpty) {
+                              _showDeleteConfirmationDialog(userReviews.first);
+                            }
+                          },
+                        )
+                      ],
                     ),
                     const SizedBox(height: 16),
                     ...userReviews.map((review) => _buildReviewItem(review)),
@@ -177,9 +196,121 @@ class _CampusReviewsPageState extends State<CampusReviewsPage> {
               icon: const Icon(Icons.edit, color: Colors.white),
               label: Text(
                 userReviews.isNotEmpty ? 'Ubah Ulasan' : 'Buat Ulasan',
-                style: const TextStyle(color: Colors.white),
+                style: GoogleFonts.poppins(color: Colors.white),
               ),
             ),
+    );
+  }
+
+  Future<void> _showDeleteConfirmationDialog(Review review) async {
+    if (!mounted) return;
+
+    final bool? shouldDelete = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return PopScope(
+              canPop: !_isDeleting,
+              child: AlertDialog(
+                title: Text(
+                  'Hapus Ulasan',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                content: _isDeleting
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Lottie.asset(
+                            'assets/animations/loading.json',
+                            width: 150,
+                            height: 150,
+                            fit: BoxFit.contain,
+                          ),
+                          Text(
+                            'Menghapus ulasan...',
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Text(
+                        'Apakah Anda yakin ingin menghapus ulasan ini?',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                        ),
+                      ),
+                actions: _isDeleting
+                    ? null
+                    : <Widget>[
+                        TextButton(
+                          child: Text(
+                            'Batal',
+                            style: GoogleFonts.poppins(
+                              color: Colors.grey,
+                            ),
+                          ),
+                          onPressed: () => Navigator.of(context).pop(false),
+                        ),
+                        TextButton(
+                          child: Text(
+                            'Hapus',
+                            style: GoogleFonts.poppins(
+                              color: Colors.red,
+                            ),
+                          ),
+                          onPressed: () async {
+                            setState(() => _isDeleting = true);
+
+                            try {
+                              final result =
+                                  await _api.deleteCampusReview(review.id);
+
+                              if (!mounted) return;
+
+                              Navigator.of(context).pop(true);
+
+                              if (result['success']) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(result['message'])),
+                                );
+                                await _loadData();
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(result['message']),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              if (!mounted) return;
+
+                              Navigator.of(context).pop(false);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.toString()),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            } finally {
+                              if (mounted) {
+                                setState(() => _isDeleting = false);
+                              }
+                            }
+                          },
+                        ),
+                      ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
