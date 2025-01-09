@@ -73,9 +73,9 @@ class MapThumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 60,
-      height: 60,
-      margin: const EdgeInsets.all(8),
+      width: 65,
+      height: 65,
+      margin: const EdgeInsets.fromLTRB(0, 8, 8, 8),
       child: GestureDetector(
         onTap: _openMap,
         child: ClipRRect(
@@ -95,10 +95,16 @@ class MapThumbnail extends StatelessWidget {
 // Main location info card widget
 class LocationInfoCard extends StatelessWidget {
   final AsyncSnapshot<dynamic> snapshot;
+  final num averageRating;
+  final int totalReviews;
+  final VoidCallback onNavigateToReviews;
 
   const LocationInfoCard({
     super.key,
     required this.snapshot,
+    required this.averageRating,
+    required this.totalReviews,
+    required this.onNavigateToReviews,
   });
 
   @override
@@ -110,11 +116,63 @@ class LocationInfoCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(width: 10),
+          Container(
+            padding: const EdgeInsets.all(0),
+            margin: const EdgeInsets.all(0),
+            width: 60,
+            height: 60,
+            child: GestureDetector(
+              onTap: onNavigateToReviews,
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 8),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Spacer(),
+                      const Spacer(),
+                      Row(
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 14),
+                          Text(
+                            averageRating.toStringAsFixed(1),
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Row(
+                        children: [
+                          const Spacer(),
+                          Text(
+                            '$totalReviews',
+                            style: GoogleFonts.poppins(
+                              fontSize: 10,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const Spacer(),
+                          const Icon(Icons.arrow_forward_ios, size: 12),
+                          const Spacer(),
+                        ],
+                      ),
+                      const Spacer(),
+                      const Spacer(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
           MapThumbnail(
             latitude: snapshot.data!.addressLatitude,
             longitude: snapshot.data!.addressLongitude,
           ),
-          const SizedBox(width: 16),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,

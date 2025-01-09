@@ -79,8 +79,22 @@ class _ProfileCampusState extends State<ProfileCampus> {
                       CampusProfileCarousel(
                           campusDetail: campusDetail, awsUrl: awsUrl),
                       LocationInfoCard(
-                          snapshot: AsyncSnapshot.withData(
-                              ConnectionState.done, campusDetail)),
+                        snapshot: AsyncSnapshot.withData(
+                            ConnectionState.done, campusDetail),
+                        averageRating: campusReviews.data.averageRating,
+                        totalReviews: campusReviews.data.totalReviews,
+                        onNavigateToReviews: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CampusReviewsPage(
+                                campusId: widget.campusId,
+                              ),
+                            ),
+                          );
+                          _refreshData();
+                        },
+                      ),
                       AboutSection(
                           snapshot: AsyncSnapshot.withData(
                               ConnectionState.done, campusDetail),
