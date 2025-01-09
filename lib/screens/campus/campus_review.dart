@@ -150,34 +150,36 @@ class _CampusReviewsPageState extends State<CampusReviewsPage> {
                 ],
               ),
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddCampusReview(
-                campusId: widget.campusId,
-                initialData: userReviews.isNotEmpty
-                    ? {
-                        'id': userReviews.first.id,
-                        'rating': userReviews.first.rating,
-                        'ulasan': userReviews.first.review,
-                      }
-                    : null,
-                onReviewSubmitted: () {
-                  _loadData(); // Refresh the reviews list
-                },
+      floatingActionButton: _isLoading
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddCampusReview(
+                      campusId: widget.campusId,
+                      initialData: userReviews.isNotEmpty
+                          ? {
+                              'id': userReviews.first.id,
+                              'rating': userReviews.first.rating,
+                              'ulasan': userReviews.first.review,
+                            }
+                          : null,
+                      onReviewSubmitted: () {
+                        _loadData(); // Refresh the reviews list
+                      },
+                    ),
+                  ),
+                );
+              },
+              backgroundColor: const Color(blueTheme),
+              icon: const Icon(Icons.edit, color: Colors.white),
+              label: Text(
+                userReviews.isNotEmpty ? 'Ubah Ulasan' : 'Buat Ulasan',
+                style: const TextStyle(color: Colors.white),
               ),
             ),
-          );
-        },
-        backgroundColor: const Color(0xFF0059FF),
-        icon: const Icon(Icons.edit, color: Colors.white),
-        label: Text(
-          userReviews.isNotEmpty ? 'Ubah Ulasan' : 'Buat Ulasan',
-          style: const TextStyle(color: Colors.white),
-        ),
-      ),
     );
   }
 
