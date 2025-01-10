@@ -45,6 +45,80 @@ class ProfilePageState extends State<ProfilePage> {
     return profileData;
   }
 
+  Widget _buildErrorState(String message, BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Colors.red[300],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Oops! Something went wrong',
+              style: GoogleFonts.poppins(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              message,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.grey[600],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () async {
+                await _logout(context);
+                Navigator.of(context).pushReplacementNamed('/login');
+              },
+              icon: const Icon(Icons.logout, color: Colors.white),
+              label: Text(
+                'Return to Login',
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  userProfile = _fetchUserProfile();
+                });
+              },
+              child: Text(
+                'Try Again',
+                style: GoogleFonts.poppins(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? pickedFile = await picker.pickImage(
@@ -221,16 +295,44 @@ class ProfilePageState extends State<ProfilePage> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const ProfileShimmerLoading();
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (snapshot.hasError) {
+            return _buildErrorState(
+              'We encountered an unexpected error. Please try again later.',
+              context,
+            );
           }
 
           final userData = snapshot.data;
 
-          if (userData == null || userData.containsKey('message')) {
-            return Center(
-              child:
-                  Text(userData?['message'] ?? 'Error fetching user profile'),
+          if (userData == null) {
+            return _buildErrorState(
+              'Unable to load profile data. Please try again.',
+              context,
+            );
+          }
+
+          if (userData.containsKey('message')) {
+            if (userData['status_code'] == 401) {
+              return _buildErrorState(
+                'Your session has expired. Please log in again.',
+                context,
+              );
+            } else if (userData['status_code'] == 404) {
+              return _buildErrorState(
+                'Profile not found. Please log in again.',
+                context,
+              );
+            } else if (userData['status_code'] == 500) {
+              return _buildErrorState(
+                'Server error occurred. Please try again later.',
+                context,
+              );
+            }
+            return _buildErrorState(
+              userData['message'] ?? 'An unexpected error occurred.',
+              context,
             );
           }
 
