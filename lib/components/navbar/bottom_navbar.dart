@@ -18,12 +18,21 @@ class BottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-            icon: Icon(UnivGoIcon.homeoutline),
+            icon: Icon(
+              UnivGoIcon.homeoutline,
+              size: 30,
+            ),
             label: 'Beranda',
-            activeIcon: Icon(UnivGoIcon.home)),
+            activeIcon: Icon(
+              UnivGoIcon.home,
+              size: 30,
+            )),
         BottomNavigationBarItem(
-          icon: Icon(UnivGoIcon.search),
-          label: 'Cari',
+          icon: Icon(
+            Icons.newspaper_sharp,
+            size: 30,
+          ),
+          label: 'Berita Kampus',
         ),
         BottomNavigationBarItem(
           icon: Icon(

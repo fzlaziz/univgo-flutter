@@ -53,25 +53,23 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final TextEditingController _searchController = TextEditingController();
   int _selectedIndex = 0;
-  bool _isSearchMode = false;
+  final bool _isSearchMode = false;
+  bool _isNewsMode = false;
   SearchDataProvider apiDataProvider = SearchDataProvider();
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      _isSearchMode = false;
+      _isNewsMode = false;
     });
     if (index == 1) {
       setState(() {
-        _isSearchMode = true;
+        _isNewsMode = true;
       });
-      Get.toNamed('/search', arguments: {
-        "searchController": _selectedIndex,
-      })?.then((_) {
+      Get.toNamed('/news_list')?.then((_) {
         setState(() {
           _selectedIndex = 0;
-          _searchController.clear();
-          _isSearchMode = false;
+          _isNewsMode = false;
         });
       });
     }
@@ -89,8 +87,7 @@ class _MainPageState extends State<MainPage> {
       }
 
       if (_selectedIndex == 0) {
-        Get.put(
-            HomeController()); // Reinitialize the controller after the rebuild
+        Get.put(HomeController());
       }
     });
   }
@@ -123,7 +120,7 @@ class _MainPageState extends State<MainPage> {
         searchController: _searchController,
         isSearchMode: _isSearchMode,
       ),
-      bottomNavigationBar: _isSearchMode
+      bottomNavigationBar: _isNewsMode
           ? null
           : SizedBox(
               height: 65,

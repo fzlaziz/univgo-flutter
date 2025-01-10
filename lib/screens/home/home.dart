@@ -4,7 +4,6 @@ import 'package:univ_go/components/card/latest_news_placeholder.dart';
 import 'package:univ_go/components/card/top_campus_placeholder.dart';
 import 'package:univ_go/components/card/recommended_campus_placeholder.dart';
 import 'package:univ_go/screens/home/const/home_style.dart';
-import 'package:univ_go/screens/news/news_list.dart';
 import 'package:univ_go/screens/campus/profile_campus.dart';
 import 'package:univ_go/const/theme_color.dart';
 import 'package:univ_go/controller/home_controller.dart';
@@ -434,10 +433,7 @@ class Home extends StatelessWidget {
                 ),
                 TextButton.icon(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const NewsList()),
-                    );
+                    Get.toNamed('/news_list');
                   },
                   icon: Text('Lihat semua', style: HomeStyle.subtitleTextStyle),
                   label: const Icon(

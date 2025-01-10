@@ -72,7 +72,8 @@ class _NewsListState extends State<NewsList> {
               padding: const EdgeInsets.only(top: 8),
               child: Text(
                 berita.createdAt != null
-                    ? DateFormat('dd MMMM yyyy - HH:mm').format(berita.createdAt)
+                    ? DateFormat('dd MMMM yyyy - HH:mm')
+                        .format(berita.createdAt)
                     : 'No Date',
                 style: NewsStyle.newsListDateStyle,
               ),
@@ -308,7 +309,7 @@ class _NewsListState extends State<NewsList> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Berita',
+          'Berita Kampus',
           style: GoogleFonts.poppins(
             color: Colors.white,
             fontWeight: FontWeight.w600,
@@ -318,6 +319,7 @@ class _NewsListState extends State<NewsList> {
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(blueTheme),
         centerTitle: true,
+        automaticallyImplyLeading: true,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),

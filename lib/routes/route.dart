@@ -6,6 +6,7 @@ import 'package:univ_go/controller/search_result_controller.dart';
 import 'package:univ_go/main.dart';
 import 'package:univ_go/screens/auth/login.dart';
 import 'package:univ_go/screens/auth/register.dart';
+import 'package:univ_go/screens/news/news_list.dart';
 import 'package:univ_go/screens/search/search_result_page.dart';
 import 'package:univ_go/screens/search/search_entry.dart';
 import 'package:univ_go/screens/splashscreen/splashscreen.dart';
@@ -64,4 +65,5 @@ final routes = [
     name: '/splashscreen',
     page: () => const SplashScreen(),
   ),
+  GetPage(name: '/news_list', page: () => const NewsList()),
 ];
