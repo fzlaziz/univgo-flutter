@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:univ_go/models/news/news.dart';
@@ -13,11 +13,10 @@ class NewsProvider {
   String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
   Future<List<Berita>> getBerita() async {
     var headers = <String, String>{};
-    Client client = Client();
 
     headers["Content-Type"] = 'application/json; charset=UTF-8';
     final response =
-        await client.get(Uri.parse("$baseUrl/api/news"), headers: headers);
+        await http.get(Uri.parse("$baseUrl/api/news"), headers: headers);
 
     if (response.statusCode == 200) {
       var jsonList = jsonDecode(response.body) as List;
@@ -33,9 +32,8 @@ class NewsProvider {
     var headers = <String, String>{
       "Content-Type": 'application/json; charset=UTF-8'
     };
-    Client client = Client();
 
-    final response = await client.get(Uri.parse("$baseUrl/api/news/$newsId"),
+    final response = await http.get(Uri.parse("$baseUrl/api/news/$newsId"),
         headers: headers);
 
     if (response.statusCode == 200) {
@@ -50,8 +48,7 @@ class NewsProvider {
     var headers = <String, String>{
       "Content-Type": 'application/json; charset=UTF-8'
     };
-    Client client = Client();
-    final response = await client.get(
+    final response = await http.get(
       Uri.parse('$baseUrl/api/news/$newsId/comments'),
       headers: headers,
     );
@@ -84,8 +81,7 @@ class NewsProvider {
       'text': commentContent,
     });
 
-    Client client = Client();
-
+    final client = http.Client();
     try {
       final response = await client
           .post(
@@ -108,6 +104,51 @@ class NewsProvider {
       throw Exception("Gagal mengirim komentar: $e");
     } finally {
       client.close();
+    }
+  }
+
+  Future<Map<String, dynamic>> deleteComment(int commentId) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception('User not authenticated');
+    }
+
+    var headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
+    };
+
+    try {
+      final response = await http
+          .delete(
+            Uri.parse('$baseUrl/api/news_comments/$commentId'),
+            headers: headers,
+          )
+          .timeout(const Duration(seconds: 10));
+
+      final responseData = json.decode(response.body);
+      print(responseData['message']);
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'message': responseData['message'],
+        };
+      } else if (response.statusCode == 403) {
+        return {
+          'success': false,
+          'message': 'Anda tidak memiliki akses untuk menghapus komentar ini.',
+        };
+      } else {
+        throw Exception(responseData['message'] ?? 'Failed to delete comment');
+      }
+    } on SocketException {
+      throw Exception('Tidak ada koneksi internet. Periksa jaringan Anda.');
+    } on TimeoutException {
+      throw Exception('Permintaan ke server timeout. Coba lagi nanti.');
+    } catch (e) {
+      throw Exception('Gagal menghapus komentar: $e');
     }
   }
 }

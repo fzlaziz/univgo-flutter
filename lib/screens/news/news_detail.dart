@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:univ_go/components/card/comment_placeholder.dart';
 import 'package:univ_go/const/theme_color.dart';
 import 'package:univ_go/models/news/news_comment.dart';
@@ -29,12 +30,60 @@ class _NewsDetailState extends State<NewsDetail> {
   final int _defaultCommentsToShow = 5;
   bool _isSubmittingComment = false;
   final FocusNode _commentFocus = FocusNode();
+  int? _userId;
 
   @override
   void initState() {
     super.initState();
     _comments = NewsProvider().fetchComments(widget.berita.id);
     _commentController.addListener(_validateComment);
+    _loadUserId();
+  }
+
+  Future<void> _loadUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userId = prefs.getInt('user_id');
+    });
+  }
+
+  Future<void> _deleteComment(int commentId) async {
+    try {
+      final result = await NewsProvider().deleteComment(commentId);
+
+      if (result['success']) {
+        setState(() {
+          _comments = NewsProvider().fetchComments(widget.berita.id);
+        });
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result['message']),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result['message']),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -93,6 +142,19 @@ class _NewsDetailState extends State<NewsDetail> {
       );
       return false;
     }
+  }
+
+  Widget _buildDefaultAvatar() {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.blue,
+      ),
+      child: const Icon(
+        Icons.person,
+        size: 25,
+        color: Colors.white,
+      ),
+    );
   }
 
   @override
@@ -212,20 +274,113 @@ class _NewsDetailState extends State<NewsDetail> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    comment.user.name,
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                      fontSize: 12,
-                                    ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      ClipOval(
+                                        child: SizedBox(
+                                          width: 35,
+                                          height: 35,
+                                          child: comment.user.profileImage !=
+                                                  null
+                                              ? Image.network(
+                                                  comment.user.profileImage!,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    return _buildDefaultAvatar();
+                                                  },
+                                                  loadingBuilder: (context,
+                                                      child, loadingProgress) {
+                                                    if (loadingProgress ==
+                                                        null) {
+                                                      return child;
+                                                    }
+                                                    return _buildDefaultAvatar();
+                                                  },
+                                                )
+                                              : _buildDefaultAvatar(),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        comment.user.name,
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                      if (_userId != null &&
+                                          _userId == comment.user.id)
+                                        const Spacer(),
+                                      if (_userId != null &&
+                                          _userId == comment.user.id)
+                                        IconButton(
+                                          icon: const Icon(Icons.delete,
+                                              size: 16, color: Colors.red),
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  backgroundColor: Colors.white,
+                                                  title: Text(
+                                                    'Konfirmasi',
+                                                    style: GoogleFonts.poppins(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  content: Text(
+                                                    'Apakah Anda yakin ingin menghapus komentar ini?',
+                                                    style:
+                                                        GoogleFonts.poppins(),
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.of(context)
+                                                              .pop(),
+                                                      child: Text(
+                                                        'Batal',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                                color: Colors
+                                                                    .grey),
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        _deleteComment(
+                                                            comment.id);
+                                                      },
+                                                      child: Text(
+                                                        'Hapus',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                                color:
+                                                                    Colors.red),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
+                                    ],
                                   ),
-                                  const SizedBox(height: 4.0),
+                                  const SizedBox(height: 6.0),
                                   Text(
                                     comment.text,
                                     style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.normal),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal,
+                                    ),
                                     textAlign: TextAlign.justify,
                                   ),
                                   const SizedBox(height: 8.0),
@@ -238,8 +393,9 @@ class _NewsDetailState extends State<NewsDetail> {
                                               .format(comment.createdAt!)
                                           : 'No Date',
                                       style: GoogleFonts.poppins(
-                                          fontSize: 12,
-                                          color: Colors.grey[600]),
+                                        fontSize: 12,
+                                        color: Colors.grey[600],
+                                      ),
                                     ),
                                   ),
                                 ],
