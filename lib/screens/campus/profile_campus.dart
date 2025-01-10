@@ -61,7 +61,7 @@ class _ProfileCampusState extends State<ProfileCampus> {
             child: FutureBuilder(
               future: Future.wait([
                 api.getCampusDetail(widget.campusId),
-                api.getCampusReviews(widget.campusId),
+                api.getCampusReviews(widget.campusId, preview: true)
               ]),
               builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -72,7 +72,7 @@ class _ProfileCampusState extends State<ProfileCampus> {
                   return Text('Error: ${snapshot.error}');
                 } else if (snapshot.hasData) {
                   final campusDetail = snapshot.data![0];
-                  final campusReviews = snapshot.data![1];
+                  final campusPreviewReviews = snapshot.data![1];
 
                   return Column(
                     children: [
@@ -81,8 +81,8 @@ class _ProfileCampusState extends State<ProfileCampus> {
                       LocationInfoCard(
                         snapshot: AsyncSnapshot.withData(
                             ConnectionState.done, campusDetail),
-                        averageRating: campusReviews.data.averageRating,
-                        totalReviews: campusReviews.data.totalReviews,
+                        averageRating: campusPreviewReviews.data.averageRating,
+                        totalReviews: campusPreviewReviews.data.totalReviews,
                         onNavigateToReviews: () async {
                           await Navigator.push(
                             context,
@@ -121,9 +121,9 @@ class _ProfileCampusState extends State<ProfileCampus> {
                           snapshot: AsyncSnapshot.withData(
                               ConnectionState.done, campusDetail)),
                       ReviewSection(
-                        reviews: campusReviews.data.reviews ?? [],
-                        totalReviews: campusReviews.data.totalReviews,
-                        averageRating: campusReviews.data.averageRating,
+                        reviews: campusPreviewReviews.data.reviews ?? [],
+                        totalReviews: campusPreviewReviews.data.totalReviews,
+                        averageRating: campusPreviewReviews.data.averageRating,
                         campusId: widget.campusId,
                         onNavigateToReviews: () async {
                           await Navigator.push(

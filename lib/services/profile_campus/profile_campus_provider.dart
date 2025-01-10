@@ -57,17 +57,18 @@ class ProfileCampusProvider {
     }
   }
 
-  Future<CampusReviews> getCampusReviews(int campusId) async {
+  Future<CampusReviews> getCampusReviews(int campusId,
+      {bool preview = false}) async {
     var headers = <String, String>{};
     headers["Content-Type"] = 'application/json; charset=UTF-8';
 
-    final response = await http.get(
-      Uri.parse('$baseUrl/api/campus/$campusId/reviews'),
-      headers: headers,
-    );
+    final uri = Uri.parse('$baseUrl/api/campus/$campusId/reviews')
+        .replace(queryParameters: preview ? {'preview': 'true'} : null);
+
+    final response = await http.get(uri, headers: headers);
+
     if (response.statusCode == 200) {
       final campusReviewsList = campusReviewsFromJson(response.body);
-
       return campusReviewsList;
     } else {
       throw Exception("Failed to load campus reviews.");

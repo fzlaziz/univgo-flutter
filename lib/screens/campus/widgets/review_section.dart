@@ -92,7 +92,7 @@ class ReviewSection extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  '${reviews.length} ulasan',
+                  '$totalReviews ulasan',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Colors.black,
