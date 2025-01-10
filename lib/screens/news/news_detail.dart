@@ -3,6 +3,8 @@ import 'package:univ_go/components/card/comment_placeholder.dart';
 import 'package:univ_go/const/theme_color.dart';
 import 'package:univ_go/models/news/news_comment.dart';
 import 'package:univ_go/models/news/news_detail.dart';
+import 'package:univ_go/screens/news/const/news_page_style.dart';
+import 'package:univ_go/screens/news/widgets/news_detail_app_bar.dart';
 import 'package:univ_go/services/news/news_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -96,25 +98,7 @@ class _NewsDetailState extends State<NewsDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Detail Berita',
-          style: GoogleFonts.poppins(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-        ),
-        backgroundColor: const Color(blueTheme),
-        centerTitle: true,
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(
-                context); // Menutup halaman detail dan kembali ke halaman sebelumnya
-          },
-        ),
-      ),
+      appBar: const NewsAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
@@ -124,14 +108,13 @@ class _NewsDetailState extends State<NewsDetail> {
               Text(
                 widget.berita.title,
                 style: GoogleFonts.poppins(
-                    fontSize: 20, fontWeight: FontWeight.bold),
+                    fontSize: 18, fontWeight: FontWeight.bold),
               ),
-
               const SizedBox(height: 8),
               Text(
                 widget.berita.excerpt,
-                style: GoogleFonts.poppins(
-                    fontSize: 16, fontStyle: FontStyle.normal),
+                style: NewsStyle.contentTextStyle,
+                textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 16),
               Text(
@@ -167,12 +150,11 @@ class _NewsDetailState extends State<NewsDetail> {
                       ),
               ),
               const SizedBox(height: 24),
-              // Konten berita
               if (widget.berita.content != null &&
                   widget.berita.content!.isNotEmpty)
                 Text(
                   widget.berita.content!,
-                  style: GoogleFonts.poppins(fontSize: 16),
+                  style: NewsStyle.contentTextStyle,
                   textAlign: TextAlign.justify,
                 ),
               if (widget.berita.content == null ||
@@ -187,7 +169,7 @@ class _NewsDetailState extends State<NewsDetail> {
               Text(
                 'Komentar',
                 style: GoogleFonts.poppins(
-                    fontSize: 18, fontWeight: FontWeight.bold),
+                    fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               FutureBuilder<List<Comment>>(
@@ -216,10 +198,9 @@ class _NewsDetailState extends State<NewsDetail> {
                           itemCount: displayedComments.length,
                           itemBuilder: (context, index) {
                             final comment = displayedComments[index];
-                            // ... (keep existing comment display code)
                             return Container(
                               margin: const EdgeInsets.symmetric(vertical: 4.0),
-                              padding: const EdgeInsets.all(12.0),
+                              padding: const EdgeInsets.all(5.0),
                               decoration: BoxDecoration(
                                 border: Border(
                                   bottom: BorderSide(
@@ -228,34 +209,30 @@ class _NewsDetailState extends State<NewsDetail> {
                                   ),
                                 ),
                               ),
-                              child: Stack(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        comment.user.name,
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4.0),
-                                      Text(
-                                        comment.text,
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.normal),
-                                      ),
-                                      const SizedBox(height: 4.0),
-                                    ],
+                                  Text(
+                                    comment.user.name,
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                      fontSize: 12,
+                                    ),
                                   ),
-                                  Positioned(
-                                    bottom: 0,
-                                    right: 0,
+                                  const SizedBox(height: 4.0),
+                                  Text(
+                                    comment.text,
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.normal),
+                                    textAlign: TextAlign.justify,
+                                  ),
+                                  const SizedBox(height: 8.0),
+                                  Align(
+                                    alignment: Alignment.centerRight,
                                     child: Text(
+                                      textAlign: TextAlign.right,
                                       comment.createdAt != null
                                           ? DateFormat('dd MMM yyyy, HH:mm')
                                               .format(comment.createdAt!)
@@ -300,8 +277,7 @@ class _NewsDetailState extends State<NewsDetail> {
                                     ),
                                   ),
                                 if (hasMoreComments && canShowLess)
-                                  const SizedBox(
-                                      width: 16), // Spacing between buttons
+                                  const SizedBox(width: 16),
                                 if (hasMoreComments)
                                   TextButton(
                                     onPressed: () {
@@ -334,7 +310,6 @@ class _NewsDetailState extends State<NewsDetail> {
                 },
               ),
               const SizedBox(height: 16),
-              // Form untuk menambah komentar
               TextField(
                 focusNode: _commentFocus,
                 controller: _commentController,
@@ -364,8 +339,7 @@ class _NewsDetailState extends State<NewsDetail> {
                           if (isSuccess) {
                             showDialog(
                               context: context,
-                              barrierDismissible:
-                                  true, // Klik di luar dialog untuk menutup
+                              barrierDismissible: true,
                               builder: (BuildContext context) {
                                 return Center(
                                   child: Container(
@@ -395,8 +369,7 @@ class _NewsDetailState extends State<NewsDetail> {
                                         const SizedBox(height: 20),
                                         ElevatedButton(
                                           onPressed: () {
-                                            Navigator.of(context)
-                                                .pop(); // Menutup dialog
+                                            Navigator.of(context).pop();
                                           },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.white,
@@ -414,7 +387,6 @@ class _NewsDetailState extends State<NewsDetail> {
                               },
                             );
 
-                            // Refresh halaman detail berita
                             setState(() {
                               _comments = NewsProvider()
                                   .fetchComments(widget.berita.id);
@@ -503,91 +475,94 @@ class _NewsDetailState extends State<NewsDetail> {
                       : Text('Kirim Komentar', style: GoogleFonts.poppins()),
                 ),
               ),
-
               const SizedBox(height: 24),
-              // Judul berita terkait
               Text(
                 'Berita Terkait',
                 style: GoogleFonts.poppins(
-                    fontSize: 18, fontWeight: FontWeight.bold),
+                    fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 8),
-              // Menampilkan berita terkait menggunakan ListView.builder
-              ListView.builder(
+              const SizedBox(height: 6),
+              ListView.separated(
+                separatorBuilder: (context, index) => NewsStyle.newsListDivider,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount:
-                    widget.berita.relatedNews.length, // Jumlah berita terkait
+                itemCount: widget.berita.relatedNews.length,
                 itemBuilder: (context, index) {
                   final related = widget.berita.relatedNews[index];
-                  return Column(
-                    children: [
-                      ListTile(
-                        title: Text(
-                          related.title, // Judul berita terkait
-                          style: GoogleFonts.poppins(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 5),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          related.title,
+                          style: NewsStyle.newsListTitleStyle,
                         ),
-                        subtitle: Text(
-                          related.createdAt != null
-                              ? DateFormat('dd MMMM yyyy - HH:mm')
-                                  .format(related.createdAt)
-                              : 'No Date', // Menampilkan tanggal atau 'No Date'
-                          style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color:
-                                  Colors.grey[600]), // Ringkasan berita terkait
-                        ),
-                        trailing: related.attachment != null
-                            ? Image.network(
-                                '$awsUrl/${related.attachment}',
-                                height: 60,
-                                width: 80,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    'assets/images/news_placeholder.jpg',
-                                    height: 60,
-                                    width: 80,
-                                    fit: BoxFit.cover,
-                                  );
-                                },
-                              )
-                            : Image.asset(
+                        if (related.excerpt != null &&
+                            related.excerpt.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Text(
+                              related.excerpt.length > 80
+                                  ? '${related.excerpt.substring(0, 80)}...'
+                                  : related.excerpt,
+                              style: NewsStyle.newsListExcerptStyle,
+                            ),
+                          ),
+                      ],
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        related.createdAt != null
+                            ? DateFormat('dd MMMM yyyy - HH:mm')
+                                .format(related.createdAt)
+                            : 'No Date',
+                        style: NewsStyle.newsListDateStyle,
+                      ),
+                    ),
+                    trailing: related.attachment != null
+                        ? Image.network(
+                            '$awsUrl/${related.attachment}',
+                            height: 60,
+                            width: 80,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
                                 'assets/images/news_placeholder.jpg',
                                 height: 60,
                                 width: 80,
                                 fit: BoxFit.cover,
-                              ),
-                        onTap: () {
-                          // Navigasi ke halaman DetailBeritaPage untuk berita terkait
-                          final relatedBerita = DetailBerita(
-                            id: related.id,
-                            title: related.title,
-                            slug: related.slug,
-                            excerpt: related.excerpt,
-                            content: related.content,
-                            attachment: related.attachment,
-                            campusId: related.campusId,
-                            createdAt: related.createdAt,
-                            relatedNews: [], // Isi dengan berita terkait lainnya jika ada
-                          );
+                              );
+                            },
+                          )
+                        : Image.asset(
+                            'assets/images/news_placeholder.jpg',
+                            height: 60,
+                            width: 80,
+                            fit: BoxFit.cover,
+                          ),
+                    onTap: () {
+                      final relatedBerita = DetailBerita(
+                        id: related.id,
+                        title: related.title,
+                        slug: related.slug,
+                        excerpt: related.excerpt,
+                        content: related.content,
+                        attachment: related.attachment,
+                        campusId: related.campusId,
+                        createdAt: related.createdAt,
+                        relatedNews: [],
+                      );
 
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  NewsDetail(berita: relatedBerita),
-                            ),
-                          );
-                        },
-                      ),
-                      // Garis pemisah antar berita
-                      Divider(
-                        color: Colors.grey[300], // Warna garis
-                        thickness: 1.0, // Ketebalan garis
-                      ),
-                    ],
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              NewsDetail(berita: relatedBerita),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
@@ -595,8 +570,7 @@ class _NewsDetailState extends State<NewsDetail> {
           ),
         ),
       ),
-      backgroundColor:
-          Colors.white, // Menambahkan background putih untuk seluruh halaman
+      backgroundColor: Colors.white,
     );
   }
 }
