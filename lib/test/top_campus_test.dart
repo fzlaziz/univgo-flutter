@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:univ_go/services/home/top_campus_provider.dart';
+import 'package:univ_go/src/features/home/services/top_campus_provider.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override

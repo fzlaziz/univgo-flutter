@@ -1,4 +1,4 @@
-import 'package:univ_go/services/search/search_data_provider.dart';
+import 'package:univ_go/src/features/search/services/search_data_provider.dart';
 import 'package:test/test.dart';
 
 void main() {

@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:univ_go/services/search/search_data_provider.dart';
+import 'package:univ_go/src/features/search/services/search_data_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
