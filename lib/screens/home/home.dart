@@ -8,6 +8,7 @@ import 'package:univ_go/screens/campus/profile_campus.dart';
 import 'package:univ_go/const/theme_color.dart';
 import 'package:univ_go/controller/home_controller.dart';
 import 'package:get/get.dart';
+import 'package:univ_go/screens/home/widgets/campus_list_section.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -126,298 +127,40 @@ class Home extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Top 10 PTN',
-                style: HomeStyle.titleTextStyle,
-              ),
-            ),
-            const SizedBox(height: 5.0),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'PTN terbaik di Indonesia',
-                style: HomeStyle.subtitleTextStyle,
-              ),
-            ),
+            const SizedBox(height: 16),
             GetX<HomeController>(
               init: HomeController(),
               builder: (controller) {
-                if (controller.ptnList.isEmpty) {
-                  return const CampusPlaceholderList();
-                } else {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height / 3.5,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: controller.ptnList.length,
-                      itemBuilder: (context, index) {
-                        final campus = controller.ptnList[index];
-                        return Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          margin: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProfileCampus(campusId: campus.id),
-                                ),
-                              );
-                            },
-                            child: Card(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              elevation: 5.0,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      child: campus.logoPath != null
-                                          ? Image.network(
-                                              campus.logoPath!,
-                                              height: 80,
-                                              width: 80,
-                                              fit: BoxFit.contain,
-                                              errorBuilder:
-                                                  (context, error, stackTrace) {
-                                                return Image.asset(
-                                                  height: 50,
-                                                  width: 50,
-                                                  fit: BoxFit.contain,
-                                                  'assets/images/campus_placeholder.jpg',
-                                                );
-                                              },
-                                            )
-                                          : Image.asset(
-                                              'assets/images/campus_placeholder.jpg',
-                                              height: 50,
-                                              width: 50,
-                                              fit: BoxFit.contain,
-                                            ),
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    Text(
-                                      campus.name,
-                                      style: HomeStyle.topCampusTextStyle,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }
+                return CampusListSection(
+                  title: 'Top 10 PTN',
+                  subtitle: 'PTN terbaik di Indonesia',
+                  campusList: controller.ptnList,
+                  isLoading: controller.ptnList.isEmpty,
+                );
               },
             ),
-            const SizedBox(
-              height: 16,
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Top 10 Politeknik',
-                style: HomeStyle.titleTextStyle,
-              ),
-            ),
-            const SizedBox(height: 5.0),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Politeknik Terbaik di Indonesia',
-                style: HomeStyle.subtitleTextStyle,
-              ),
-            ),
+            const SizedBox(height: 16),
             GetX<HomeController>(
               init: HomeController(),
               builder: (controller) {
-                if (controller.politeknikList.isEmpty) {
-                  return const CampusPlaceholderList();
-                } else {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height / 3.5,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: controller.politeknikList.length,
-                      itemBuilder: (context, index) {
-                        final campus = controller.politeknikList[index];
-                        return Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          margin: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProfileCampus(campusId: campus.id),
-                                ),
-                              );
-                            },
-                            child: Card(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              elevation: 5.0,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      child: campus.logoPath != null
-                                          ? Image.network(
-                                              campus.logoPath!,
-                                              height: 80,
-                                              width: 80,
-                                              fit: BoxFit.contain,
-                                              errorBuilder:
-                                                  (context, error, stackTrace) {
-                                                return Image.asset(
-                                                  height: 50,
-                                                  width: 50,
-                                                  fit: BoxFit.contain,
-                                                  'assets/images/campus_placeholder.jpg',
-                                                );
-                                              },
-                                            )
-                                          : Image.asset(
-                                              'assets/images/campus_placeholder.jpg',
-                                              height: 50,
-                                              width: 50,
-                                              fit: BoxFit.contain,
-                                            ),
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    Text(
-                                      campus.name,
-                                      style: HomeStyle.topCampusTextStyle,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }
+                return CampusListSection(
+                  title: 'Top 10 Politeknik',
+                  subtitle: 'Politeknik Terbaik di Indonesia',
+                  campusList: controller.politeknikList,
+                  isLoading: controller.politeknikList.isEmpty,
+                );
               },
             ),
-            const SizedBox(
-              height: 16,
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Top 10 Kampus Swasta',
-                style: HomeStyle.titleTextStyle,
-              ),
-            ),
-            const SizedBox(height: 5.0),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Kampus Swasta Terbaik di Indonesia',
-                style: HomeStyle.subtitleTextStyle,
-              ),
-            ),
+            const SizedBox(height: 16),
             GetX<HomeController>(
               init: HomeController(),
               builder: (controller) {
-                if (controller.swastaList.isEmpty) {
-                  return const CampusPlaceholderList();
-                } else {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height / 3.5,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: controller.swastaList.length,
-                      itemBuilder: (context, index) {
-                        final campus = controller.swastaList[index];
-                        return Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          margin: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProfileCampus(campusId: campus.id),
-                                ),
-                              );
-                            },
-                            child: Card(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              elevation: 5.0,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      child: campus.logoPath != null
-                                          ? Image.network(
-                                              campus.logoPath!,
-                                              height: 80,
-                                              width: 80,
-                                              fit: BoxFit.contain,
-                                              errorBuilder:
-                                                  (context, error, stackTrace) {
-                                                return Image.asset(
-                                                  height: 50,
-                                                  width: 50,
-                                                  fit: BoxFit.contain,
-                                                  'assets/images/campus_placeholder.jpg',
-                                                );
-                                              },
-                                            )
-                                          : Image.asset(
-                                              'assets/images/campus_placeholder.jpg',
-                                              height: 50,
-                                              width: 50,
-                                              fit: BoxFit.contain,
-                                            ),
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    Text(
-                                      campus.name,
-                                      style: HomeStyle.topCampusTextStyle,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }
+                return CampusListSection(
+                  title: 'Top 10 Kampus Swasta',
+                  subtitle: 'Kampus Swasta Terbaik di Indonesia',
+                  campusList: controller.swastaList,
+                  isLoading: controller.swastaList.isEmpty,
+                );
               },
             ),
             const SizedBox(height: 16.0),

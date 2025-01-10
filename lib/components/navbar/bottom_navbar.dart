@@ -20,17 +20,15 @@ class BottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
             icon: Icon(
               UnivGoIcon.homeoutline,
-              size: 30,
             ),
             label: 'Beranda',
             activeIcon: Icon(
               UnivGoIcon.home,
-              size: 30,
             )),
         BottomNavigationBarItem(
           icon: Icon(
             Icons.newspaper_sharp,
-            size: 30,
+            size: 26,
           ),
           label: 'Berita Kampus',
         ),
