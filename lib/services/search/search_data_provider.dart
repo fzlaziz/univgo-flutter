@@ -68,7 +68,7 @@ class SearchDataProvider {
         List<int> selectedLocationIds = selectedFilters['location']!;
 
         campuses = campuses
-            .where((campus) => selectedLocationIds.contains(campus.districtId))
+            .where((campus) => selectedLocationIds.contains(campus.provinceId))
             .toList();
       }
       if (selectedFilters != null && selectedFilters['campus_type'] != null) {
@@ -227,9 +227,9 @@ class SearchDataProvider {
     }
 
     addFilters('degree_levels', 'degree_level', 'Level Studi');
-    addFilters('locations', 'location', 'Lokasi');
     addFilters('accreditations', 'accreditation', 'Akreditasi');
     addFilters('campus_types', 'campus_type', 'Jenis PTN');
+    addFilters('locations', 'location', 'Lokasi');
 
     filters = loadedFilters;
     return filters;
