@@ -131,11 +131,20 @@ class SearchResultPage extends GetView<SearchResultController> {
                                       id: filter.id,
                                       group: filter.group,
                                       onToggle: () => controller.toggleFilter(
-                                          filter.group, filter.id),
-                                      isSelected: controller
-                                              .tempSelectedFilters[filter.group]
-                                              ?.contains(filter.id) ??
-                                          false,
+                                        filter.group,
+                                        filter.id,
+                                        includedIds: filter.includedIds,
+                                      ),
+                                      isSelected: filter.includedIds != null
+                                          ? filter.includedIds!.any((id) =>
+                                              controller.tempSelectedFilters[
+                                                      filter.group]
+                                                  ?.contains(id) ??
+                                              false)
+                                          : controller.tempSelectedFilters[
+                                                      filter.group]
+                                                  ?.contains(filter.id) ??
+                                              false,
                                       width: controller
                                           .getWidthForGroup(filter.group),
                                     ));

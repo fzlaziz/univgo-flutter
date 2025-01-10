@@ -28,6 +28,7 @@ class FilterButtonWidget extends StatelessWidget {
           label,
           textAlign: TextAlign.center,
           style: GoogleFonts.poppins(
+            fontSize: 12,
             color: isSelected ? Colors.white : const Color(0xFF0059FF),
           ),
         ),

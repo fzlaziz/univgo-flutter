@@ -63,6 +63,7 @@ class SearchResultController extends GetxController
   }
 
   void searchData() {
+    print(selectedFilters);
     if (showCampus.value) {
       response = apiDataProvider.getCampus(
         searchQuery.value,
@@ -79,21 +80,39 @@ class SearchResultController extends GetxController
     update();
   }
 
-  void toggleFilter(String group, int id) {
-    // Create a copy of the current map
+  void toggleFilter(String group, int id, {List<int>? includedIds}) {
     var currentFilters = Map<String, List<int>>.from(tempSelectedFilters);
 
-    if (currentFilters.containsKey(group)) {
-      if (currentFilters[group]!.contains(id)) {
-        currentFilters[group]!.remove(id);
+    if (includedIds != null) {
+      if (!currentFilters.containsKey(group)) {
+        currentFilters[group] = [];
+      }
+
+      bool anySelected =
+          includedIds.any((id) => currentFilters[group]?.contains(id) ?? false);
+
+      if (anySelected) {
+        currentFilters[group]!
+            .removeWhere((filterId) => includedIds.contains(filterId));
         if (currentFilters[group]!.isEmpty) {
           currentFilters.remove(group);
         }
       } else {
-        currentFilters[group]!.add(id);
+        currentFilters[group]!.addAll(includedIds);
       }
     } else {
-      currentFilters[group] = [id];
+      if (!currentFilters.containsKey(group)) {
+        currentFilters[group] = [id];
+      } else {
+        if (currentFilters[group]!.contains(id)) {
+          currentFilters[group]!.remove(id);
+          if (currentFilters[group]!.isEmpty) {
+            currentFilters.remove(group);
+          }
+        } else {
+          currentFilters[group]!.add(id);
+        }
+      }
     }
 
     // Update the entire RxMap

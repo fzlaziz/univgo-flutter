@@ -7,6 +7,7 @@ import 'package:univ_go/models/campus/campus_response.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:univ_go/models/filter/filter_model.dart';
 import 'package:univ_go/services/location_service.dart';
+import 'package:univ_go/services/search/data/filter_data.dart';
 
 class SearchDataProvider {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
@@ -173,6 +174,23 @@ class SearchDataProvider {
 
   Future<void> fetchAndStoreFilters() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<Map<String, dynamic>> locationData = [];
+
+    regionGroups['Location']!.forEach((name, ids) {
+      locationData.add({
+        'name': name,
+        'id': ids.first,
+        'group': 'location',
+        'includedIds': ids,
+      });
+    });
+
+    locationData.addAll(individualProvinces.map((prov) => {
+          'name': prov['name'],
+          'id': prov['id'],
+          'group': 'location',
+        }));
+    prefs.setString('locations', jsonEncode(locationData));
 
     Future<void> fetchData(String url, String key, String group) async {
       var headers = <String, String>{
@@ -199,7 +217,6 @@ class SearchDataProvider {
 
     await Future.wait([
       fetchData("$baseUrl/api/degree_levels", 'degree_levels', 'degree_level'),
-      fetchData("$baseUrl/api/province", 'locations', 'location'),
       fetchData(
           "$baseUrl/api/accreditations", 'accreditations', 'accreditation'),
       fetchData("$baseUrl/api/campus_types", 'campus_types', 'campus_type'),
@@ -221,6 +238,9 @@ class SearchDataProvider {
             name: data['name'],
             id: data['id'],
             group: group,
+            includedIds: data['includedIds'] != null
+                ? List<int>.from(data['includedIds'])
+                : null,
           );
         }).toList();
       }
@@ -230,8 +250,6 @@ class SearchDataProvider {
     addFilters('accreditations', 'accreditation', 'Akreditasi');
     addFilters('campus_types', 'campus_type', 'Jenis PTN');
     addFilters('locations', 'location', 'Lokasi');
-
-    filters = loadedFilters;
-    return filters;
+    return loadedFilters;
   }
 }
