@@ -14,6 +14,13 @@ class BarChartContainer extends StatelessWidget {
     this.aspectRatio = 1.5,
   });
 
+  String formatNumber(double value) {
+    if (value >= 1000) {
+      return '${(value / 1000).toStringAsFixed(0)}rb';
+    }
+    return value.toInt().toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,7 +34,7 @@ class BarChartContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+        padding: const EdgeInsets.fromLTRB(15, 15, 15, 20),
         child: Column(
           children: [
             Row(
@@ -39,7 +46,7 @@ class BarChartContainer extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 40),
             AspectRatio(
               aspectRatio: aspectRatio,
               child: BarChart(
@@ -54,6 +61,46 @@ class BarChartContainer extends StatelessWidget {
                   ),
                   groupsSpace: 5,
                   barGroups: barGroups,
+                  titlesData: FlTitlesData(
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          return Text(
+                            formatNumber(value),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        },
+                        reservedSize: 35,
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Text(
+                              value.toInt().toString(),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

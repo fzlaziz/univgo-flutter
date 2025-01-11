@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:univ_go/src/features/profile_campus/models/campus_registration_records.dart';
 import 'package:univ_go/src/features/profile_campus/models/degree_level.dart';
 import 'package:univ_go/src/features/profile_campus/models/facility.dart';
 import 'package:univ_go/src/features/profile_campus/models/gallery.dart';
@@ -42,6 +43,7 @@ class CampusDetailResponse {
   List<Gallery>? galleries;
   List<Facility>? facilities;
   final List<dynamic>? admissionStatistitcs;
+  List<CampusRegistrationRecord>? campusRegistrationRecords;
   final dynamic email;
   final dynamic youtube;
   final dynamic instagram;
@@ -78,6 +80,7 @@ class CampusDetailResponse {
     required this.email,
     required this.youtube,
     required this.instagram,
+    this.campusRegistrationRecords,
   });
 
   factory CampusDetailResponse.fromJson(Map<String, dynamic> json) =>
@@ -130,6 +133,11 @@ class CampusDetailResponse {
         email: json["email"],
         youtube: json["youtube"],
         instagram: json["instagram"],
+        campusRegistrationRecords: json["campus_registration_records"] != null
+            ? List<CampusRegistrationRecord>.from(
+                json["campus_registration_records"]
+                    .map((x) => CampusRegistrationRecord.fromJson(x)))
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -177,5 +185,9 @@ class CampusDetailResponse {
         "email": email,
         "youtube": youtube,
         "instagram": instagram,
+        "campus_registration_records": campusRegistrationRecords != null
+            ? List<dynamic>.from(
+                campusRegistrationRecords!.map((x) => x.toJson()))
+            : null,
       };
 }

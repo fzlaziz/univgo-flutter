@@ -99,7 +99,11 @@ class _ProfileCampusState extends State<ProfileCampus> {
                           snapshot: AsyncSnapshot.withData(
                               ConnectionState.done, campusDetail),
                           campusId: widget.campusId),
-                      const BarChartSection(),
+                      // const BarChartSection(),
+                      BarChartSection(
+                        registrationRecords:
+                            campusDetail.campusRegistrationRecords,
+                      ),
                       ImageCarouselContainer(
                         title: 'Fasilitas',
                         imageUrls: (campusDetail.facilities ?? [])
