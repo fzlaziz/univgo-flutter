@@ -10,6 +10,13 @@ class StudyProgramResponse {
   final String accreditation;
   final String degreeLevel;
   final int degreeLevelId;
+  final int rankScore;
+  final int provinceId;
+  final int cityId;
+  final double addressLatitude;
+  final double addressLongitude;
+  final int minSingleTuition;
+  final int maxSingleTuition;
 
   StudyProgramResponse({
     required this.id,
@@ -23,6 +30,13 @@ class StudyProgramResponse {
     required this.accreditationId,
     required this.accreditation,
     required this.degreeLevelId,
+    required this.rankScore,
+    required this.provinceId,
+    required this.cityId,
+    required this.addressLatitude,
+    required this.addressLongitude,
+    required this.minSingleTuition,
+    required this.maxSingleTuition,
   });
 
   factory StudyProgramResponse.fromJson(Map<String, dynamic> json) =>
@@ -38,6 +52,13 @@ class StudyProgramResponse {
         accreditationId: json["accreditation_id"],
         accreditation: json["accreditation"],
         degreeLevelId: json["degree_level_id"],
+        rankScore: json["rank_score"],
+        provinceId: json["province_id"],
+        cityId: json["city_id"],
+        addressLatitude: json["address_latitude"],
+        addressLongitude: json["address_longitude"],
+        minSingleTuition: json["min_single_tuition"],
+        maxSingleTuition: json["max_single_tuition"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -52,5 +73,12 @@ class StudyProgramResponse {
         "accreditation_id": accreditationId,
         "accreditation": accreditation,
         "degree_level_id": degreeLevelId,
+        "rank_score": rankScore,
+        "province_id": provinceId,
+        "city_id": cityId,
+        "address_latitude": addressLatitude,
+        "address_longitude": addressLongitude,
+        "min_single_tuition": minSingleTuition,
+        "max_single_tuition": maxSingleTuition,
       };
 }
