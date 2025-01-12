@@ -459,7 +459,7 @@ class SearchDataProvider {
 
     addFilters('degree_levels', 'degree_level', 'Level Studi');
     addFilters('accreditations', 'accreditation', 'Akreditasi');
-    addFilters('campus_types', 'campus_type', 'Jenis PTN');
+    addFilters('campus_types', 'campus_type', 'Jenis Perguruan Tinggi');
     addFilters('locations', 'location', 'Lokasi');
     return loadedFilters;
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:univ_go/src/features/profile_campus/screens/profile_campus.dart';
 import 'package:univ_go/src/features/search/widgets/placeholder_card_study_program.dart';
 import 'package:univ_go/src/features/search/models/study_programs_response.dart';
 import 'package:univ_go/src/const/theme_color.dart';
@@ -81,32 +82,43 @@ class StudyProgramList extends StatelessWidget {
                 var studyProgram = snapshot.data![index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Card(
-                    elevation: 2,
-                    color: Colors.grey[50],
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                          color: Color.fromARGB(255, 198, 197, 197)),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: ListTile(
-                      title: Text(studyProgram.name,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProfileCampus(campusId: studyProgram.campusId),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      elevation: 2,
+                      color: Colors.grey[50],
+                      shape: RoundedRectangleBorder(
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 198, 197, 197)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ListTile(
+                        title: Text(studyProgram.name,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            )),
+                        subtitle: Text(studyProgram.campus,
+                            style: GoogleFonts.poppins(
+                              fontSize: 11,
+                              color: Colors.black,
+                            )),
+                        trailing: Text(
+                          studyProgram.degreeLevel,
                           style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          )),
-                      subtitle: Text(studyProgram.campus,
-                          style: GoogleFonts.poppins(
-                            fontSize: 11,
-                            color: Colors.black,
-                          )),
-                      trailing: Text(
-                        studyProgram.degreeLevel,
-                        style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                            fontSize: 14),
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                              fontSize: 14),
+                        ),
                       ),
                     ),
                   ),

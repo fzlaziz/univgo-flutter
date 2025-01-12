@@ -3,6 +3,7 @@ class StudyProgramResponse {
   final String name;
   final String campus;
   final int campusTypeId;
+  final int campusId;
   final String campusType;
   final String district;
   final int districtId;
@@ -24,6 +25,7 @@ class StudyProgramResponse {
     required this.campus,
     required this.campusTypeId,
     required this.campusType,
+    required this.campusId,
     required this.district,
     required this.districtId,
     required this.degreeLevel,
@@ -46,6 +48,7 @@ class StudyProgramResponse {
         campus: json["campus"],
         degreeLevel: json["degree_level"],
         campusTypeId: json["campus_type_id"],
+        campusId: json["campus_id"],
         campusType: json["campus_type"],
         district: json["district"],
         districtId: json["district_id"],
@@ -68,6 +71,7 @@ class StudyProgramResponse {
         "degree_level": degreeLevel,
         "campus_type_id": campusTypeId,
         "campus_type": campusType,
+        "campus_id": campusId,
         "district": district,
         "district_id": districtId,
         "accreditation_id": accreditationId,

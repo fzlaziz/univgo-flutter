@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:univ_go/src/const/theme_color.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -64,47 +65,38 @@ class _SplashScreenState extends State<SplashScreen>
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Positioned(
+          const Positioned(
             top: -60,
             left: -60,
             child: CircleAvatar(
               radius: 100,
-              backgroundColor: Colors.blue[400],
+              backgroundColor: Color(0xFF2974FF),
             ),
           ),
-          Positioned(
+          const Positioned(
             top: 100,
             right: -40,
             child: CircleAvatar(
               radius: 80,
-              backgroundColor: Colors.blue[300],
+              backgroundColor: Color(0xFF2974FF),
             ),
           ),
-          Positioned(
+          const Positioned(
             bottom: 50,
             left: -40,
             child: CircleAvatar(
               radius: 70,
-              backgroundColor: Colors.blue[200],
+              backgroundColor: Color(0xFF2974FF),
             ),
           ),
-          Positioned(
+          const Positioned(
             bottom: -100,
             right: -80,
             child: CircleAvatar(
               radius: 140,
-              backgroundColor: Colors.blue[400],
+              backgroundColor: Color(0xFF2974FF),
             ),
           ),
-          Positioned(
-            bottom: 90,
-            right: 40,
-            child: CircleAvatar(
-              radius: 40,
-              backgroundColor: Colors.blue[300],
-            ),
-          ),
-
           // Konten utama
           Center(
             child: Column(
@@ -114,20 +106,20 @@ class _SplashScreenState extends State<SplashScreen>
                   scale: _logoAnimation,
                   child: Image.asset(
                     'assets/images/logo.png',
-                    height: 150,
+                    height: 125,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 80),
                 FadeTransition(
                   opacity: _textAnimation,
                   child: Column(
                     children: [
                       Text(
-                        'UnivGo',
+                        'UnivGO',
                         style: GoogleFonts.poppins(
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                          color: const Color(0xFF2974FF),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -136,8 +128,7 @@ class _SplashScreenState extends State<SplashScreen>
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: const Color(0xFF2974FF),
                         ),
                       ),
                     ],
