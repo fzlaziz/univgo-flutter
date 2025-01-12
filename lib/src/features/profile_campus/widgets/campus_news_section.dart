@@ -1,14 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:univ_go/src/features/news/models/news_detail.dart';
+import 'package:univ_go/src/features/news/screens/news_detail.dart';
+import 'package:univ_go/src/features/news/services/news_provider.dart';
 
-class CampusNewsContainer extends StatelessWidget {
+class CampusNewsContainer extends StatefulWidget {
   final AsyncSnapshot<dynamic> snapshot;
 
   const CampusNewsContainer({
     super.key,
     required this.snapshot,
   });
+
+  @override
+  State<CampusNewsContainer> createState() => _CampusNewsContainerState();
+}
+
+class _CampusNewsContainerState extends State<CampusNewsContainer> {
+  bool _isLoading = false;
+  final NewsProvider apiDataProvider = NewsProvider();
+
+  Future<void> handleNewsPress(dynamic newsItem) async {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      DetailBerita detailBerita =
+          await apiDataProvider.getDetailBerita(newsItem.id);
+
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NewsDetail(berita: detailBerita),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Error loading news details: ${e.toString()}')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,34 +90,43 @@ class CampusNewsContainer extends StatelessWidget {
   }
 
   Widget _buildNewsList() {
-    if (snapshot.data?.news == null || snapshot.data!.news!.isEmpty) {
+    if (widget.snapshot.data?.news == null ||
+        widget.snapshot.data!.news!.isEmpty) {
       return Center(
         child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Tidak ada Berita',
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Colors.black54,
-              ),
-            )),
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            'Tidak ada Berita',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: Colors.black54,
+            ),
+          ),
+        ),
       );
     }
 
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: snapshot.data!.news!.length,
-      itemBuilder: (context, index) {
-        return NewsListItem(
-          news: snapshot.data!.news![index],
-          imageUrl: snapshot.data!.galleries != null &&
-                  snapshot.data!.galleries!.isNotEmpty
-              ? snapshot.data!.galleries![0].fileLocation
-              : null,
-        );
-      },
+    return AbsorbPointer(
+      absorbing: _isLoading,
+      child: Opacity(
+        opacity: _isLoading ? 0.5 : 1.0,
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: widget.snapshot.data!.news!.length,
+          itemBuilder: (context, index) {
+            return NewsListItem(
+              news: widget.snapshot.data!.news![index],
+              imageUrl: widget.snapshot.data!.galleries != null &&
+                      widget.snapshot.data!.galleries!.isNotEmpty
+                  ? widget.snapshot.data!.galleries![0].fileLocation
+                  : null,
+              onTap: handleNewsPress,
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -79,10 +134,12 @@ class CampusNewsContainer extends StatelessWidget {
 class NewsListItem extends StatelessWidget {
   final dynamic news;
   final String? imageUrl;
+  final Future<void> Function(dynamic news) onTap;
 
   const NewsListItem({
     super.key,
     required this.news,
+    required this.onTap,
     this.imageUrl,
   });
 
@@ -91,10 +148,7 @@ class NewsListItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: InkWell(
-        onTap: () {
-          // final newsId = news.id;
-          // Handle the onTap event
-        },
+        onTap: () => onTap(news),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
