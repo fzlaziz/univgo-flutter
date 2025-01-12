@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:univ_go/src/features/news/models/news_detail.dart';
@@ -20,6 +21,16 @@ class CampusNewsContainer extends StatefulWidget {
 class _CampusNewsContainerState extends State<CampusNewsContainer> {
   bool _isLoading = false;
   final NewsProvider apiDataProvider = NewsProvider();
+
+  final String baseUrl = '${dotenv.env['AWS_URL']}/';
+
+  String? _getFullImageUrl(String? attachment) {
+    if (attachment == null || attachment.isEmpty) return null;
+    if (attachment.startsWith('http://') || attachment.startsWith('https://')) {
+      return attachment;
+    }
+    return '$baseUrl$attachment';
+  }
 
   Future<void> handleNewsPress(dynamic newsItem) async {
     if (_isLoading) return;
@@ -116,12 +127,10 @@ class _CampusNewsContainerState extends State<CampusNewsContainer> {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: widget.snapshot.data!.news!.length,
           itemBuilder: (context, index) {
+            final newsItem = widget.snapshot.data!.news![index];
             return NewsListItem(
-              news: widget.snapshot.data!.news![index],
-              imageUrl: widget.snapshot.data!.galleries != null &&
-                      widget.snapshot.data!.galleries!.isNotEmpty
-                  ? widget.snapshot.data!.galleries![0].fileLocation
-                  : null,
+              news: newsItem,
+              imageUrl: _getFullImageUrl(newsItem.attachment),
               onTap: handleNewsPress,
             );
           },
