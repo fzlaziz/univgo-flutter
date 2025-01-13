@@ -66,6 +66,7 @@ class _CampusReviewsPageState extends State<CampusReviewsPage> {
     final userReviews =
         _reviews.where((review) => review.userId == _userId).toList();
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 60,
         backgroundColor: const Color(blueTheme),

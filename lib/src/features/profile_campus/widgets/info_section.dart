@@ -206,7 +206,7 @@ class LocationInfoCard extends StatelessWidget {
               InfoRow(
                 icon: Icons.bar_chart,
                 child: Text(
-                  'Ranking x di Indonesia',
+                  'Ranking ${snapshot.data!.rankScore} di Indonesia',
                   style: LocationCardStyles.textStyle,
                 ),
               ),

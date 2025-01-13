@@ -149,6 +149,7 @@ class _AddCampusReviewState extends State<AddCampusReview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         title: Text(

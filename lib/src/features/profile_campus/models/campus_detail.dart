@@ -47,6 +47,7 @@ class CampusDetailResponse {
   final dynamic email;
   final dynamic youtube;
   final dynamic instagram;
+  final int rankScore;
 
   CampusDetailResponse({
     required this.id,
@@ -81,6 +82,7 @@ class CampusDetailResponse {
     required this.youtube,
     required this.instagram,
     this.campusRegistrationRecords,
+    required this.rankScore,
   });
 
   factory CampusDetailResponse.fromJson(Map<String, dynamic> json) =>
@@ -90,6 +92,7 @@ class CampusDetailResponse {
         description: json["description"],
         dateOfEstablishment: DateTime.parse(json["date_of_establishment"]),
         logoPath: json["logo_path"],
+        rankScore: json["rank_score"] ?? 9999,
         addressLatitude: json["address_latitude"],
         addressLongitude: json["address_longitude"],
         webAddress: json["web_address"],
@@ -158,6 +161,7 @@ class CampusDetailResponse {
         "accreditation_id": accreditationId,
         "district_id": districtId,
         "campus_type_id": campusTypeId,
+        "rank_score": rankScore,
         "deleted_at": deletedAt,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
