@@ -19,6 +19,7 @@ class _ListFacultyState extends State<ListFaculty> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 70,
         backgroundColor: const Color(blueTheme),

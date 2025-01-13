@@ -125,6 +125,8 @@ class LocationInfoCard extends StatelessWidget {
             child: GestureDetector(
               onTap: onNavigateToReviews,
               child: Card(
+                color: Colors.white,
+                elevation: 2,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8, right: 8),
                   child: Column(

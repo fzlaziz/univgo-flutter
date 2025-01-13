@@ -36,6 +36,7 @@ class _ProfileCampusState extends State<ProfileCampus> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 60,
         backgroundColor: const Color(blueTheme),

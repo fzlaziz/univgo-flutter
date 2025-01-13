@@ -21,6 +21,7 @@ class _FacultyDetailState extends State<FacultyDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 70,
         backgroundColor: const Color(blueTheme),
@@ -104,7 +105,7 @@ class _FacultyDetailState extends State<FacultyDetail> {
                             vertical: 12, horizontal: 16),
                         width: MediaQuery.of(context).size.width / 1.1,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
+                          color: Colors.white,
                           border: Border(
                             top: BorderSide.none,
                             left: BorderSide(
