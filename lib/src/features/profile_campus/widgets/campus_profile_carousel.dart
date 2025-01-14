@@ -26,7 +26,7 @@ class CampusProfileCarousel extends StatelessWidget {
               ),
             ],
             options: CarouselOptions(
-              height: 200.0,
+              height: 250.0,
               autoPlay: false,
               enlargeCenterPage: true,
               viewportFraction: 1.0,
@@ -51,7 +51,7 @@ class CampusProfileCarousel extends StatelessWidget {
               );
             }).toList(),
             options: CarouselOptions(
-              height: 180.0,
+              height: 250.0,
               autoPlay: true,
               autoPlayInterval: const Duration(seconds: 5),
               enlargeCenterPage: true,

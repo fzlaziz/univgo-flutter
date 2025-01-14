@@ -22,7 +22,7 @@ class HomeStyle {
     fontWeight: FontWeight.w600,
   );
   static final newsDateTextStyle = GoogleFonts.poppins(
-    fontSize: 13,
+    fontSize: 12,
     color: Colors.grey,
   );
   static final reccomendedCampusTextStyle = GoogleFonts.poppins(

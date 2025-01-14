@@ -76,8 +76,8 @@ class CampusListSection extends StatelessWidget {
                               child: campus.logoPath != null
                                   ? Image.network(
                                       campus.logoPath!,
-                                      height: 80,
-                                      width: 80,
+                                      height: 65,
+                                      width: 65,
                                       fit: BoxFit.contain,
                                       errorBuilder:
                                           (context, error, stackTrace) {
