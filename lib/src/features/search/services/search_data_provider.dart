@@ -11,7 +11,7 @@ import 'package:univ_go/src/features/search/services/data/filter_data.dart';
 
 class SearchDataProvider {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
-  String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
+  String storageUrl = dotenv.env['STORAGE_URL'] ?? 'http://localhost:8000';
   LocationService locationService = LocationService();
 
   Future<List<CampusResponse>> getCampus(
@@ -72,7 +72,7 @@ class SearchDataProvider {
 
         for (var campus in campuses) {
           if (campus.logoPath != null && campus.logoPath!.isNotEmpty) {
-            campus.logoPath = "$awsUrl/${campus.logoPath!}";
+            campus.logoPath = "$storageUrl/${campus.logoPath!}";
           }
         }
 
@@ -127,7 +127,7 @@ class SearchDataProvider {
 
   //     for (var campus in campuses) {
   //       if (campus.logoPath != null && campus.logoPath!.isNotEmpty) {
-  //         campus.logoPath = "$awsUrl/${campus.logoPath!}";
+  //         campus.logoPath = "$storageUrl/${campus.logoPath!}";
   //       }
   //     }
   //     if (query.isNotEmpty) {

@@ -18,7 +18,7 @@ class NewsList extends StatefulWidget {
 
 class _NewsListState extends State<NewsList> {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
-  String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
+  String storageUrl = dotenv.env['STORAGE_URL'] ?? 'http://localhost:8000';
   late Future<List<Berita>> listBerita;
   final NewsProvider apiDataProvider = NewsProvider();
   int _currentPage = 1;
@@ -81,7 +81,7 @@ class _NewsListState extends State<NewsList> {
             trailing: ClipRRect(
               child: berita.attachment != null
                   ? Image.network(
-                      '$awsUrl/${berita.attachment}',
+                      '$storageUrl/${berita.attachment}',
                       width: 100,
                       height: 150,
                       fit: BoxFit.cover,

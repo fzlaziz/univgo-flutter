@@ -6,7 +6,7 @@ import 'package:univ_go/src/features/home/models/nearest_campus_response.dart';
 
 class NearestCampusProvider {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
-  String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
+  String storageUrl = dotenv.env['STORAGE_URL'] ?? 'http://localhost:8000';
 
   Future<List<NearestCampusResponse>> getCampusesNearby(
       {required double latitude, required double longitude}) async {
@@ -27,7 +27,7 @@ class NearestCampusProvider {
       // Process logo paths
       for (var campus in campuses) {
         if (campus.logoPath != null && campus.logoPath!.isNotEmpty) {
-          campus.logoPath = "$awsUrl/${campus.logoPath!}";
+          campus.logoPath = "$storageUrl/${campus.logoPath!}";
         }
       }
 

@@ -6,7 +6,7 @@ import 'package:univ_go/src/features/news/models/news.dart';
 
 class NewsLatest {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
-  String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
+  String storageUrl = dotenv.env['STORAGE_URL'] ?? 'http://localhost:8000';
   // Fungsi untuk mendapatkan daftar berita
   Future<List<Berita>> getBerita() async {
     var headers = <String, String>{};
@@ -21,7 +21,7 @@ class NewsLatest {
       var news = jsonList.map((json) {
         var berita = Berita.fromJson(json);
         if (berita.attachment != null) {
-          berita.attachment = "$awsUrl/${berita.attachment!}";
+          berita.attachment = "$storageUrl/${berita.attachment!}";
         }
         return berita;
       }).toList();

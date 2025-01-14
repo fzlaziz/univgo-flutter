@@ -10,7 +10,7 @@ import 'package:univ_go/src/features/news/models/news_detail.dart';
 
 class NewsProvider {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
-  String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
+  String storageUrl = dotenv.env['STORAGE_URL'] ?? 'http://localhost:8000';
   Future<List<Berita>> getBerita() async {
     var headers = <String, String>{};
 

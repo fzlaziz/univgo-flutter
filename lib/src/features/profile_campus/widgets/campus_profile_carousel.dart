@@ -6,11 +6,11 @@ class CampusProfileCarousel extends StatelessWidget {
   const CampusProfileCarousel({
     super.key,
     required this.campusDetail,
-    required this.awsUrl,
+    required this.storageUrl,
   });
 
   final dynamic campusDetail;
-  final String awsUrl;
+  final String storageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class CampusProfileCarousel extends StatelessWidget {
               return Builder(
                 builder: (BuildContext context) {
                   return Image.network(
-                    '$awsUrl${facility.fileLocation}',
+                    '$storageUrl${facility.fileLocation}',
                     fit: BoxFit.cover,
                     width: double.infinity,
                     errorBuilder: (context, error, stackTrace) {
@@ -62,7 +62,7 @@ class CampusProfileCarousel extends StatelessWidget {
           top: 4,
           right: 4,
           child: Image.network(
-            '$awsUrl${campusDetail.logoPath}',
+            '$storageUrl${campusDetail.logoPath}',
             width: MediaQuery.of(context).size.width / 9,
             height: MediaQuery.of(context).size.width / 9,
             fit: BoxFit.cover,

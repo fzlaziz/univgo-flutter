@@ -22,7 +22,7 @@ class _CampusNewsContainerState extends State<CampusNewsContainer> {
   bool _isLoading = false;
   final NewsProvider apiDataProvider = NewsProvider();
 
-  final String baseUrl = '${dotenv.env['AWS_URL']}/';
+  final String baseUrl = '${dotenv.env['STORAGE_URL']}/';
 
   String? _getFullImageUrl(String? attachment) {
     if (attachment == null || attachment.isEmpty) return null;

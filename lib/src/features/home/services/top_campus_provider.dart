@@ -90,7 +90,7 @@ class EnumValues<T> {
 
 class TopCampusProvider {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
-  String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
+  String storageUrl = dotenv.env['STORAGE_URL'] ?? 'http://localhost:8000';
 
   Future<TopCampusList> getAllCampuses() async {
     final response = await http.get(Uri.parse('$baseUrl/api/campuses/top-10'));
@@ -101,7 +101,7 @@ class TopCampusProvider {
       for (var list in [data.ptn, data.politeknik, data.swasta]) {
         for (var campus in list) {
           if (campus.logoPath != null) {
-            campus.logoPath = "$awsUrl/${campus.logoPath!}";
+            campus.logoPath = "$storageUrl/${campus.logoPath!}";
           }
         }
       }

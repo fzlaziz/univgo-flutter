@@ -22,7 +22,7 @@ class NewsDetail extends StatefulWidget {
 
 class _NewsDetailState extends State<NewsDetail> {
   String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
-  String awsUrl = dotenv.env['AWS_URL'] ?? 'http://localhost:8000';
+  String storageUrl = dotenv.env['STORAGE_URL'] ?? 'http://localhost:8000';
   final TextEditingController _commentController = TextEditingController();
   bool _isCommentValid = false;
   late Future<List<Comment>> _comments;
@@ -191,7 +191,7 @@ class _NewsDetailState extends State<NewsDetail> {
               Center(
                 child: widget.berita.attachment != null
                     ? Image.network(
-                        '$awsUrl/${widget.berita.attachment}',
+                        '$storageUrl/${widget.berita.attachment}',
                         height: 200,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -679,7 +679,7 @@ class _NewsDetailState extends State<NewsDetail> {
                     ),
                     trailing: related.attachment != null
                         ? Image.network(
-                            '$awsUrl/${related.attachment}',
+                            '$storageUrl/${related.attachment}',
                             height: 60,
                             width: 80,
                             fit: BoxFit.cover,

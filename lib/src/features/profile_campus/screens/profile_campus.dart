@@ -25,7 +25,7 @@ class ProfileCampus extends StatefulWidget {
 class _ProfileCampusState extends State<ProfileCampus> {
   final ProfileCampusProvider api = ProfileCampusProvider();
 
-  final String awsUrl = '${dotenv.env['AWS_URL']}/';
+  final String storageUrl = '${dotenv.env['STORAGE_URL']}/';
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
@@ -78,7 +78,7 @@ class _ProfileCampusState extends State<ProfileCampus> {
                   return Column(
                     children: [
                       CampusProfileCarousel(
-                          campusDetail: campusDetail, awsUrl: awsUrl),
+                          campusDetail: campusDetail, storageUrl: storageUrl),
                       LocationInfoCard(
                         snapshot: AsyncSnapshot.withData(
                             ConnectionState.done, campusDetail),
@@ -109,7 +109,7 @@ class _ProfileCampusState extends State<ProfileCampus> {
                         title: 'Fasilitas',
                         imageUrls: (campusDetail.facilities ?? [])
                             .map(
-                                (facility) => '$awsUrl${facility.fileLocation}')
+                                (facility) => '$storageUrl${facility.fileLocation}')
                             .toList()
                             .cast<String>(),
                         height: 250.0,
@@ -117,7 +117,7 @@ class _ProfileCampusState extends State<ProfileCampus> {
                       ImageCarouselContainer(
                         title: 'Galeri Kampus',
                         imageUrls: (campusDetail.galleries ?? [])
-                            .map((gallery) => '$awsUrl${gallery.fileLocation}')
+                            .map((gallery) => '$storageUrl${gallery.fileLocation}')
                             .toList()
                             .cast<String>(),
                         height: 240.0,
